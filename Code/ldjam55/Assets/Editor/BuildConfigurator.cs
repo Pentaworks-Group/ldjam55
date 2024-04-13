@@ -1,3 +1,5 @@
+using Assets.Scripts.Constants;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 
@@ -18,14 +20,13 @@ public static class BuildConfigurator
 
     public static void BuildProjectDevelopment()
     {
-        //BuildOptions.
         //Debug.Log($"SceneNames.scenes: {SceneNames.scenes}");
         //Debug.Log($"SceneNames.scenesDevelopment: {SceneNames.scenesDevelopment}");
-        //var report = BuildPipeline.BuildPlayer(getSceneNameArray(SceneNames.scenes, SceneNames.scenesDevelopment), locationPath, BuildTarget.WebGL, BuildOptions.Development);
-        var report = BuildPipeline.BuildPlayer(GetSampleScene(), locationPath, BuildTarget.WebGL, BuildOptions.Development);
+        var report = BuildPipeline.BuildPlayer(GetSceneNameArray(SceneNames.scenes, SceneNames.scenesDevelopment), locationPath, BuildTarget.WebGL, BuildOptions.Development);
+        //var report = BuildPipeline.BuildPlayer(GetSampleScene(), locationPath, BuildTarget.WebGL, BuildOptions.Development);
         //Debug.Log($"Build result: {report.summary.result}, {report.summary.totalErrors} errors");
-        //var indexAsJson = GameFrame.Core.Json.Handler.Serialize(new BuildInfo(), Formatting.None, new JsonSerializerSettings());
-        var json = JsonUtility.ToJson(new BuildInfo());
+        var json = GameFrame.Core.Json.Handler.Serialize(new BuildInfo(), Formatting.None, new JsonSerializerSettings());
+        //var json = JsonUtility.ToJson(new BuildInfo());
         File.WriteAllTextAsync(locationPath + "/BuildInfo.json", json);
         if (report.summary.totalErrors > 0)
             EditorApplication.Exit(1);
@@ -33,11 +34,11 @@ public static class BuildConfigurator
 
     public static void BuildProjectProduction()
     {
-        //var report = BuildPipeline.BuildPlayer(getSceneNameArray(SceneNames.scenes, default), locationPath, BuildTarget.WebGL, BuildOptions.None);
-        var report = BuildPipeline.BuildPlayer(GetSampleScene(), locationPath, BuildTarget.WebGL, BuildOptions.Development);
+        var report = BuildPipeline.BuildPlayer(GetSceneNameArray(SceneNames.scenes, default), locationPath, BuildTarget.WebGL, BuildOptions.None);
+        //var report = BuildPipeline.BuildPlayer(GetSampleScene(), locationPath, BuildTarget.WebGL, BuildOptions.Development);
         //Debug.Log($"Build result: {report.summary.result}, {report.summary.totalErrors} errors");
-        //var indexAsJson = GameFrame.Core.Json.Handler.Serialize(new BuildInfo(), Formatting.None, new JsonSerializerSettings());
-        var json = JsonUtility.ToJson(new BuildInfo());
+        var json = GameFrame.Core.Json.Handler.Serialize(new BuildInfo(), Formatting.None, new JsonSerializerSettings());
+        //var json = JsonUtility.ToJson(new BuildInfo());
         File.WriteAllTextAsync(locationPath + "/BuildInfo.json", json);
         if (report.summary.totalErrors > 0)
             EditorApplication.Exit(1);
