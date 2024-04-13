@@ -1,3 +1,5 @@
+using Assets.Scripts.Core;
+using Assets.Scripts.Core.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,110 +8,144 @@ using UnityEngine;
 
 public class GameSceneBehaviour : MonoBehaviour
 {
-    public TextMeshProUGUI field1;
-    public TextMeshProUGUI field2;
-    public TextMeshProUGUI field3;
-    public TextMeshProUGUI field4;
-    public TextMeshProUGUI field5;
-    public TextMeshProUGUI field6;
-    public TextMeshProUGUI field7;
-    public TextMeshProUGUI field8;
-    public TextMeshProUGUI field9;
-    public TextMeshProUGUI field10;
-    public TextMeshProUGUI field11;
-    public TextMeshProUGUI field12;
-    public TextMeshProUGUI field13;
-    public TextMeshProUGUI field14;
-    public TextMeshProUGUI field15;
-    public TextMeshProUGUI field16;
+    public List<TextMeshProUGUI> fields;
 
-    double[][] fields = new double[4][];
-    double[][] old_values = new double[4][];
+    float flow_rate = 0.1f;
 
-    double flow_rate = 0.5;
+    GameState testGame;
 
     // Start is called before the first frame update
     void Start()
     {
-        fields[0] = new double[4];
-        fields[1] = new double[4];
-        fields[2] = new double[4];
-        fields[3] = new double[4];
 
-        old_values[0] = new double[4];
-        old_values[1] = new double[4];
-        old_values[2] = new double[4];
-        old_values[3] = new double[4];
+        List<Field> gameFields = new List<Field>
+        {
+            new Field { Height=0, Creep=new Creep{ Value = 16, Creeper = new Creeper{ Name = "Water" } } , ID = "0,0"},
+            new Field { Height=0 , ID = "0,1"},
+            new Field { Height=0 , ID = "0,2"},
+            new Field { Height=0, Creep=new Creep{ Value = 5, Creeper = new Creeper{ Name = "Fire" } } , ID = "0,3"},
+            new Field { Height=0 , ID = "1,0"},
+            new Field { Height=0 , ID = "1,1"},
+            new Field { Height=0 , ID = "1,2"},
+            new Field { Height=0 , ID = "1,3"},
+            new Field { Height=0 , ID = "2,0"},
+            new Field { Height=0 , ID = "2,1"},
+            new Field { Height=0 , ID = "2,2"},
+            new Field { Height=0 , ID = "2,3"},
+            new Field { Height=0 , ID = "3,0"},
+            new Field { Height=0 , ID = "3,1"},
+            new Field { Height=0 , ID = "3,2"},
+            new Field { Height=0 , ID = "3,3"},
+        };
 
-        fields[0][0] = 10;
+        List<Border> borders = new List<Border>
+        {
+            new Border { Field1 = gameFields[0], Field2 = gameFields[1], BorderStatus = new BorderStatus{ Value = 0 } },
+            new Border { Field1 = gameFields[0], Field2 = gameFields[4], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[1], Field2 = gameFields[2], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[1], Field2 = gameFields[5], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[2], Field2 = gameFields[3], BorderStatus = new BorderStatus{ Value = 0 } },
+            new Border { Field1 = gameFields[2], Field2 = gameFields[6], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[3], Field2 = gameFields[7], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[4], Field2 = gameFields[5], BorderStatus = new BorderStatus{ Value = 0 } },
+            new Border { Field1 = gameFields[4], Field2 = gameFields[8], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[5], Field2 = gameFields[6], BorderStatus = new BorderStatus{ Value = 0 } },
+            new Border { Field1 = gameFields[5], Field2 = gameFields[9], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[6], Field2 = gameFields[7], BorderStatus = new BorderStatus{ Value = 0 } },
+            new Border { Field1 = gameFields[6], Field2 = gameFields[10], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[7], Field2 = gameFields[11], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[8], Field2 = gameFields[9], BorderStatus = new BorderStatus{ Value = 0 } },
+            new Border { Field1 = gameFields[8], Field2 = gameFields[12], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[9], Field2 = gameFields[10], BorderStatus = new BorderStatus{ Value = 0 } },
+            new Border { Field1 = gameFields[9], Field2 = gameFields[13], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[10], Field2 = gameFields[11], BorderStatus = new BorderStatus{ Value = 0 } },
+            new Border { Field1 = gameFields[10], Field2 = gameFields[14], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[11], Field2 = gameFields[15], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[12], Field2 = gameFields[13], BorderStatus = new BorderStatus{ Value = flow_rate } },
+            new Border { Field1 = gameFields[13], Field2 = gameFields[14], BorderStatus = new BorderStatus{ Value = 0 } },
+            new Border { Field1 = gameFields[14], Field2 = gameFields[15], BorderStatus = new BorderStatus{ Value = flow_rate } },
+        };
 
-        Debug.Log("Test");
+        testGame = new GameState { Fields = gameFields, Borders = borders };
     }
 
     // Update is called once per frame
-    void Update()
+    void Update() 
     {
         distributeCreep();
 
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-
-        Debug.Log(fields);
+        //Just for the test scene
+        for (int i = 0; i < 16;  i++)
+        {
+            fields[i].SetText(String.Format("{0:0.00}", testGame.Fields[i].Creep.Value));
+            if (testGame.Fields[i].Creep != null && testGame.Fields[i].Creep.Creeper != null && testGame.Fields[i].Creep.Creeper.Name=="Fire" && testGame.Fields[i].Creep.Value>=0.01)
+            {
+                fields[i].color = Color.red;
+            } else if(testGame.Fields[i].Creep != null && testGame.Fields[i].Creep.Creeper != null && testGame.Fields[i].Creep.Creeper.Name == "Water" && testGame.Fields[i].Creep.Value >= 0.01)
+            {
+                fields[i].color = Color.blue;
+            } else
+            {
+                fields[i].color = Color.white;
+            }
+        }
     }
 
-    // Go through all the fields
-
-    // Distribute for one field
     private void distributeCreep()
     {
-        for(int i=0; i<fields.Length; i++)
+        foreach (var field in testGame.Fields)
         {
-            for(int j=0; j < fields[i].Length; j++)
+            if(field.Creep != null)
             {
-                old_values[i][j] = fields[i][j];
+                field.Creep.ValueOld = field.Creep.Value;
             }
         }
 
-        for(int i = 0; i < fields.Length; i++)
+        foreach (var border in testGame.Borders)
         {
-            //TODO: Energieerhaltung?
-            for (int j = 0; j < fields[i].Length; j++)
+            float flow = getFlow(border.Field1, border.Field2, border.BorderStatus.Value);
+            if (border.Field1.Creep == null)
             {
-                if((i != j) && (i < fields.Length-1))
-                {
-                    double flow = getFlowToField(i, j, i + 1, j);
-                    fields[i][j] -= flow;
-                    fields[i+1][j] += flow;
-                }
-                if ((i != j) && (j < fields[i].Length - 1))
-                {
-                    double flow = getFlowToField(i, j, i, j + 1);
-                    fields[i][j] -= flow;
-                    fields[i][j + 1] += flow;
-                }
+                border.Field1.Creep = new Creep { Value = 0 };
             }
+            if (border.Field2.Creep == null)
+            {
+                border.Field2.Creep = new Creep { Value = 0 };
+            }
+            copyCreeper(flow, border.Field1, border.Field2);
+            border.Field1.Creep.Value -= flow;
+            border.Field2.Creep.Value += flow;
+
+            //Update Border state
         }
     }
 
-    private double getFlowToField(int x1, int y1, int x2, int y2)
+    private void copyCreeper(float flow, Field field1, Field field2)
     {
-        double valueField1 = old_values[x1][y1];
-        double valueField2 = old_values[x2][y2];
-        double flow = (valueField1-valueField2)*flow_rate;
+        //TODO: what happens if both fields have a creeper -> Game Over/Win?
+        if (flow > 0)
+        {
+            field2.Creep.Creeper = field1.Creep.Creeper;
+        }
+        else if(flow < 0)
+        {
+            field1.Creep.Creeper = field2.Creep.Creeper;
+        }
+    }
+
+    private float getFlow(Field field1, Field field2, float borderState)
+    {
+        float valueField1 = 0;
+        if(field1.Creep != null)
+        {
+            valueField1 = field1.Creep.ValueOld;
+        }
+        float valueField2 = 0;
+        if(field2.Creep != null)
+        {
+            valueField2 = field2.Creep.ValueOld;
+        }
+        float flow = (valueField1-valueField2) * borderState * Time.deltaTime;
         return flow;
     }
 

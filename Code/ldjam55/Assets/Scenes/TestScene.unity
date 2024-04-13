@@ -865,6 +865,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b18e14a1b3a353a49bf25ff39148248c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fields:
+  - {fileID: 907974339}
+  - {fileID: 1923991673}
+  - {fileID: 200502947}
+  - {fileID: 1442363352}
+  - {fileID: 1687548686}
+  - {fileID: 1327939626}
+  - {fileID: 1642591824}
+  - {fileID: 1727718606}
+  - {fileID: 1385116388}
+  - {fileID: 864267665}
+  - {fileID: 1098435675}
+  - {fileID: 1613405556}
+  - {fileID: 269368427}
+  - {fileID: 466434187}
+  - {fileID: 1015266834}
+  - {fileID: 673910783}
   field1: {fileID: 907974339}
   field2: {fileID: 1923991673}
   field3: {fileID: 200502947}
