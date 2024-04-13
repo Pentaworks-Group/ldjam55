@@ -10,11 +10,17 @@
         "Creepers": [
             {
                 "ID": "CreeperWater",
-                "Name": "Holy Water"
+                "Name": "Holy Water",
+                "Parameters": {
+                    "Material": "Water"
+                }
             },
             {
                 "ID": "CreeperFire",
-                "Name": "Hell! Fire"
+                "Name": "Hell! Fire",
+                "Parameters": {
+                    "Material": "Fire"
+                }
             }
         ]
     }

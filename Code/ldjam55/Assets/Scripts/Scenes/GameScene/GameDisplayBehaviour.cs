@@ -1,9 +1,10 @@
+
 using Assets.Scripts.Core.Model;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Assets.Scripts.Scenes.GameScene
 {
@@ -43,7 +44,7 @@ namespace Assets.Scripts.Scenes.GameScene
                 newFieldGO.SetActive(true);
                 foreach (var fieldObject in field.FieldObjects)
                 {
-                    SpawnFieldObject(newFieldGO, fieldObject);  
+                    SpawnFieldObject(newFieldGO, fieldObject);
                 }
             }
             var wallTemplate = Templates["Wall"];
@@ -65,9 +66,16 @@ namespace Assets.Scripts.Scenes.GameScene
         {
             var fieldTemplate = Templates[fieldObject.Model];
             var newFieldGO = Instantiate(fieldTemplate, World.transform);
-            newFieldGO.name = "FieldObject:" + field.name;
+            var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
+            newFieldGO.GetComponent<Renderer>().material = material;
+            newFieldGO.name = GetFieldObjectName(field.name);
             newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
             newFieldGO.SetActive(true);
+        }
+
+        private static string GetFieldObjectName(string fieldName)
+        {
+            return "FieldObject:" + fieldName;
         }
 
         private void SetBorderPositionAndRotation(Border border, GameObject borderObject)
@@ -97,10 +105,11 @@ namespace Assets.Scripts.Scenes.GameScene
         {
             Dictionary<string, Field> fields = new Dictionary<string, Field>();
             List<GameObject> rawWalls = new List<GameObject>();
+            List<GameObject> rawFieldObjects = new List<GameObject>();
             foreach (Transform tran in World.transform)
             {
                 var gO = tran.gameObject;
-                if (gO.name.StartsWith("Field"))
+                if (gO.name.StartsWith("Field:"))
                 {
                     var Field = new Field();
                     var x = Mathf.RoundToInt(gO.transform.position.x);
@@ -119,11 +128,75 @@ namespace Assets.Scripts.Scenes.GameScene
                 {
                     rawWalls.Add(gO);
                 }
+                else if (gO.name.StartsWith("FieldObject:"))
+                {
+                    rawFieldObjects.Add(gO);
+                }
+                else if (gO.name.StartsWith("Creep_"))
+                {
+                    
+                }
+                else
+                {
+                    Debug.Log("UnknownObject: " + gO.name);
+                }
             }
+            List<Core.Definitions.Border> borders = GenerateBorderDefinitions(fields, rawWalls);
+
+
+            List<Core.Definitions.FieldObject> fieldObjects = GenerateFieldObjects(fields, rawFieldObjects);
+
+            var gameField = new Core.Definitions.GameField() { FieldObjects = fieldObjects, Borders = borders, Fields = fields.Values.ToList() };
+
+            var json = GameFrame.Core.Json.Handler.SerializePrettyIgnoreNull(gameField);
+            var filePath = Application.streamingAssetsPath + "/dumpGameField.json";
+            StreamWriter writer = new StreamWriter(filePath, false);
+            writer.Write(json);
+            writer.Close();
+        }
+
+        private List<Core.Definitions.FieldObject> GenerateFieldObjects(Dictionary<string, Field> fields, List<GameObject> rawFieldObjects)
+        {
+            var fieldDict = Base.Core.Game.State.GameField.FieldObjects.ToDictionary(field => field.Field.ID, field => field);
+            var fieldObjects = new List<Core.Definitions.FieldObject>();
+            string prefix = "FieldObject:Field:";
+            int prefixL = prefix.Length;
+            foreach (var rawFO in rawFieldObjects)
+            {
+                int x = Mathf.RoundToInt(rawFO.transform.position.x);
+                int y = Mathf.RoundToInt(rawFO.transform.position.z);
+                int height = Mathf.RoundToInt(rawFO.transform.position.y);
+                Field field = FindHighestField(fields, x, y, height);
+                if (field != null)
+                {
+                    var fieldO = new Core.Definitions.FieldObject();
+                    var fieldID = rawFO.name.Substring(prefixL);
+                    FieldObject f;
+                    if (fieldDict.TryGetValue(fieldID, out f))
+                    {
+                        if (!fieldO.IsReferenced)
+                        {
+                            fieldO.UpdateMethod = f.UpdateMethod;
+                            fieldO.UpdateMethodParameters = f.UpdateMethodParameters;
+                            fieldO.Material = f.Material;
+                            fieldO.Model = f.Model;
+                            fieldO.Name = f.Name;
+                            fieldO.Description = f.Description;
+
+                        }
+                        fieldO.FieldReference = field.ID;
+                        fieldObjects.Add(fieldO);
+                    }
+                }
+            }
+            return fieldObjects;
+        }
+
+        private List<Core.Definitions.Border> GenerateBorderDefinitions(Dictionary<string, Field> fields, List<GameObject> rawWalls)
+        {
             var borders = new List<Core.Definitions.Border>();
             foreach (var rawWall in rawWalls)
             {
-                Debug.Log("Wall: " + rawWall.transform.position);
                 var heigth = Mathf.RoundToInt(rawWall.transform.position.y + 0.45f);
                 var x = rawWall.transform.position.x - (int)rawWall.transform.position.x;
                 Field field1;
@@ -143,7 +216,6 @@ namespace Assets.Scripts.Scenes.GameScene
                     }
                     field1 = FindHighestField(fields, x1, y, heigth);
                     field2 = FindHighestField(fields, x2, y, heigth);
-                    Debug.Log("Oddi: y" + y + "  x1:" + x1 + "  x2:" + x2);
                 }
                 else
                 {
@@ -161,12 +233,8 @@ namespace Assets.Scripts.Scenes.GameScene
                     }
                     field1 = FindHighestField(fields, (int)x, y1, heigth);
                     field2 = FindHighestField(fields, (int)x, y2, heigth);
-                    Debug.Log("Eve: x:" + x + "  y1:" + y1 + "  y2:" + y2 + " raw: " + rawWall.transform.position.z);
                 }
-                if (field1 == null || field2 == null)
-                {
-                    Debug.Log("Buti");
-                }
+
                 var border = new Core.Definitions.Border
                 {
                     Field1Ref = field1.ID,
@@ -177,13 +245,7 @@ namespace Assets.Scripts.Scenes.GameScene
                 borders.Add(border);
             }
 
-            var gameField = new Core.Definitions.GameField() { Borders = borders, Fields = fields.Values.ToList() };
-
-            var json = GameFrame.Core.Json.Handler.SerializePrettyIgnoreNull(gameField);
-            var filePath = Application.streamingAssetsPath + "/dumpGameField.json";
-            StreamWriter writer = new StreamWriter(filePath, false);
-            writer.Write(json);
-            writer.Close();
+            return borders;
         }
 
         private string GetFieldKey(int x, int y, int z)
@@ -231,18 +293,13 @@ namespace Assets.Scripts.Scenes.GameScene
                     {
                         creepGO = Instantiate(creepTemplate, World.transform);
                         creepGO.name = "Creep_" + field.Creep.Creeper.Name;
-                       
+
                         creepGO.transform.position = new Vector3(field.Coords.X, field.Height + 1, field.Coords.Y);
                         WorldCreep[field.ID] = creepGO;
                     }
-                    if (field.Creep.Creeper.ID == "CreeperFire")
-                    {
-                        creepGO.GetComponent<Renderer>().material = FireMat;
-                    }
-                    else
-                    {
-                        creepGO.GetComponent<Renderer>().material = WaterMat;
-                    }
+
+                    var material = GameFrame.Base.Resources.Manager.Materials.Get(field.Creep.Creeper.Parameters.Material);
+                    creepGO.GetComponent<Renderer>().material = material;
                     creepGO.transform.localScale = new Vector3(1, field.Creep.Value / 10, 1);
                 }
             }
