@@ -21,21 +21,21 @@ public class GameSceneBehaviour : MonoBehaviour
         List<Field> gameFields = new List<Field>
         {
             new Field { Height=0, Creep=new Creep{ Value= 16 } , ID = "0,0"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "0,1"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "0,2"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "0,3"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "1,0"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "1,1"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "1,2"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "1,3"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "2,0"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "2,1"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "2,2"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "2,3"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "3,0"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "3,1"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "3,2"},
-            new Field { Height=0, Creep=new Creep{ Value= 0 } , ID = "3,3"},
+            new Field { Height=0 , ID = "0,1"},
+            new Field { Height=0 , ID = "0,2"},
+            new Field { Height=0 , ID = "0,3"},
+            new Field { Height=0 , ID = "1,0"},
+            new Field { Height=0 , ID = "1,1"},
+            new Field { Height=0 , ID = "1,2"},
+            new Field { Height=0 , ID = "1,3"},
+            new Field { Height=0 , ID = "2,0"},
+            new Field { Height=0 , ID = "2,1"},
+            new Field { Height=0 , ID = "2,2"},
+            new Field { Height=0 , ID = "2,3"},
+            new Field { Height=0 , ID = "3,0"},
+            new Field { Height=0 , ID = "3,1"},
+            new Field { Height=0 , ID = "3,2"},
+            new Field { Height=0 , ID = "3,3"},
         };
 
         List<Border> borders = new List<Border>
@@ -74,6 +74,7 @@ public class GameSceneBehaviour : MonoBehaviour
     {
         distributeCreep();
 
+        //Just for the test scene
         for (int i = 0; i < 16;  i++)
         {
             fields[i].SetText(String.Format("{0:0.00}", testGame.Fields[i].Creep.Value));
@@ -87,7 +88,10 @@ public class GameSceneBehaviour : MonoBehaviour
     {
         foreach (var field in testGame.Fields)
         {
-            field.Creep.ValueOld = field.Creep.Value;
+            if(field.Creep != null)
+            {
+                field.Creep.ValueOld = field.Creep.Value;
+            }
         }
 
         foreach (var border in testGame.Borders)
@@ -96,14 +100,29 @@ public class GameSceneBehaviour : MonoBehaviour
             if (border.Field1.Creep == null)
             {
                 border.Field1.Creep = new Creep { Value = 0 };
+                copyCreeper(flow, border.Field1, border.Field2);
             }
             if (border.Field2.Creep == null)
             {
                 border.Field2.Creep = new Creep { Value = 0 };
-
+                copyCreeper(flow, border.Field1, border.Field2);
             }
             border.Field1.Creep.Value -= flow;
             border.Field2.Creep.Value += flow;
+
+            //Update Border state
+        }
+    }
+
+    private void copyCreeper(float flow, Field field1, Field field2)
+    {
+        if (flow > 0)
+        {
+            field2.Creep.Creeper = field1.Creep.Creeper;
+        }
+        else
+        {
+            field1.Creep.Creeper = field2.Creep.Creeper;
         }
     }
 
