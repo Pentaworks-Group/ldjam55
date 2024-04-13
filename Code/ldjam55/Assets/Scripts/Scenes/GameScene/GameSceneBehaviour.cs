@@ -65,8 +65,8 @@ public class GameSceneBehaviour : MonoBehaviour
             new Border { Field1 = gameFields[13], Field2 = gameFields[14], BorderStatus = new BorderStatus{ Value = 0 } },
             new Border { Field1 = gameFields[14], Field2 = gameFields[15], BorderStatus = new BorderStatus{ Value = flow_rate } },
         };
-
-        testGame = new GameState { Fields = gameFields, Borders = borders };
+        var gameField = new GameField { Fields = gameFields, Borders = borders };
+        testGame = new GameState { GameField = gameField};
     }
 
     // Update is called once per frame
@@ -77,11 +77,11 @@ public class GameSceneBehaviour : MonoBehaviour
         //Just for the test scene
         for (int i = 0; i < 16;  i++)
         {
-            fields[i].SetText(String.Format("{0:0.00}", testGame.Fields[i].Creep.Value));
-            if (testGame.Fields[i].Creep != null && testGame.Fields[i].Creep.Creeper != null && testGame.Fields[i].Creep.Creeper.Name=="Fire" && testGame.Fields[i].Creep.Value>=0.01)
+            fields[i].SetText(String.Format("{0:0.00}", testGame.GameField.Fields[i].Creep.Value));
+            if (testGame.GameField.Fields[i].Creep != null && testGame.GameField.Fields[i].Creep.Creeper != null && testGame.GameField.Fields[i].Creep.Creeper.Name=="Fire" && testGame.GameField.Fields[i].Creep.Value>=0.01)
             {
                 fields[i].color = Color.red;
-            } else if(testGame.Fields[i].Creep != null && testGame.Fields[i].Creep.Creeper != null && testGame.Fields[i].Creep.Creeper.Name == "Water" && testGame.Fields[i].Creep.Value >= 0.01)
+            } else if(testGame.GameField.Fields[i].Creep != null && testGame.GameField.Fields[i].Creep.Creeper != null && testGame.GameField.Fields[i].Creep.Creeper.Name == "Water" && testGame.GameField.Fields[i].Creep.Value >= 0.01)
             {
                 fields[i].color = Color.blue;
             } else
@@ -93,7 +93,7 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private void distributeCreep()
     {
-        foreach (var field in testGame.Fields)
+        foreach (var field in testGame.GameField.Fields)
         {
             if(field.Creep != null)
             {
@@ -101,7 +101,7 @@ public class GameSceneBehaviour : MonoBehaviour
             }
         }
 
-        foreach (var border in testGame.Borders)
+        foreach (var border in testGame.GameField.Borders)
         {
             float flow = getFlow(border.Field1, border.Field2, border.BorderStatus.Value);
             if (border.Field1.Creep == null)
