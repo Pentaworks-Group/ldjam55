@@ -14,8 +14,6 @@ namespace Assets.Scripts.Core.Model
         public Creep Creep { get; set; }
 
 
-
-
         public String ID { get; set; }
     }
 }

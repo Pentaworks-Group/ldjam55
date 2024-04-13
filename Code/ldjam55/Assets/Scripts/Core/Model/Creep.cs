@@ -5,5 +5,8 @@ namespace Assets.Scripts.Core.Model
         public Creeper Creeper { get; set; }
 
         public float Value { get; set; }
+
+        public float ValueOld { get; set; }
+
     }
 }
