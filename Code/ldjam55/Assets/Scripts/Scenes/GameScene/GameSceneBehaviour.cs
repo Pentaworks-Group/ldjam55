@@ -26,7 +26,7 @@ public class GameSceneBehaviour : MonoBehaviour
     double[][] fields = new double[4][];
     double[][] old_values = new double[4][];
 
-    double flow_rate = 0.5;
+    double flow_rate = 1.1;
 
     // Start is called before the first frame update
     void Start()
@@ -41,34 +41,31 @@ public class GameSceneBehaviour : MonoBehaviour
         old_values[2] = new double[4];
         old_values[3] = new double[4];
 
-        fields[0][0] = 10;
-
-        Debug.Log("Test");
+        fields[0][0] = 16;
     }
 
     // Update is called once per frame
-    void Update()
+    void Update() 
     {
         distributeCreep();
 
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-        field1.SetText(fields[0][0].ToString());
-
-        Debug.Log(fields);
+        
+        field1.SetText(String.Format("{0:0.00}", fields[0][0]));
+        field2.SetText(String.Format("{0:0.00}", fields[0][1]));
+        field3.SetText(String.Format("{0:0.00}", fields[0][2]));
+        field4.SetText(String.Format("{0:0.00}", fields[0][3]));
+        field5.SetText(String.Format("{0:0.00}", fields[1][0]));
+        field6.SetText(String.Format("{0:0.00}", fields[1][1]));
+        field7.SetText(String.Format("{0:0.00}", fields[1][2]));
+        field8.SetText(String.Format("{0:0.00}", fields[1][3]));
+        field9.SetText(String.Format("{0:0.00}", fields[2][0]));
+        field10.SetText(String.Format("{0:0.00}", fields[2][1]));
+        field11.SetText(String.Format("{0:0.00}", fields[2][2]));
+        field12.SetText(String.Format("{0:0.00}", fields[2][3]));
+        field13.SetText(String.Format("{0:0.00}", fields[3][0]));
+        field14.SetText(String.Format("{0:0.00}", fields[3][1]));
+        field15.SetText(String.Format("{0:0.00}", fields[3][2]));
+        field16.SetText(String.Format("{0:0.00}", fields[3][3]));
     }
 
     // Go through all the fields
@@ -89,13 +86,13 @@ public class GameSceneBehaviour : MonoBehaviour
             //TODO: Energieerhaltung?
             for (int j = 0; j < fields[i].Length; j++)
             {
-                if((i != j) && (i < fields.Length-1))
+                if(i < fields.Length-1)
                 {
                     double flow = getFlowToField(i, j, i + 1, j);
                     fields[i][j] -= flow;
                     fields[i+1][j] += flow;
                 }
-                if ((i != j) && (j < fields[i].Length - 1))
+                if (j < fields[i].Length - 1)
                 {
                     double flow = getFlowToField(i, j, i, j + 1);
                     fields[i][j] -= flow;
@@ -109,7 +106,7 @@ public class GameSceneBehaviour : MonoBehaviour
     {
         double valueField1 = old_values[x1][y1];
         double valueField2 = old_values[x2][y2];
-        double flow = (valueField1-valueField2)*flow_rate;
+        double flow = (valueField1-valueField2) * flow_rate * Time.deltaTime;
         return flow;
     }
 
