@@ -2,35 +2,107 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Assets.Scripts.Base;
+using Assets.Scripts.Core.Model;
 
 public class TerrainBehaviour : MonoBehaviour
 {
     public Terrain mainTerrain;
 
-    private float flatFieldSize = 80;
-    private const int mapResolution = 4;
+    private float fieldSize = 50f;
+    private float flatFieldSize = 10f;
 
-    private float[] fieldHeights = new float[mapResolution*mapResolution] 
-      { 0.1f, 0.2f, 0.1f, 0.05f,
-        0.15f, 0.12f, 0.09f, 0.13f,
-        0.25f, 0.3f, 0.15f, 0.14f,
-        0.14f, 0.15f, 0.2f, 0.2f };
+    private float scalingFactorX = 1.0f;
+    private float scalingFactorY = 1.0f;
 
-    // Start is called before the first frame update
+    private int countX = 0;
+    private int countY = 0;
+    private float zFactor = 0;
+    private float xOffset = 0;
+    private float yOffset = 0;
+    private float zOffset = 0;
+
+    private float maxHeight = 0.1f;
+
+    private void Awake()
+    {
+        if(Core.Game.State == default)
+        {
+            Core.Game.Start();
+        }
+    }
+
+    // Start is called before the first frame update    
     void Start()
     {
+        int minX = 0;
+        int minY = 0;
+        float minZ = 0;
+        int maxX = 0;
+        int maxY = 0;
+        float maxZ = 0;
+        foreach (var field in Core.Game.State.GameField.Fields)
+        {
+            minX = (int)Math.Min(field.Coords.X, minX);
+            minY = (int)Math.Min(field.Coords.Y, minY);
+            minZ = Mathf.Min(field.Height, minZ);
+            maxX = (int)Math.Max(field.Coords.X, maxX);
+            maxY = (int)Math.Max(field.Coords.Y, maxY);
+            maxZ = Mathf.Max(field.Height, maxZ);
+            Debug.Log(field.Height);
+        }
+        countX = maxX - minX;
+        countY = maxY - minY;
+
+        zFactor = maxHeight / (maxZ-minZ);
+        xOffset = minX;
+        yOffset = minY;
+        zOffset = minZ;
+            
+        mainTerrain.terrainData.size = new Vector3(countX*fieldSize, 500, countY*fieldSize);
+
+        scalingFactorX = mainTerrain.terrainData.heightmapResolution / (countX * fieldSize);
+        scalingFactorY = mainTerrain.terrainData.heightmapResolution / (countY * fieldSize);
+
         int mapSize = mainTerrain.terrainData.heightmapResolution;
+
         float[,] heights = new float[mapSize, mapSize];
-        System.Random random = new System.Random();
         for (int i = 0; i < mapSize; i++)
         {
             for(int j = 0; j < mapSize; j++)
             {
-                heights[i,j] = getHeightmapValue(i, j);
+                heights[i,j] = getHeightmapValue(j, i);
             }
         }
 
         mainTerrain.terrainData.SetHeights(0, 0, heights );
+
+        //Texture test
+        //TODO: Layer count?
+        float[,,] map = new float[mainTerrain.terrainData.alphamapWidth, mainTerrain.terrainData.alphamapHeight, 3];
+
+        //For each point on the alphamap
+        for (int y = 0; y < mainTerrain.terrainData.alphamapHeight; y++)
+        {
+            for (int x = 0; x < mainTerrain.terrainData.alphamapWidth; x++)
+            {
+                // Get the normalized terrain coordinate that
+                // corresponds to the point
+                float normX = x * 1.0f / (mainTerrain.terrainData.alphamapWidth - 1);
+                float normY = y * 1.0f / (mainTerrain.terrainData.alphamapHeight - 1);
+
+                // Get the steepness value at the normalized coordinate
+                var angle = mainTerrain.terrainData.GetSteepness(normX, normY);
+
+                // Steepness is given as an angle, 0..90 degrees. Divide
+                // by 90 to get an alpha blending value in the range 0..1.
+                var frac = 1;// angle / 45.0;
+                map[y, x, 0] = (float)(1-frac);
+                map[x, y, 1] = (float)(0);
+                map[x, y, 2] = (float)(frac);
+            }
+        }
+        mainTerrain.terrainData.SetAlphamaps(0, 0, map);
     }
 
     // Update is called once per frame
@@ -41,90 +113,100 @@ public class TerrainBehaviour : MonoBehaviour
 
     private float getHeightmapValue(int x, int y)
     {
-        int xMap = Math.Min(mapResolution-1, transformHeightmapCoordToMap(x));
-        int yMap = Math.Min(mapResolution-1, transformHeightmapCoordToMap(y));
-        int xHMapCenter = transformMapCoordToHeigthmap(xMap);
-        int yHMapCenter = transformMapCoordToHeigthmap(yMap);
-        int distX = x - xHMapCenter;
-        int distY = y - yHMapCenter;
-        int fieldDist = (int)(mainTerrain.terrainData.heightmapResolution / mapResolution - flatFieldSize);
-        int id = (mapResolution - 1) * xMap + yMap;
-        float fieldMargin = flatFieldSize / 2;
+//        if(y > 510) { return 1; }
+//        if(x > 510) { return 2; }
+
+        Vector2Int mapPos = transformHeightmapCoordToMap(new Vector2Int(x, y));
+        Vector2Int hMapCenter = transformMapCoordToHeigthmap(mapPos);
+        int distX = x - hMapCenter.x;
+        int distY = y - hMapCenter.y;
+        int fieldDistX = (int)(mainTerrain.terrainData.heightmapResolution / countX - flatFieldSize);
+        int fieldDistY = (int)(mainTerrain.terrainData.heightmapResolution / countY - flatFieldSize);
+        float fieldMarginX = scalingFactorX * flatFieldSize / 2;
+        float fieldMarginY = scalingFactorY * flatFieldSize / 2;
+
+        //Main Field
+        Field field = getField(mapPos.x, mapPos.y);
+        if (field == null )
+        {
+            return 0;
+        }
 
         //Is inside flat field
-        bool isInsideField = Math.Abs(distX) <= fieldMargin && Math.Abs(distY) <= fieldMargin;
+        bool isInsideField = Math.Abs(distX) <= fieldMarginX && Math.Abs(distY) <= fieldMarginY;
         
-        bool isCorner = xMap == 0 && yMap == 0 && distX <= fieldMargin && distY <= fieldMargin;
-        isCorner |= xMap == 0 && yMap == mapResolution - 1 && distX <= fieldMargin && distY >= fieldMargin;
-        isCorner |= xMap == mapResolution - 1 && yMap == 0 && distX >= fieldMargin && distY <= fieldMargin;
-        isCorner |= xMap == mapResolution - 1 && yMap == mapResolution - 1 && distX >= fieldMargin && distY >= fieldMargin;
+        bool isCorner = mapPos.x == 0 && mapPos.y == 0 && distX <= fieldMarginX && distY <= fieldMarginY;
+        isCorner |= mapPos.x == 0 && mapPos.y == countY - 1 && distX <= fieldMarginX && distY >= fieldMarginY;
+        isCorner |= mapPos.x == countX - 1 && mapPos.y == 0 && distX >= fieldMarginX && distY <= fieldMarginY;
+        isCorner |= mapPos.x == countX - 1 && mapPos.y == countY - 1 && distX >= fieldMarginX && distY >= fieldMarginY;
 
-        bool isBorder = xMap == 0 && distX <= fieldMargin && Math.Abs(distY) <= fieldMargin;
-        isBorder |= xMap == mapResolution - 1 && distX >= fieldMargin && Math.Abs(distY) <= fieldMargin;
-        isBorder |= yMap == 0 && distY <= fieldMargin && Math.Abs(distX) <= fieldMargin;
-        isBorder |= yMap == mapResolution - 1 && distY >= fieldMargin && Math.Abs(distX) <= fieldMargin;
+        bool isBorder = mapPos.x == 0 && distX <= fieldMarginX && Math.Abs(distY) <= fieldMarginY;
+        isBorder |= mapPos.x == countX - 1 && distX >= fieldMarginX && Math.Abs(distY) <= fieldMarginY;
+        isBorder |= mapPos.y == 0 && distY <= fieldMarginY && Math.Abs(distX) <= fieldMarginX;
+        isBorder |= mapPos.y == countY - 1 && distY >= fieldMarginY && Math.Abs(distX) <= fieldMarginX;
 
         if (isInsideField || isCorner || isBorder)
         {
-            return fieldHeights[id];
+            return getFieldHeight(field);
         }
         //Interpolate
-        else if (Math.Abs(distX) > fieldMargin && Math.Abs(distY) > fieldMargin && 
-            !(xMap==0 && distX<0) && !(xMap==mapResolution-1 && distX>0) &&
-            !(yMap==0 && distY<0) && !(yMap==mapResolution-1 && distY>0))
+        else if (Math.Abs(distX) > fieldMarginX && Math.Abs(distY) > fieldMarginY && 
+            !(mapPos.x==0 && distX<0) && !(mapPos.x == countX - 1 && distX>0) &&
+            !(mapPos.y==0 && distY<0) && !(mapPos.y == countY - 1 && distY>0))
         {
-            float paramX = (Math.Abs(distX) - fieldMargin) / (fieldDist);
-            float paramY = (Math.Abs(distY) - fieldMargin) / (fieldDist);
-            int IDTopRight = (mapResolution - 1) * (xMap + Math.Sign(distX)) + yMap;
-            int IDBottomLeft = (mapResolution - 1) * xMap + yMap + Math.Sign(distY);
-            int IDBottomRight = (mapResolution - 1) * (xMap + Math.Sign(distX)) + yMap + Math.Sign(distY);
+            float paramX = (Math.Abs(distX) - fieldMarginX) / (fieldDistX);
+            float paramY = (Math.Abs(distY) - fieldMarginY) / (fieldDistY);
 
-            float heightTopLeft = fieldHeights[id];
-            float heightTopRight = fieldHeights[id];
-            float heightBottomLeft = fieldHeights[id];
-            float heightBottomRight = fieldHeights[id];
-            if (idExists(IDTopRight))
+            float heightTopLeft = getFieldHeight(field);
+            float heightTopRight = getFieldHeight(field);
+            float heightBottomLeft = getFieldHeight(field);
+            float heightBottomRight = getFieldHeight(field);
+
+            Field topRightField = getField(mapPos.x + Math.Sign(distX), mapPos.y);
+            if (topRightField != null)
             {
-                heightTopRight = fieldHeights[IDTopRight];
+                heightTopRight = getFieldHeight(topRightField);
             }
 
-            if (idExists(IDBottomLeft))
+            Field bottomLeftField = getField(mapPos.x, mapPos.y + Math.Sign(distY));
+            if (bottomLeftField != null)
             {
-                heightBottomLeft = fieldHeights[IDBottomLeft];
+                heightBottomLeft = getFieldHeight(bottomLeftField);
             }
 
-            if (idExists(IDBottomRight))
+            Field bottomRightField = getField(mapPos.x + Math.Sign(distX), mapPos.y + Math.Sign(distY));
+            if (bottomRightField != null)
             {
-                heightBottomRight = fieldHeights[IDBottomRight];
+                heightBottomRight = getFieldHeight(bottomRightField);
             }
             float interpolateX1 = getSinInterpolation(heightTopLeft, heightTopRight, paramX);
             float interpolateX2 = getSinInterpolation(heightBottomLeft, heightBottomRight, paramX);
             return getSinInterpolation(interpolateX1, interpolateX2, paramY);
         }
-        else if (Math.Abs(distY) > fieldMargin &&
-            !(yMap == 0 && distY < 0) && !(yMap == mapResolution - 1 && distY > 0)) 
+        else if (Math.Abs(distY) > fieldMarginY &&
+            !(mapPos.y == 0 && distY < 0) && !(mapPos.y == countY - 1 && distY > 0)) 
         {
             //Case 1: y is outside the field
-            float param = (Math.Abs(distY) - fieldMargin) / (fieldDist);
-            int nextID = (mapResolution - 1) * xMap + yMap + Math.Sign(distY);
-            float height = fieldHeights[id];
-            float nextHeight = fieldHeights[id];
-            if (idExists(nextID))
+            float param = (Math.Abs(distY) - fieldMarginY) / (fieldDistY);
+            float height = getFieldHeight(field);
+            float nextHeight = getFieldHeight(field);
+            Field nextField = getField(mapPos.x, mapPos.y + Math.Sign(distY));
+            if (nextField != null)
             {
-                nextHeight = fieldHeights[nextID];
+                nextHeight = getFieldHeight(nextField);
             }
             return getSinInterpolation(height, nextHeight, param);
         }
-        else if( Math.Abs(distX) > fieldMargin)
+        else if( Math.Abs(distX) > fieldMarginX)
         {
             //Case 2: x is outside the field
-            float param = (Math.Abs(distX) - fieldMargin) / (fieldDist);
-            int nextID = (mapResolution - 1) * ( xMap + Math.Sign(distX)) + yMap;
-            float height = fieldHeights[id];
-            float nextHeight = fieldHeights[id];
-            if (idExists(nextID))
+            float param = (Math.Abs(distX) - fieldMarginX) / (fieldDistX);
+            float height = getFieldHeight(field);
+            float nextHeight = getFieldHeight(field);
+            Field nextField = getField(mapPos.x + Math.Sign(distX), mapPos.y);
+            if (nextField != null)
             {
-                nextHeight = fieldHeights[nextID];
+                nextHeight = getFieldHeight(nextField);
             }
             return getSinInterpolation(height, nextHeight, param);
         }
@@ -139,24 +221,32 @@ public class TerrainBehaviour : MonoBehaviour
         return (z2-z1)*factor+z1;
     }
 
-    private bool idExists(int id)
+    private Vector2Int transformMapCoordToHeigthmap(Vector2Int pos)
     {
-        return id >= 0 && id < fieldHeights.Length;
+        float heightMapSize = mainTerrain.terrainData.heightmapResolution;
+        pos.x = (int)((2 * pos.x + 1) * heightMapSize / (2 * countX ));
+        pos.y = (int)((2 * pos.y + 1) * heightMapSize / (2 * countY));
+        return pos;
     }
 
-    private int transformMapCoordToHeigthmap(int x)
+    private Vector2Int transformHeightmapCoordToMap(Vector2Int pos)
     {
-        //TODO: take map size into account
-        float mapSize = 4f;
         float heightMapSize = mainTerrain.terrainData.heightmapResolution;
-        return (int) (x/mapSize*heightMapSize + heightMapSize/(2*mapSize)); 
+        pos.x = (int)Math.Floor(pos.x * countX / heightMapSize);
+        pos.y = (int)Math.Floor(pos.y * countY / heightMapSize);
+        return pos;
+//        return (int) Math.Floor(x * mapSize / heightMapSize);
     }
 
-    private int transformHeightmapCoordToMap(int x)
+    private Field getField(int x, int y)
     {
-        //TODO: take map size into account
-        int mapSize = 4;
-        float heightMapSize = mainTerrain.terrainData.heightmapResolution;
-        return (int) Math.Round((x - heightMapSize/(2*mapSize)) / ((float)heightMapSize) * mapSize);
+        //Shift negative to 0
+        Field f = Core.Game.State.GameField.Fields.Find(field => field.Coords.X==x+xOffset && field.Coords.Y==y+yOffset);
+        return f;
+    }
+
+    private float getFieldHeight(Field f) 
+    { 
+        return (f.Height - zOffset) * zFactor; 
     }
 }
