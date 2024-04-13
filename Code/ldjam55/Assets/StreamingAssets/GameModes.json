@@ -6,6 +6,16 @@
         "GameField": {
             "IsReferenced": true,
             "Reference": "default"
-        }
+        },
+        "Creepers": [
+            {
+                "ID": "CreeperWater",
+                "Name": "Holy Water"
+            },
+            {
+                "ID": "CreeperFire",
+                "Name": "Hell! Fire"
+            }
+        ]
     }
 ]

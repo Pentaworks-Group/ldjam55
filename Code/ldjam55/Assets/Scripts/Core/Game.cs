@@ -1,4 +1,5 @@
 using Assets.Scripts.Core.Definitions.Loaders;
+using Assets.Scripts.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -110,20 +111,21 @@ namespace Assets.Scripts.Core
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
             var gameField = new Model.GameField() { Fields = gameFieldDefinition.Fields };
-            ConvertBordersForGameField(gameFieldDefinition.Borders, gameField);
+            var fields = gameField.Fields.ToDictionary(field => field.ID, field => field);
+            gameField.Borders = ConvertBordersForGameField(gameFieldDefinition.Borders, fields);
+            gameField.FieldObjects = ConvertFieldObjects(gameFieldDefinition.FieldObjects, fields);
             return gameField;
         }
 
-        private void ConvertBordersForGameField(List<Definitions.Border> borderDefinitionList, Model.GameField gameField)
+        private List<Border> ConvertBordersForGameField(List<Definitions.Border> borderDefinitionList, Dictionary<string, Model.Field> fieldDict)
         {
-            var fields = gameField.Fields.ToDictionary(field => field.ID, field => field);
 
             var borderList = new List<Model.Border>(); 
             foreach (var borderDefinition in borderDefinitionList)
             {
-                borderList.Add(ConvertBorder(borderDefinition, fields));
+                borderList.Add(ConvertBorder(borderDefinition, fieldDict));
             }
-            gameField.Borders = borderList;
+            return borderList;
         }
 
         private Model.Border ConvertBorder(Definitions.Border borderDefinition, Dictionary<string, Model.Field> fields)
@@ -146,12 +148,35 @@ namespace Assets.Scripts.Core
             return borderType;
         }
 
+        private List<Model.FieldObject> ConvertFieldObjects(List<Definitions.FieldObject> fieldObjects, Dictionary<string, Model.Field> fieldDict)
+        {
+            var modelFieldObjects = new List<Model.FieldObject>();
+
+            foreach (var fieldObject in fieldObjects)
+            {
+                var modelFieldObject = new Model.FieldObject()
+                {
+                    Name = fieldObject.Name,
+                    Description = fieldObject.Description,
+                    Model = fieldObject.Model,
+                    Field = fieldDict[fieldObject.FieldReference],
+                    UpdateMethod = fieldObject.UpdateMethod,
+                    UpdateMethodParameters = fieldObject.UpdateMethodParameters
+                };
+                modelFieldObjects.Add(modelFieldObject);
+                modelFieldObject.Field.FieldObjects.Add(modelFieldObject);
+            }
+
+            return modelFieldObjects;
+        }
+
         private Model.GameMode ConvertGameMode(Definitions.GameMode selectedGameMode)
         {
             var gameMode = new Model.GameMode()
             {
                 Name = selectedGameMode.Name,
                 Description = selectedGameMode.Description,
+                Creepers = selectedGameMode.Creepers
                 //JunkSpawnInterval = selectedGameMode.JunkSpawnInterval.GetValueOrDefault(-1),
                 //JunkSpawnInitialDistance = selectedGameMode.JunkSpawnInitialDistance.GetValueOrDefault(),
                 //JunkSpawnPosition = selectedGameMode.JunkSpawnPosition?.Copy(),
@@ -160,7 +185,6 @@ namespace Assets.Scripts.Core
                 //ShipSpawnDistance = selectedGameMode.ShipSpawnDistance.GetValueOrDefault(),
                 //RequiredSurvivors = selectedGameMode.RequiredSurvivors,
             };
-
             //gameMode.Star = ConvertStar(selectedGameMode.Stars.GetRandomEntry());
             //gameMode.Spacecrafts = ConvertSpacecrafts(selectedGameMode.Spacecrafts);
             //gameMode.PlayerSpacecrafts = ConvertSpacecrafts(selectedGameMode.PlayerSpacecrafts);

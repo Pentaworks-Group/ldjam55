@@ -10,7 +10,7 @@ namespace Assets.Scripts.Core.Model
         public GameFrame.Core.Math.Vector2 Coords { get; set; }
         public int Height { get; set; }
 
-        public List<FieldObject> Objects { get; set; }
+        public List<FieldObject> FieldObjects { get; set; } = new List<FieldObject>();
 
         public Creep Creep { get; set; }
 

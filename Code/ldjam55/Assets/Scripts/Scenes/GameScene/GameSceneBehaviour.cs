@@ -1,18 +1,22 @@
 using Assets.Scripts.Base;
-using Assets.Scripts.Core;
 using Assets.Scripts.Core.Model;
-using System;
-using System.Collections;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using TMPro;
+using System.Linq;
 using UnityEngine;
 
 public class GameSceneBehaviour : MonoBehaviour
 {
 
-    float flow_rate = 0.1f;
+    [SerializeField]
+    private TimeManagerBehaviour TimeManagerBehaviour;
+
+    float flow_rate = 0.1f; //MOVE to gameMode
     private List<Border> borders = new List<Border>();
     private bool isRunning = false;
+
+    private Dictionary<string, Creeper> creepers;
+
 
     void Update()
     {
@@ -23,6 +27,14 @@ public class GameSceneBehaviour : MonoBehaviour
     }
 
     public void StartGame()
+    {
+        ConvertBorders();
+        ConvertFieldObjectMethods();
+        creepers = Core.Game.State.Mode.Creepers.ToDictionary(creep  => creep.ID);
+        isRunning = true;
+    }
+
+    private void ConvertBorders()
     {
         var bordersAdded = new HashSet<string>();
         borders.Clear();
@@ -71,9 +83,7 @@ public class GameSceneBehaviour : MonoBehaviour
                 borders.Add(newBorder);
             }
         }
-        isRunning = true;
     }
-
 
     public void ToggleCreeperActivity()
     {
@@ -98,6 +108,49 @@ public class GameSceneBehaviour : MonoBehaviour
     private string GetFieldKeyByCoord(int x, int y)
     {
         return x + "_" + y;
+    }
+
+
+    private void ConvertFieldObjectMethods()
+    {
+        foreach (var fieldObject in Core.Game.State.GameField.FieldObjects)
+        {
+            if (fieldObject.UpdateMethod == "SpawnCreep") { 
+                JObject paramsObject = JObject.Parse(fieldObject.UpdateMethodParameters);
+                float amount = float.Parse(paramsObject["Amount"].ToString());
+                float time = float.Parse(paramsObject["Time"].ToString());
+                bool isIntervall = bool.Parse(paramsObject["IsIntervall"].ToString());
+                RegisterSpawn(fieldObject, amount, time, isIntervall, paramsObject["Creeper"].ToString());
+            }
+        }
+    }
+
+    private void RegisterSpawn(FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId)
+    {
+        TimeManagerBehaviour.RegisterEvent(time, (TimeManagerBehaviour timeManager) => Spawn(timeManager, fieldObject, amount, time, isIntervall, creeperId), fieldObject.Name + fieldObject.UpdateMethod);
+    }
+
+    private void Spawn(TimeManagerBehaviour timeManager, FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId)
+    {
+        SpawnCreepAt(fieldObject.Field, amount, creeperId);
+        if (isIntervall)
+        {
+            TimeManagerBehaviour.RegisterEvent(time, (TimeManagerBehaviour timeManager) => Spawn(timeManager, fieldObject, amount, time, isIntervall, creeperId), fieldObject.Name + fieldObject.UpdateMethod);
+        }
+    }
+
+    private void SpawnCreepAt(Field field, float amount, string creeperId)
+    {
+        if (field.Creep != null)
+        {
+            field.Creep.Value += amount;
+            field.Creep.Creeper = creepers[creeperId];  
+            Debug.Log("How do we handle spawn of different creep?");
+        } else
+        {
+            var newCreep = new Creep() { Value = amount, Creeper = creepers[creeperId] };
+            field.Creep = newCreep;
+        }
     }
 
     private List<Field> GetNeighbours(Field field, Dictionary<string, Field> topFields)
