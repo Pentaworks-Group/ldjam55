@@ -882,22 +882,6 @@ MonoBehaviour:
   - {fileID: 466434187}
   - {fileID: 1015266834}
   - {fileID: 673910783}
-  field1: {fileID: 907974339}
-  field2: {fileID: 1923991673}
-  field3: {fileID: 200502947}
-  field4: {fileID: 1442363352}
-  field5: {fileID: 1687548686}
-  field6: {fileID: 1327939626}
-  field7: {fileID: 1642591824}
-  field8: {fileID: 1727718606}
-  field9: {fileID: 1385116388}
-  field10: {fileID: 864267665}
-  field11: {fileID: 1098435675}
-  field12: {fileID: 1613405556}
-  field13: {fileID: 269368427}
-  field14: {fileID: 466434187}
-  field15: {fileID: 1015266834}
-  field16: {fileID: 673910783}
 --- !u!1 &864267663
 GameObject:
   m_ObjectHideFlags: 0
