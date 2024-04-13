@@ -12,6 +12,5 @@ namespace Assets.Scripts.Core
 
         public GameField GameField { get; set; }
 
-        public List<Creeper> Creepers { get; set; }
     }
 }

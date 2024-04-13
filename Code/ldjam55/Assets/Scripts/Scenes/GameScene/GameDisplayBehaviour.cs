@@ -41,6 +41,10 @@ namespace Assets.Scripts.Scenes.GameScene
                 newFieldGO.name = "Field:" + field.ID;
                 newFieldGO.transform.position = new Vector3(field.Coords.X, field.Height, field.Coords.Y);
                 newFieldGO.SetActive(true);
+                foreach (var fieldObject in field.FieldObjects)
+                {
+                    SpawnFieldObject(newFieldGO, fieldObject);  
+                }
             }
             var wallTemplate = Templates["Wall"];
             foreach (var border in Base.Core.Game.State.GameField.Borders)
@@ -54,6 +58,16 @@ namespace Assets.Scripts.Scenes.GameScene
                 }
             }
             WorldCreep = new Dictionary<string, GameObject>();
+        }
+
+
+        private void SpawnFieldObject(GameObject field, FieldObject fieldObject)
+        {
+            var fieldTemplate = Templates[fieldObject.Model];
+            var newFieldGO = Instantiate(fieldTemplate, World.transform);
+            newFieldGO.name = "FieldObject:" + field.name;
+            newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
+            newFieldGO.SetActive(true);
         }
 
         private void SetBorderPositionAndRotation(Border border, GameObject borderObject)
@@ -217,16 +231,17 @@ namespace Assets.Scripts.Scenes.GameScene
                     {
                         creepGO = Instantiate(creepTemplate, World.transform);
                         creepGO.name = "Creep_" + field.Creep.Creeper.Name;
-                        if (field.Creep.Creeper.Name == "Fire")
-                        {
-                            creepGO.GetComponent<Renderer>().material = FireMat;
-                        }
-                        else
-                        {
-                            creepGO.GetComponent<Renderer>().material = WaterMat;
-                        }
+                       
                         creepGO.transform.position = new Vector3(field.Coords.X, field.Height + 1, field.Coords.Y);
                         WorldCreep[field.ID] = creepGO;
+                    }
+                    if (field.Creep.Creeper.ID == "CreeperFire")
+                    {
+                        creepGO.GetComponent<Renderer>().material = FireMat;
+                    }
+                    else
+                    {
+                        creepGO.GetComponent<Renderer>().material = WaterMat;
                     }
                     creepGO.transform.localScale = new Vector3(1, field.Creep.Value / 10, 1);
                 }

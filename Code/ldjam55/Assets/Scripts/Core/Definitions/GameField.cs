@@ -6,6 +6,8 @@ namespace Assets.Scripts.Core.Definitions
     {
         public List<Model.Field> Fields { get; set; }
 
-        public List<Definitions.Border> Borders { get; set; }
+        public List<Border> Borders { get; set; }
+
+        public List<FieldObject> FieldObjects { get; set; }
     }
 }

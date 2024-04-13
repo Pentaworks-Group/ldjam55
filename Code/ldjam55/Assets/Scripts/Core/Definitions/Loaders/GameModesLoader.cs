@@ -26,6 +26,7 @@ namespace Assets.Scripts.Core.Definitions.Loaders
                         Reference = loadedGameMode.Reference,
                         Name = loadedGameMode.Name,
                         Description = loadedGameMode.Description,
+                        Creepers = loadedGameMode.Creepers,
                     };
 
                     newGameMode.GameField = CheckItem(loadedGameMode.GameField, this.gameFieldCache);
