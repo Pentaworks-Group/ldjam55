@@ -159,6 +159,7 @@ namespace Assets.Scripts.Core
                     Name = fieldObject.Name,
                     Description = fieldObject.Description,
                     Model = fieldObject.Model,
+                    Material = fieldObject.Material,
                     Field = fieldDict[fieldObject.FieldReference],
                     UpdateMethod = fieldObject.UpdateMethod,
                     UpdateMethodParameters = fieldObject.UpdateMethodParameters

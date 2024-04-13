@@ -7,6 +7,7 @@
       {
         "Name": "Water Spawner",
         "Model": "Spawner",
+        "Material": "Fire",
         "FieldReference": "0-0--2",
         "UpdateMethod": "SpawnCreep",
         "UpdateMethodParameters": "{\"Amount\": 10,\"Time\": 2,\"Creeper\": \"CreeperWater\", \"IsIntervall\": true}"
@@ -14,6 +15,7 @@
       {
         "Name": "Fire Spawner",
         "Model": "Spawner",
+        "Material": "Fire",
         "FieldReference": "1--4--2",
         "UpdateMethod": "SpawnCreep",
         "UpdateMethodParameters": "{\"Amount\": 25,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"IsIntervall\": true}"
