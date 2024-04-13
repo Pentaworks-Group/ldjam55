@@ -1,3 +1,4 @@
+using Assets.Scripts.Core.Definitions.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Assets.Scripts.Core
     public class Game : GameFrame.Core.Game<GameState, PlayerOptions, SavedGamePreview>
     {
         private readonly Dictionary<String, Definitions.GameMode> availableGameModes = new Dictionary<String, Definitions.GameMode>();
+        private readonly Dictionary<String, Definitions.GameField> availableGameFields = new Dictionary<String, Definitions.GameField>();
 
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
@@ -57,7 +59,8 @@ namespace Assets.Scripts.Core
             var gameState = new GameState()
             {
                 CreatedOn = DateTime.Now,
-                //CurrentScene = Constants.SceneNames.Space,
+                CurrentScene = Constants.SceneNames.Game,
+                GameField = ConvertGameField(SelectedGameMode.GameField),
                 Mode = ConvertGameMode(SelectedGameMode),
             };
 
@@ -84,9 +87,9 @@ namespace Assets.Scripts.Core
 
         private void LoadGameSettings()
         {
-            //new ResourceLoader<Definitions.Spacecraft>(this.availableSpacecrafts).LoadDefinition("Spacecrafts.json");
+            new ResourceLoader<Definitions.GameField>(this.availableGameFields).LoadDefinition("GameFields.json");
             //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
-            //new GameModesLoader(this.availableGameModes, this.availableStars, this.availableSpacecrafts).LoadDefinition("GameModes.json");
+            new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
         }
 
         private void InitializeAudioClips()
@@ -102,6 +105,45 @@ namespace Assets.Scripts.Core
             };
 
             GameFrame.Base.Audio.Background.Play(backgroundAudioClips);
+        }
+
+        private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
+        {
+            var gameField = new Model.GameField() { Fields = gameFieldDefinition.Fields };
+            ConvertBordersForGameField(gameFieldDefinition.Borders, gameField);
+            return gameField;
+        }
+
+        private void ConvertBordersForGameField(List<Definitions.Border> borderDefinitionList, Model.GameField gameField)
+        {
+            var fields = gameField.Fields.ToDictionary(field => field.ID, field => field);
+
+            var borderList = new List<Model.Border>(); 
+            foreach (var borderDefinition in borderDefinitionList)
+            {
+                borderList.Add(ConvertBorder(borderDefinition, fields));
+            }
+            gameField.Borders = borderList;
+        }
+
+        private Model.Border ConvertBorder(Definitions.Border borderDefinition, Dictionary<string, Model.Field> fields)
+        {
+            var border = new Model.Border() { BorderStatus = borderDefinition.BorderStatus };
+
+            border.Field1 = fields[borderDefinition.Field1Ref];
+            border.Field2 = fields[borderDefinition.Field2Ref];
+
+            border.BorderType = ConvertBorderType(borderDefinition.BorderType); 
+
+            return border;
+        }
+
+        private Model.BorderType ConvertBorderType(Definitions.BorderType borderTypeDefinition)
+        {
+            var borderType = new Model.BorderType() { Model = borderTypeDefinition.Model, Name = borderTypeDefinition.Name };
+
+
+            return borderType;
         }
 
         private Model.GameMode ConvertGameMode(Definitions.GameMode selectedGameMode)

@@ -1,0 +1,11 @@
+[
+    {
+        "Reference": "default",
+        "Name": "Default GameMode",
+        "Description": "Default Default Default",
+        "GameField": {
+            "IsReferenced": true,
+            "Reference": "default"
+        }
+    }
+]

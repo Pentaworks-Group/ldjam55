@@ -6,6 +6,7 @@ namespace Assets.Scripts.Core.Model
 {
     public class Field
     {
+        public String ID { get; set; }
         public GameFrame.Core.Math.Vector2 Coords { get; set; }
         public int Height { get; set; }
 
@@ -14,6 +15,7 @@ namespace Assets.Scripts.Core.Model
         public Creep Creep { get; set; }
 
 
-        public String ID { get; set; }
+
+
     }
 }
