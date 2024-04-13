@@ -10,7 +10,7 @@ public class GameSceneBehaviour : MonoBehaviour
 {
     public List<TextMeshProUGUI> fields;
 
-    float flow_rate = 1f;
+    float flow_rate = 0.1f;
 
     GameState testGame;
 
@@ -20,10 +20,10 @@ public class GameSceneBehaviour : MonoBehaviour
 
         List<Field> gameFields = new List<Field>
         {
-            new Field { Height=0, Creep=new Creep{ Value= 16 } , ID = "0,0"},
+            new Field { Height=0, Creep=new Creep{ Value = 16, Creeper = new Creeper{ Name = "Water" } } , ID = "0,0"},
             new Field { Height=0 , ID = "0,1"},
             new Field { Height=0 , ID = "0,2"},
-            new Field { Height=0 , ID = "0,3"},
+            new Field { Height=0, Creep=new Creep{ Value = 5, Creeper = new Creeper{ Name = "Fire" } } , ID = "0,3"},
             new Field { Height=0 , ID = "1,0"},
             new Field { Height=0 , ID = "1,1"},
             new Field { Height=0 , ID = "1,2"},
@@ -78,12 +78,19 @@ public class GameSceneBehaviour : MonoBehaviour
         for (int i = 0; i < 16;  i++)
         {
             fields[i].SetText(String.Format("{0:0.00}", testGame.Fields[i].Creep.Value));
+            if (testGame.Fields[i].Creep != null && testGame.Fields[i].Creep.Creeper != null && testGame.Fields[i].Creep.Creeper.Name=="Fire" && testGame.Fields[i].Creep.Value>=0.01)
+            {
+                fields[i].color = Color.red;
+            } else if(testGame.Fields[i].Creep != null && testGame.Fields[i].Creep.Creeper != null && testGame.Fields[i].Creep.Creeper.Name == "Water" && testGame.Fields[i].Creep.Value >= 0.01)
+            {
+                fields[i].color = Color.blue;
+            } else
+            {
+                fields[i].color = Color.white;
+            }
         }
     }
 
-    // Go through all the fields
-
-    // Distribute for one field
     private void distributeCreep()
     {
         foreach (var field in testGame.Fields)
@@ -100,13 +107,12 @@ public class GameSceneBehaviour : MonoBehaviour
             if (border.Field1.Creep == null)
             {
                 border.Field1.Creep = new Creep { Value = 0 };
-                copyCreeper(flow, border.Field1, border.Field2);
             }
             if (border.Field2.Creep == null)
             {
                 border.Field2.Creep = new Creep { Value = 0 };
-                copyCreeper(flow, border.Field1, border.Field2);
             }
+            copyCreeper(flow, border.Field1, border.Field2);
             border.Field1.Creep.Value -= flow;
             border.Field2.Creep.Value += flow;
 
@@ -116,11 +122,12 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private void copyCreeper(float flow, Field field1, Field field2)
     {
+        //TODO: what happens if both fields have a creeper -> Game Over/Win?
         if (flow > 0)
         {
             field2.Creep.Creeper = field1.Creep.Creeper;
         }
-        else
+        else if(flow < 0)
         {
             field1.Creep.Creeper = field2.Creep.Creeper;
         }
