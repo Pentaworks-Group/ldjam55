@@ -6,6 +6,12 @@ namespace Assets.Scripts.Scenes.GameScene
     {
         [SerializeField]
         private GameDisplayBehaviour gameDisplayBehaviour;
+
+        [SerializeField]
+        private GameSceneBehaviour gameSceneBehaviour;
+
+        private bool isRunning = false;
+
         private void Awake()
         {
             if (Base.Core.Game.State == default)
@@ -18,6 +24,29 @@ namespace Assets.Scripts.Scenes.GameScene
         private void Start()
         {
             gameDisplayBehaviour.GenerateGameField();
+            gameSceneBehaviour.StartGame();
+            isRunning = true;
+        }
+
+
+        private void Update()
+        {
+            if (isRunning)
+            {
+                gameDisplayBehaviour.UpdateCreep();
+            }
+        }
+
+        public void ClearCreep()
+        {
+            gameDisplayBehaviour.ClearCreep();
+        }
+
+
+        public void ToggleCreeperActivity()
+        {
+            isRunning = !isRunning;
+            gameSceneBehaviour.ToggleCreeperActivity();
         }
     }
 }
