@@ -98,9 +98,7 @@ namespace Assets.Scripts.Core
         {
             var backgroundAudioClips = new List<AudioClip>()
             {
-                GameFrame.Base.Resources.Manager.Audio.Get("Background1"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Background2"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Background3"),
+
             };
 
             GameFrame.Base.Audio.Background.Play(backgroundAudioClips);
