@@ -1,10 +1,13 @@
 using System;
 
-namespace Assets.Scripts.Core.Model
+namespace Assets.Scripts.Core.Definitions
 {
-    public class BorderType
+    public class BorderType : GameFrame.Core.Definitions.BaseDefinition
     {
+        public string Name { get; set; }
         public string Model { get; set; }
-        public Action<Border> UpdateBorder { get; set; }
+        public string UpdateMethod { get; set; }
+
+        public string UpdateMethodArguments { get; set; }
     }
 }

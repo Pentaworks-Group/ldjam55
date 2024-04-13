@@ -10,9 +10,7 @@ namespace Assets.Scripts.Core
         public GameMode Mode { get; set; }
         public Double TimeElapsed { get; set; }
 
-        public List<Field> Fields { get; set; }
-
-        public List<Border> Borders { get; set; }
+        public GameField GameField { get; set; }
 
         public List<Creeper> Creepers { get; set; }
     }
