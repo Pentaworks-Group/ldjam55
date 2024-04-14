@@ -28,7 +28,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        CreepBehaviour.instance.OnCreeperChanged.Add(paintCreep);
+        CreepBehaviour.instance.OnCreeperChanged.Add(field => paintCreep(field, true));
     }
 
     // Start is called before the first frame update
