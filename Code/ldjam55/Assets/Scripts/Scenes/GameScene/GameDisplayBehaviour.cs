@@ -33,6 +33,11 @@ namespace Assets.Scripts.Scenes.GameScene
 
 
 
+        private void Start()
+        {
+            CreepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
+        }
+
         public void GenerateGameField()
         {
             var fieldTemplate = Templates["Field"];
