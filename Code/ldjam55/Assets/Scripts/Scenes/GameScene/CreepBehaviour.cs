@@ -9,9 +9,11 @@ using UnityEngine;
 
 public class CreepBehaviour : MonoBehaviour
 {
+    public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
+    public List<Action<FieldObject>> DestroyFieldObjectEvent = new();
 
     [SerializeField]
-    private TimeManagerBehaviour timeManagerBehaviour;
+    private TimeManagerBehaviour timeManagerBehaviour ;
 
 
     //private Dictionary<Creeper, List<Border>> bordersByCreep = new Dictionary<Creeper, List<Border>>();
@@ -20,10 +22,8 @@ public class CreepBehaviour : MonoBehaviour
 
     private Dictionary<string, Creeper> creepers;
 
-    public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
-    public List<Action<FieldObject>> DestroyFieldObjectEvent = new();
-    public Dictionary<string, List<ActionContainer>> FieldCreeperChangeEvent = new Dictionary<string, List<ActionContainer>>();
-    public Dictionary<int, ActionContainer> ObjectToActionContainer = new Dictionary<int, ActionContainer>();
+
+    private TriggerHandler triggerHandler = new();
 
     void Update()
     {
@@ -94,7 +94,7 @@ public class CreepBehaviour : MonoBehaviour
                             string creeperId = paramsObject["TriggerCreeperId"].ToString();
                             //float amount = paramsObject["triggercreeperId"].ToString();
 
-                            CreeperTrigger(creeperId, 0, lam, border, border.Field1, border.Field2);
+                            triggerHandler.CreeperTrigger(creeperId, 0, lam, border, border.Field1, border.Field2);
                         }
                     }
                 }
@@ -194,7 +194,7 @@ public class CreepBehaviour : MonoBehaviour
                         if (method.Trigger != null && method.Trigger == "CreepTrigger")
                         {
                             string creeperId = paramsObject["TriggerCreeperId"].ToString();
-                            CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
+                            triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
                         } else
                         {
                             timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
@@ -210,20 +210,7 @@ public class CreepBehaviour : MonoBehaviour
         timeManagerBehaviour.RegisterEvent(time, () => SpawnCreepAt(fieldObject.Field, amount, creeperId), ID, objectID, interval);
     }
 
-    //private void Spawn(FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId, string ID, int objectID)
-    //{
-    //    if (creeperId == "CreeperFire")
-    //    {
-    //        Debug.Log("stuff");
-    //    }
-    //    SpawnCreepAt(fieldObject.Field, amount, creeperId);
-    //    if (isIntervall)
-    //    {
-    //        timeManagerBehaviour.RegisterEvent(time, () => Spawn(fieldObject, amount, time, isIntervall, creeperId, ID, objectID), ID, objectID);
-    //    }
-    //}
-
-
+  
     public void SpawnCreepAt(Field field, float amount, string creeperId)
     {
         if (field.Creep != null && field.Creep.Creeper != null)
@@ -239,6 +226,7 @@ public class CreepBehaviour : MonoBehaviour
                 {
                     field.Creep.Value -= div;
                     field.Creep.Creeper = creepers[creeperId];
+                    triggerHandler.InvokeTriggered(field);
                 }
             }
             else
@@ -250,6 +238,7 @@ public class CreepBehaviour : MonoBehaviour
         {
             var newCreep = new Creep() { Value = amount, Creeper = creepers[creeperId] };
             field.Creep = newCreep;
+            triggerHandler.InvokeTriggered(field);
         }
     }
 
@@ -265,7 +254,7 @@ public class CreepBehaviour : MonoBehaviour
             {
                 action.Invoke(border);
             }
-            DeregisterByObjectID(border);
+            triggerHandler.UnRegisterByObjectID(border);
             timeManagerBehaviour.UnregisterByObjectID(border.GetHashCode());
         }
     }
@@ -280,77 +269,11 @@ public class CreepBehaviour : MonoBehaviour
             {
                 action.Invoke(fieldO);
             }
-            DeregisterByObjectID(fieldO);
+            triggerHandler.UnRegisterByObjectID(fieldO);
             timeManagerBehaviour.UnregisterByObjectID(fieldO.GetHashCode());
         }
     }
 
-    public class ActionContainer
-    {
-        public Field[] fields; public string creeperId; public float amount; public int objectID;  public Action triggeredAction;
-    }
-
-    private void CreeperTrigger(string creeperId, float amount, Action triggeredAction,object gObject, params Field[] fields)
-    {
-        int objectID = gObject.GetHashCode();
-        var actionContainer = new ActionContainer() { triggeredAction = triggeredAction, amount = amount, creeperId = creeperId, fields = fields, objectID = objectID };
-        ObjectToActionContainer.Add(objectID, actionContainer);
-        foreach (var field in fields)
-        {
-            if (!FieldCreeperChangeEvent.TryGetValue(field.ID, out var actions))
-            {
-                actions = new List<ActionContainer>();
-                FieldCreeperChangeEvent.Add(field.ID, actions);
-            }
-            actions.Add(actionContainer);
-        }
-    }
-
-    private void InvokeTriggered(Field field)
-    {
-        if (FieldCreeperChangeEvent.TryGetValue(field.ID, out List<ActionContainer> actionContainers))
-        {
-            for (int i = actionContainers.Count - 1; i >= 0; i--)
-            {
-                var container = actionContainers[i];
-                if (container.creeperId != null && field.Creep.Creeper.ID == container.creeperId)
-                {
-                    container.triggeredAction.Invoke();
-                    DeregisterTrigger(container);
-                }
-            }
-        }
-    }
-
-
-    private void DeregisterByObjectID(object objectToDeregister)
-    {
-        int objectID = objectToDeregister.GetHashCode();
-        if (ObjectToActionContainer.TryGetValue(objectID, out var cc))
-        {
-            DeregisterTrigger(cc);
-        }
-    }
-
-    private void DeregisterTrigger(ActionContainer container)
-    {
-        if (ObjectToActionContainer.ContainsKey(container.objectID))
-        {
-            ObjectToActionContainer.Remove(container.objectID);
-        }
-        foreach (var field in container.fields)
-        {
-            if (FieldCreeperChangeEvent.TryGetValue(field.ID, out var actions))
-            {
-                actions.Remove(container);
-                if (actions.Count == 0)
-                {
-                    FieldCreeperChangeEvent.Remove(field.ID);
-                }
-            }
-
-        }
-    }
 
     private List<Field> GetNeighbours(Field field, Dictionary<string, Field> topFields)
     {
@@ -419,7 +342,7 @@ public class CreepBehaviour : MonoBehaviour
             if (field2.Creep.Creeper != field1.Creep.Creeper)
             {
                 field2.Creep.Creeper = field1.Creep.Creeper;
-                InvokeTriggered(field2);
+                triggerHandler.InvokeTriggered(field2);
             }
         }
         else if (flow < 0)
@@ -427,7 +350,7 @@ public class CreepBehaviour : MonoBehaviour
             if (field1.Creep.Creeper != field2.Creep.Creeper)
             {
                 field1.Creep.Creeper = field2.Creep.Creeper;
-                InvokeTriggered(field1);
+                triggerHandler. InvokeTriggered(field1);
             }
         }
     }
