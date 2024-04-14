@@ -554,8 +554,8 @@
     "FieldObjects": [
       {
         "Name": "Water Spawner",
-        "Material": "Water",
-        "Model": "Spawner",
+        "Material": "Creeper_Yellow_Stage_1",
+        "Model": "Spawner_1",
         "FieldReference": "0-0--2",
         "Methods": [
           {
@@ -567,8 +567,8 @@
       },
       {
         "Name": "Fire Spawner",
-        "Material": "Fire",
-        "Model": "Spawner",
+        "Material": "Creeper_Red_Stage_1",
+        "Model": "Spawner_1",
         "FieldReference": "4-2--2",
         "Methods": [
           {
@@ -580,8 +580,8 @@
       },
       {
         "Name": "BOOOM",
-        "Material": "Fire",
-        "Model": "SpawnerSmall",
+        "Material": "Creeper_Red_Stage_2",
+        "Model": "Spawner_2",
         "FieldReference": "1--5--2",
         "Methods": [
           {

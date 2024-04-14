@@ -15,9 +15,13 @@ public class GameSceneBehaviour : MonoBehaviour
     [SerializeField]
     private CreepBehaviour creepBehaviour;
 
-    private Dictionary<string, GameObject> Templates;
+    [SerializeField]
+    private Terrain mainTerrain;
 
-    private Dictionary<string, GameObject> WorldCreep;
+    [SerializeField]
+    private TerrainBehaviour terrainBehaviour;
+
+    private Dictionary<string, GameObject> Templates;
 
     private void Awake()
     {
@@ -28,12 +32,16 @@ public class GameSceneBehaviour : MonoBehaviour
     void Start()
     {
         creepBehaviour.StartGame();
+
+        foreach (var fieldObject in Core.Game.State.GameField.FieldObjects)
+        {
+            SpawnFieldObject(fieldObject);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateCreep();
     }
 
     private void FetchTemplates()
@@ -44,9 +52,9 @@ public class GameSceneBehaviour : MonoBehaviour
             Templates.Add(tran.name, tran.gameObject);
         }
     }
+        
 
-
-    private void SpawnFieldObject(GameObject field, FieldObject fieldObject)
+    private void SpawnFieldObject(FieldObject fieldObject)
     {
         var fieldTemplate = Templates[fieldObject.Model];
         var newFieldGO = Instantiate(fieldTemplate, World.transform);
@@ -59,8 +67,10 @@ public class GameSceneBehaviour : MonoBehaviour
         {
             child.GetComponent<Renderer>().material = material;
         }
-        newFieldGO.name = GetFieldObjectName(field.name);
-        newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
+        newFieldGO.name = GetFieldObjectName(fieldObject.Field.ID);
+
+        Vector3 mapPos = new Vector3(fieldObject.Field.Coords.X, 0, fieldObject.Field.Coords.Y);
+        newFieldGO.transform.position = getTerrainCoordinates(mapPos);
         newFieldGO.SetActive(true);
     }
 
@@ -69,31 +79,14 @@ public class GameSceneBehaviour : MonoBehaviour
         return "FieldObject:" + fieldName;
     }
 
-    public void UpdateCreep()
+    private Vector3 getTerrainCoordinates(Vector3 pos)
     {
-        var creepTemplate = Templates["Creep"];
-        foreach (var field in Core.Game.State.GameField.Fields)
-        {
-            if (field.Creep != null && field.Creep.Value > 0)
-            {
-                GameObject creepGO;
-                if (!WorldCreep.TryGetValue(field.ID, out creepGO))
-                {
-                    creepGO = Instantiate(creepTemplate, World.transform);
-                    creepGO.name = "Creep_" + field.Creep.Creeper.Name;
-                    var container = creepGO.AddComponent<GameFieldContainerBehaviour>();
-                    container.ContainedObject = field;
-                    container.ObjectType = "Creep";
-
-                    creepGO.transform.position = new Vector3(field.Coords.X, field.Height + 1, field.Coords.Y);
-                    WorldCreep[field.ID] = creepGO;
-                }
-
-                var material = GameFrame.Base.Resources.Manager.Materials.Get(field.Creep.Creeper.Parameters.Material);
-                creepGO.GetComponent<Renderer>().material = material;
-                creepGO.transform.localScale = new Vector3(1, field.Creep.Value / 10, 1);
-            }
-        }
+        Vector3 mapSize = mainTerrain.terrainData.size;
+        pos.x -= terrainBehaviour.XOffset;
+        pos.z -= terrainBehaviour.YOffset;
+        pos.x = (int)((2 * pos.x + 1) * mapSize.x / (2 * terrainBehaviour.FieldCountX));
+        pos.z = (int)((2 * pos.z + 1) * mapSize.z / (2 * terrainBehaviour.FieldCountY));
+        return pos;
     }
 
 }

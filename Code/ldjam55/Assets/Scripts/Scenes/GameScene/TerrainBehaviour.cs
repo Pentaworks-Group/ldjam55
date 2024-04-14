@@ -9,17 +9,19 @@ public class TerrainBehaviour : MonoBehaviour
 {
     public Terrain mainTerrain;
 
+    public int FieldCountX { get; private set; } = 0 ;
+    public int FieldCountY { get; private set; } = 0;
+    public float XOffset { get; private set;  } = 0;
+    public float YOffset { get; private set; } = 0;
+
+
     private float fieldSize = 8f;
     private float flatFieldSize = 4f;
 
     private float scalingFactorX = 1.0f;
     private float scalingFactorY = 1.0f;
 
-    private int countX = 0;
-    private int countY = 0;
     private float zFactor = 0;
-    private float xOffset = 0;
-    private float yOffset = 0;
     private float zOffset = 0;
 
     private float maxHeight = 0.01f;
@@ -50,18 +52,18 @@ public class TerrainBehaviour : MonoBehaviour
             maxY = (int)Math.Max(field.Coords.Y, maxY);
             maxZ = Mathf.Max(field.Height, maxZ);
         }
-        countX = (maxX - minX)+1;
-        countY = (maxY - minY)+1;
+        FieldCountX = (maxX - minX)+1;
+        FieldCountY = (maxY - minY)+1;
 
         zFactor = maxHeight / (maxZ-minZ);
-        xOffset = minX;
-        yOffset = minY;
+        XOffset = minX;
+        YOffset = minY;
         zOffset = minZ;
             
-        mainTerrain.terrainData.size = new Vector3(countX*fieldSize, 500, countY*fieldSize);
+        mainTerrain.terrainData.size = new Vector3(FieldCountX*fieldSize, 500, FieldCountY*fieldSize);
 
-        scalingFactorX = mainTerrain.terrainData.heightmapResolution / (countX * fieldSize);
-        scalingFactorY = mainTerrain.terrainData.heightmapResolution / (countY * fieldSize);
+        scalingFactorX = mainTerrain.terrainData.heightmapResolution / (FieldCountX * fieldSize);
+        scalingFactorY = mainTerrain.terrainData.heightmapResolution / (FieldCountY * fieldSize);
 
         int mapSize = mainTerrain.terrainData.heightmapResolution;
 
@@ -105,14 +107,14 @@ public class TerrainBehaviour : MonoBehaviour
         bool isInsideField = Math.Abs(distX) <= fieldMarginX && Math.Abs(distY) <= fieldMarginY;
         
         bool isCorner = mapPos.x == 0 && mapPos.y == 0 && distX <= fieldMarginX && distY <= fieldMarginY;
-        isCorner |= mapPos.x == 0 && mapPos.y == countY - 1 && distX <= fieldMarginX && distY >= fieldMarginY;
-        isCorner |= mapPos.x == countX - 1 && mapPos.y == 0 && distX >= fieldMarginX && distY <= fieldMarginY;
-        isCorner |= mapPos.x == countX - 1 && mapPos.y == countY - 1 && distX >= fieldMarginX && distY >= fieldMarginY;
+        isCorner |= mapPos.x == 0 && mapPos.y == FieldCountY - 1 && distX <= fieldMarginX && distY >= fieldMarginY;
+        isCorner |= mapPos.x == FieldCountX - 1 && mapPos.y == 0 && distX >= fieldMarginX && distY <= fieldMarginY;
+        isCorner |= mapPos.x == FieldCountX - 1 && mapPos.y == FieldCountY - 1 && distX >= fieldMarginX && distY >= fieldMarginY;
 
         bool isBorder = mapPos.x == 0 && distX <= fieldMarginX && Math.Abs(distY) <= fieldMarginY;
-        isBorder |= mapPos.x == countX - 1 && distX >= fieldMarginX && Math.Abs(distY) <= fieldMarginY;
+        isBorder |= mapPos.x == FieldCountX - 1 && distX >= fieldMarginX && Math.Abs(distY) <= fieldMarginY;
         isBorder |= mapPos.y == 0 && distY <= fieldMarginY && Math.Abs(distX) <= fieldMarginX;
-        isBorder |= mapPos.y == countY - 1 && distY >= fieldMarginY && Math.Abs(distX) <= fieldMarginX;
+        isBorder |= mapPos.y == FieldCountY - 1 && distY >= fieldMarginY && Math.Abs(distX) <= fieldMarginX;
 
         if (isInsideField || isCorner || isBorder)
         {
@@ -120,8 +122,8 @@ public class TerrainBehaviour : MonoBehaviour
         }
         //Interpolate
         else if (Math.Abs(distX) > fieldMarginX && Math.Abs(distY) > fieldMarginY && 
-            !(mapPos.x==0 && distX<0) && !(mapPos.x == countX - 1 && distX>0) &&
-            !(mapPos.y==0 && distY<0) && !(mapPos.y == countY - 1 && distY>0))
+            !(mapPos.x==0 && distX<0) && !(mapPos.x == FieldCountX - 1 && distX>0) &&
+            !(mapPos.y==0 && distY<0) && !(mapPos.y == FieldCountY - 1 && distY>0))
         {
             float paramX = (Math.Abs(distX) - fieldMarginX) / (fieldDistX);
             float paramY = (Math.Abs(distY) - fieldMarginY) / (fieldDistY);
@@ -153,7 +155,7 @@ public class TerrainBehaviour : MonoBehaviour
             return getSinInterpolation(interpolateX1, interpolateX2, paramY);
         }
         else if (Math.Abs(distY) > fieldMarginY &&
-            !(mapPos.y == 0 && distY < 0) && !(mapPos.y == countY - 1 && distY > 0)) 
+            !(mapPos.y == 0 && distY < 0) && !(mapPos.y == FieldCountY - 1 && distY > 0)) 
         {
             //Case 1: y is outside the field
             float param = (Math.Abs(distY) - fieldMarginY) / (fieldDistY);
@@ -193,16 +195,16 @@ public class TerrainBehaviour : MonoBehaviour
     private Vector2Int transformMapCoordToHeigthmap(Vector2Int pos)
     {
         float heightMapSize = mainTerrain.terrainData.heightmapResolution;
-        pos.x = (int)((2 * pos.x + 1) * heightMapSize / (2 * countX ));
-        pos.y = (int)((2 * pos.y + 1) * heightMapSize / (2 * countY));
+        pos.x = (int)((2 * pos.x + 1) * heightMapSize / (2 * FieldCountX ));
+        pos.y = (int)((2 * pos.y + 1) * heightMapSize / (2 * FieldCountY));
         return pos;
     }
 
     private Vector2Int transformHeightmapCoordToMap(Vector2Int pos)
     {
         float heightMapSize = mainTerrain.terrainData.heightmapResolution;
-        pos.x = (int)Math.Floor(pos.x * countX / heightMapSize);
-        pos.y = (int)Math.Floor(pos.y * countY / heightMapSize);
+        pos.x = (int)Math.Floor(pos.x * FieldCountX / heightMapSize);
+        pos.y = (int)Math.Floor(pos.y * FieldCountY / heightMapSize);
         return pos;
 //        return (int) Math.Floor(x * mapSize / heightMapSize);
     }
@@ -210,7 +212,7 @@ public class TerrainBehaviour : MonoBehaviour
     private Field getField(int x, int y)
     {
         //Shift negative to 0
-        Field f = Core.Game.State.GameField.Fields.Find(field => field.Coords.X==x+xOffset && field.Coords.Y==y+yOffset);
+        Field f = Core.Game.State.GameField.Fields.Find(field => field.Coords.X==x+XOffset && field.Coords.Y==y+YOffset);
         return f;
     }
 
