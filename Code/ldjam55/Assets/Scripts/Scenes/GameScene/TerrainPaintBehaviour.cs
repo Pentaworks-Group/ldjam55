@@ -25,8 +25,6 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private float xOffset = 0;
     private float yOffset = 0;
 
-    private float time = 0;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -78,8 +76,6 @@ public class TerrainPaintBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        time += Time.deltaTime;
-
         foreach (var field in Core.Game.State.GameField.Fields)
         {
             if(field.Creep != null)
@@ -93,7 +89,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
     {
         //TODO: add Creep def
         int sizeX = (int)(mainTerrain.terrainData.size.x / countX);
-        int radius = (int)(Mathf.Min(field.Creep.Value, 1f) * 2* sizeX);
+        int radius = (int)(Mathf.Min(field.Creep.Value, 1f) * 2f * sizeX);
         if(radius != field.Creep.PaintRadiusOld)
         {
             field.Creep.PaintRadiusOld = radius;
@@ -103,7 +99,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
             int layerID = getSlimeLayerID(field.Creep.Creeper);
             int sizeY = (int)(mainTerrain.terrainData.size.z / countY);
 
-            paintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, 0);
+            paintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, radius/2);
         }
 
     }
