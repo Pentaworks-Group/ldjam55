@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.XR;
-using static CreepBehaviour;
 
 public class CreepBehaviour : MonoBehaviour
 {
@@ -22,6 +20,7 @@ public class CreepBehaviour : MonoBehaviour
     private Dictionary<string, Creeper> creepers;
 
     public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
+    public List<Action<FieldObject>> DestroyFieldObjectEvent = new();
     public Dictionary<string, List<ActionContainer>> FieldCreeperChangeEvent = new Dictionary<string, List<ActionContainer>>();
 
 
@@ -178,6 +177,20 @@ public class CreepBehaviour : MonoBehaviour
                         bool isIntervall = bool.Parse(paramsObject["IsIntervall"].ToString());
                         RegisterSpawn(fieldObject, amount, time, isIntervall, paramsObject["Creeper"].ToString(), fieldObject.Name + method.Method);
                     }
+                    else if (method.Method == "DestoryFieldObject")
+                    {
+                        JObject paramsObject = JObject.Parse(method.ArumentsJson);
+                        float time = float.Parse(paramsObject["Time"].ToString());
+                        Action lam = () => DestroyFieldObject(fieldObject);
+                        if (method.Trigger != null && method.Trigger == "CreepTrigger")
+                        {
+                            string creeperId = paramsObject["TriggerCreeperId"].ToString();
+                            CreeperTrigger(creeperId, 0, lam, fieldObject.Field);
+                        } else
+                        {
+                            TimeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name);
+                        }
+                    }
                 }
             }
         }
@@ -242,6 +255,20 @@ public class CreepBehaviour : MonoBehaviour
         }
     }
 
+    public void DestroyFieldObject(FieldObject fieldO)
+    {
+        if (fieldO != null)
+        {
+            Core.Game.State.GameField.FieldObjects.Remove(fieldO);
+
+            foreach (var action in DestroyFieldObjectEvent)
+            {
+                action.Invoke(fieldO);
+            }
+
+
+        }
+    }
 
     public class ActionContainer
     {
