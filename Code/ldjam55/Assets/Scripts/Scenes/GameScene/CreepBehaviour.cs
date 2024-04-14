@@ -1,12 +1,11 @@
 using Assets.Scripts.Base;
+using Assets.Scripts.Constants;
 using Assets.Scripts.Core.Model;
 using Assets.Scripts.Scenes.GameScene;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CreepBehaviour : MonoBehaviour
@@ -27,8 +26,14 @@ public class CreepBehaviour : MonoBehaviour
 
 
     private TriggerHandler triggerHandler = new();
-    private GameEndConditionHandler gameEndConditionHandler = new GameEndConditionHandler(TimeManagerBehaviour.Win, TimeManagerBehaviour.Lose);
+    public GameEndConditionHandler gameEndConditionHandler {  get; private set; }
 
+
+    private void Start()
+    {
+        gameEndConditionHandler = GameEndConditionHandler.Instance;
+        gameEndConditionHandler.Init(Win, Loose);
+    }
 
     void Update()
     {
@@ -46,6 +51,15 @@ public class CreepBehaviour : MonoBehaviour
         isRunning = true;
     }
 
+    private void Loose(GameEndCondition condition)
+    {
+        Core.Game.ChangeScene(SceneNames.GameOver);
+    }
+
+    private void Win(GameEndCondition condition)
+    {
+        Core.Game.ChangeScene(SceneNames.GameOver);
+    }
 
     private void ConvertBorders()
     {
@@ -208,10 +222,27 @@ public class CreepBehaviour : MonoBehaviour
                             timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
                         }
                     }
+                    else if (method.Method == "CountDown")
+                    {
+                        JObject paramsObject = JObject.Parse(method.ArumentsJson);
+                        float time = float.Parse(paramsObject["Time"].ToString());
+                        string conditionName = paramsObject["ConditionName"].ToString();
+                        Action lam = () => gameEndConditionHandler.IncreaseCount(conditionName);
+                        if (method.Trigger != null && method.Trigger == "CreepTrigger")
+                        {
+                            string creeperId = paramsObject["TriggerCreeperId"].ToString();
+                            triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
+                        }
+                        else
+                        {
+                            timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
+                        }
+                    }
                 }
             }
         }
     }
+
 
     private void RegisterSpawn(FieldObject fieldObject, float amount, float time, float interval, string creeperId, string ID, int objectID)
     {

@@ -8,6 +8,7 @@ namespace Assets.Scripts.Core.Definitions
         public string Description { get; set; }
         public string Model { get; set; }
         public string Material { get; set; }
+        public bool Hidden { get; set; }
 
         public string FieldReference { get; set; }
 

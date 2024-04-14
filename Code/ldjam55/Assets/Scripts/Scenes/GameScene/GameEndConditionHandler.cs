@@ -1,25 +1,37 @@
 using Assets.Scripts.Core.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Assets.Scripts.Scenes.GameScene
 {
     public class GameEndConditionHandler
     {
-        private Dictionary<string, GameEndCondition> conditions = new Dictionary<string, GameEndCondition>();
+        private Dictionary<string, GameEndCondition> conditions;
 
-        private readonly Action<GameEndCondition> winAction;
-        private readonly Action<GameEndCondition> loseAction;
+        private Action<GameEndCondition> winAction;
+        private Action<GameEndCondition> loseAction;
 
+        private static GameEndConditionHandler _Instance;
+        public static GameEndConditionHandler Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                {
+                    _Instance = new GameEndConditionHandler();
+                }
+                return _Instance;
+            }
+        }
 
-        public GameEndConditionHandler(Action<GameEndCondition> winAction, Action<GameEndCondition> loseAction)
+        public void Init(Action<GameEndCondition> winAction, Action<GameEndCondition> loseAction)
         {
             this.winAction = winAction;
             this.loseAction = loseAction;
-            foreach (var condition in conditions)
-            {
-
-            }
+            conditions = Base.Core.Game.State.Mode.EndConditions.ToDictionary(con => con.Name);
         }
 
 

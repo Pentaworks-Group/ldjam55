@@ -9,6 +9,7 @@ namespace Assets.Scripts.Core.Model
         public string Description { get; set; }
         public string Model { get; set; }
         public string Material { get; set; }
+        public bool Hidden { get; set; }
         public Field Field { get; set; }
 
 

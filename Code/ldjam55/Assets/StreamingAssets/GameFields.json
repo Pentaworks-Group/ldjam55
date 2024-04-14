@@ -599,6 +599,34 @@
           }
         ],
         "IsReferenced": false
+      },
+      {
+        "Name": "HiddenStuff",
+        "Hidden": true,
+        "Material": "Creeper_Red_Stage_1",
+        "Model": "Spawner_1",
+        "FieldReference": "4-2--2",
+        "Methods": [
+          {
+            "Method": "CountDown",
+            "ArumentsJson": "{\"Time\": 50,\"ConditionName\": \"WinTimer\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "HiddenStuff",
+        "Hidden": true,
+        "Material": "Creeper_Red_Stage_1",
+        "Model": "Spawner_1",
+        "FieldReference": "4-2--2",
+        "Methods": [
+          {
+            "Method": "CountDown",
+            "ArumentsJson": "{\"Time\": 50,\"ConditionName\": \"WinTimer\"}"
+          }
+        ],
+        "IsReferenced": false
       }
     ]
   }

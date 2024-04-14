@@ -156,14 +156,4 @@ public class TimeManagerBehaviour : MonoBehaviour
             nextEventTime = default;
         }
     }
-
-    internal static void Win(GameEndCondition condition)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal static void Lose(GameEndCondition condition)
-    {
-        throw new NotImplementedException();
-    }
 }

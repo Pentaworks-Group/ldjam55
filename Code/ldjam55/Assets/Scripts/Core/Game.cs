@@ -170,6 +170,7 @@ namespace Assets.Scripts.Core
                     Description = fieldObject.Description,
                     Model = fieldObject.Model,
                     Material = fieldObject.Material,
+                    Hidden = fieldObject.Hidden,
                     Field = fieldDict[fieldObject.FieldReference],
                     Methods = fieldObject.Methods
                 };
