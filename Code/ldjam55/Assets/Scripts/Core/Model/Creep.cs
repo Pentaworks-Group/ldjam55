@@ -8,5 +8,6 @@ namespace Assets.Scripts.Core.Model
 
         public float ValueOld { get; set; }
 
+        public int PaintRadiusOld { get; set; }
     }
 }

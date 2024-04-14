@@ -92,15 +92,20 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private void paintCreep(Field field)
     {
         //TODO: add Creep def
-        Vector2Int mapPos = new Vector2Int((int)(field.Coords.X - xOffset), (int)(field.Coords.Y - yOffset));
-        Vector2Int creepCenter = getTextureMapCoord(mapPos);
         int sizeX = (int)(mainTerrain.terrainData.size.x / countX);
-        int sizeY = (int)(mainTerrain.terrainData.size.z / countY);
         int radius = (int)(Mathf.Min(field.Creep.Value, 1f) * 2* sizeX);
-        int layerID = getSlimeLayerID(field.Creep.Creeper);
+        if(radius != field.Creep.PaintRadiusOld)
+        {
+            field.Creep.PaintRadiusOld = radius;
 
-        paintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, 0);
-        //        paintSlimeArea(slimeRedLayerID, pos.x, pos.y, sizeX, sizeY, (int)creepSize, (int)(creepSize / 2));
+            Vector2Int mapPos = new Vector2Int((int)(field.Coords.X - xOffset), (int)(field.Coords.Y - yOffset));
+            Vector2Int creepCenter = getTextureMapCoord(mapPos);
+            int layerID = getSlimeLayerID(field.Creep.Creeper);
+            int sizeY = (int)(mainTerrain.terrainData.size.z / countY);
+
+            paintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, 0);
+        }
+
     }
 
     private int getSlimeLayerID(Creeper creeper)
