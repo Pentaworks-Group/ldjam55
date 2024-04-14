@@ -10,7 +10,7 @@ public class TerrainBehaviour : MonoBehaviour
     public Terrain mainTerrain;
 
     private float fieldSize = 50f;
-    private float flatFieldSize = 10f;
+    private float flatFieldSize = 30f;
 
     private float scalingFactorX = 1.0f;
     private float scalingFactorY = 1.0f;
@@ -35,6 +35,13 @@ public class TerrainBehaviour : MonoBehaviour
     // Start is called before the first frame update    
     void Start()
     {
+/*        Core.Game.State.GameField.Fields = new List<Field>
+        {
+            new Field{ Coords = new GameFrame.Core.Math.Vector2(0, 0), Height = 0, ID="0, 0" },
+            new Field{ Coords = new GameFrame.Core.Math.Vector2(1, 0), Height = 1, ID="1, 0" },
+        };*/
+
+
         int minX = 0;
         int minY = 0;
         float minZ = 0;
@@ -49,10 +56,9 @@ public class TerrainBehaviour : MonoBehaviour
             maxX = (int)Math.Max(field.Coords.X, maxX);
             maxY = (int)Math.Max(field.Coords.Y, maxY);
             maxZ = Mathf.Max(field.Height, maxZ);
-            Debug.Log(field.Height);
         }
-        countX = maxX - minX;
-        countY = maxY - minY;
+        countX = (maxX - minX)+1;
+        countY = (maxY - minY)+1;
 
         zFactor = maxHeight / (maxZ-minZ);
         xOffset = minX;
@@ -71,7 +77,7 @@ public class TerrainBehaviour : MonoBehaviour
         {
             for(int j = 0; j < mapSize; j++)
             {
-                heights[i,j] = getHeightmapValue(j, i);
+                heights[j,i] = getHeightmapValue(i, j);
             }
         }
 
@@ -92,12 +98,12 @@ public class TerrainBehaviour : MonoBehaviour
                 float normY = y * 1.0f / (mainTerrain.terrainData.alphamapHeight - 1);
 
                 // Get the steepness value at the normalized coordinate
-                var angle = mainTerrain.terrainData.GetSteepness(normX, normY);
+                var angle = mainTerrain.terrainData.GetSteepness(normY, normX);
 
                 // Steepness is given as an angle, 0..90 degrees. Divide
                 // by 90 to get an alpha blending value in the range 0..1.
-                var frac = 1;// angle / 45.0;
-                map[y, x, 0] = (float)(1-frac);
+                var frac = angle / 45.0;
+                map[x, y, 0] = (float)(1-frac);
                 map[x, y, 1] = (float)(0);
                 map[x, y, 2] = (float)(frac);
             }
@@ -113,15 +119,12 @@ public class TerrainBehaviour : MonoBehaviour
 
     private float getHeightmapValue(int x, int y)
     {
-//        if(y > 510) { return 1; }
-//        if(x > 510) { return 2; }
-
         Vector2Int mapPos = transformHeightmapCoordToMap(new Vector2Int(x, y));
         Vector2Int hMapCenter = transformMapCoordToHeigthmap(mapPos);
         int distX = x - hMapCenter.x;
         int distY = y - hMapCenter.y;
-        int fieldDistX = (int)(mainTerrain.terrainData.heightmapResolution / countX - flatFieldSize);
-        int fieldDistY = (int)(mainTerrain.terrainData.heightmapResolution / countY - flatFieldSize);
+        int fieldDistX = (int)(scalingFactorX * ( fieldSize - flatFieldSize) );
+        int fieldDistY = (int)(scalingFactorY * ( fieldSize - flatFieldSize) );   
         float fieldMarginX = scalingFactorX * flatFieldSize / 2;
         float fieldMarginY = scalingFactorY * flatFieldSize / 2;
 
