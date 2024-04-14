@@ -103,7 +103,6 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
             paintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, radius/2);
         }
-
     }
 
     private int getSlimeLayerID(Creeper creeper)
