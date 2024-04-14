@@ -211,8 +211,7 @@ namespace Assets.Scripts.Scenes.GameScene
                     {
                         if (!fieldO.IsReferenced)
                         {
-                            fieldO.UpdateMethod = f.UpdateMethod;
-                            fieldO.UpdateMethodParameters = f.UpdateMethodParameters;
+                            fieldO.Methods = f.Methods;
                             fieldO.Material = f.Material;
                             fieldO.Model = f.Model;
                             fieldO.Name = f.Name;
@@ -275,7 +274,7 @@ namespace Assets.Scripts.Scenes.GameScene
                     Field1Ref = field1.ID,
                     Field2Ref = field2.ID,
                     BorderType = new Core.Definitions.BorderType() { Model = "Wall", Name = "BorderWall" },
-                    BorderStatus = new BorderStatus() { Value = 0 }
+                    BorderStatus = new BorderStatus() { FlowValue = 0 }
                 };
                 borders.Add(border);
             }

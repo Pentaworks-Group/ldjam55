@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Assets.Scripts.Core.Model
 {
     public class Border
@@ -9,5 +11,6 @@ namespace Assets.Scripts.Core.Model
         public BorderType BorderType { get; set; }
 
         public BorderStatus BorderStatus { get; set; }
+        public List<MethodBundle> Methods { get; set; }
     }
 }

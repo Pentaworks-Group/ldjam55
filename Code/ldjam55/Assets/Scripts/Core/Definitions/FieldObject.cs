@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Assets.Scripts.Core.Definitions
 {
     public class FieldObject : GameFrame.Core.Definitions.BaseDefinition
@@ -9,8 +11,6 @@ namespace Assets.Scripts.Core.Definitions
 
         public string FieldReference { get; set; }
 
-        public string UpdateMethod { get; set; }
-
-        public string UpdateMethodParameters { get; set; }
+        public List<MethodBundle> Methods { get; set; }
     }
 }

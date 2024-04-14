@@ -130,7 +130,7 @@ namespace Assets.Scripts.Core
         private List<Border> ConvertBordersForGameField(List<Definitions.Border> borderDefinitionList, Dictionary<string, Model.Field> fieldDict)
         {
 
-            var borderList = new List<Model.Border>(); 
+            var borderList = new List<Model.Border>();
             foreach (var borderDefinition in borderDefinitionList)
             {
                 borderList.Add(ConvertBorder(borderDefinition, fieldDict));
@@ -140,12 +140,12 @@ namespace Assets.Scripts.Core
 
         private Model.Border ConvertBorder(Definitions.Border borderDefinition, Dictionary<string, Model.Field> fields)
         {
-            var border = new Model.Border() { BorderStatus = borderDefinition.BorderStatus };
+            var border = new Model.Border() { BorderStatus = borderDefinition.BorderStatus, Methods = borderDefinition.Methods };
 
             border.Field1 = fields[borderDefinition.Field1Ref];
             border.Field2 = fields[borderDefinition.Field2Ref];
 
-            border.BorderType = ConvertBorderType(borderDefinition.BorderType); 
+            border.BorderType = ConvertBorderType(borderDefinition.BorderType);
 
             return border;
         }
@@ -171,8 +171,7 @@ namespace Assets.Scripts.Core
                     Model = fieldObject.Model,
                     Material = fieldObject.Material,
                     Field = fieldDict[fieldObject.FieldReference],
-                    UpdateMethod = fieldObject.UpdateMethod,
-                    UpdateMethodParameters = fieldObject.UpdateMethodParameters
+                    Methods = fieldObject.Methods
                 };
                 modelFieldObjects.Add(modelFieldObject);
                 modelFieldObject.Field.FieldObjects.Add(modelFieldObject);
