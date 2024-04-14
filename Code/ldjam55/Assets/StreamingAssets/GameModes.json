@@ -27,6 +27,13 @@
                     "HightTraverseRate": -1
                 }
             }
+        ],
+        "EndConditions": [
+            {
+                "Name": "Timer",
+                "IsWin": true,
+                "WinCount": 1
+            }
         ]
     }
 ]

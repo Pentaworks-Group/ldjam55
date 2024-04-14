@@ -1,5 +1,6 @@
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
+using Assets.Scripts.Scenes.GameScene;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,11 @@ using UnityEngine;
 public class CreepBehaviour : MonoBehaviour
 {
     public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
+    public List<Action<Field>> OnCreeperChanged = new List<Action<Field>>();
     public List<Action<FieldObject>> DestroyFieldObjectEvent = new();
 
     [SerializeField]
-    private TimeManagerBehaviour timeManagerBehaviour ;
+    private TimeManagerBehaviour timeManagerBehaviour;
 
 
     //private Dictionary<Creeper, List<Border>> bordersByCreep = new Dictionary<Creeper, List<Border>>();
@@ -24,6 +26,25 @@ public class CreepBehaviour : MonoBehaviour
 
 
     private TriggerHandler triggerHandler = new();
+    private GameEndConditionHandler gameEndConditionHandler = new GameEndConditionHandler(TimeManagerBehaviour.Win, TimeManagerBehaviour.Lose);
+
+
+    public static CreepBehaviour instance;
+    void Awake()
+    {
+        if ((instance != default) && (instance != this))
+        {
+            Destroy(this.gameObject);
+
+            return;
+        }
+        else
+        {
+            instance = this;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
+    }
 
     void Update()
     {
@@ -40,6 +61,7 @@ public class CreepBehaviour : MonoBehaviour
         creepers = Core.Game.State.Mode.Creepers.ToDictionary(creep => creep.ID);
         isRunning = true;
     }
+
 
     private void ConvertBorders()
     {
@@ -179,8 +201,9 @@ public class CreepBehaviour : MonoBehaviour
                         float interval;
                         if (paramsObject.TryGetValue("Intervall", out var intervalS))
                         {
-                            interval  = float.Parse(intervalS.ToString());
-                        } else
+                            interval = float.Parse(intervalS.ToString());
+                        }
+                        else
                         {
                             interval = 0;
                         }
@@ -195,7 +218,8 @@ public class CreepBehaviour : MonoBehaviour
                         {
                             string creeperId = paramsObject["TriggerCreeperId"].ToString();
                             triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
-                        } else
+                        }
+                        else
                         {
                             timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
                         }
@@ -210,7 +234,7 @@ public class CreepBehaviour : MonoBehaviour
         timeManagerBehaviour.RegisterEvent(time, () => SpawnCreepAt(fieldObject.Field, amount, creeperId), ID, objectID, interval);
     }
 
-  
+
     public void SpawnCreepAt(Field field, float amount, string creeperId)
     {
         if (field.Creep != null && field.Creep.Creeper != null)
@@ -226,7 +250,7 @@ public class CreepBehaviour : MonoBehaviour
                 {
                     field.Creep.Value -= div;
                     field.Creep.Creeper = creepers[creeperId];
-                    triggerHandler.InvokeTriggered(field);
+                    CreeperChanged(field);
                 }
             }
             else
@@ -238,7 +262,7 @@ public class CreepBehaviour : MonoBehaviour
         {
             var newCreep = new Creep() { Value = amount, Creeper = creepers[creeperId] };
             field.Creep = newCreep;
-            triggerHandler.InvokeTriggered(field);
+            CreeperChanged(field);
         }
     }
 
@@ -274,6 +298,15 @@ public class CreepBehaviour : MonoBehaviour
         }
     }
 
+
+    private void CreeperChanged(Field field)
+    {
+        triggerHandler.InvokeTriggered(field);
+        foreach (var action in OnCreeperChanged)
+        {
+            action(field);
+        }
+    }
 
     private List<Field> GetNeighbours(Field field, Dictionary<string, Field> topFields)
     {
@@ -342,7 +375,7 @@ public class CreepBehaviour : MonoBehaviour
             if (field2.Creep.Creeper != field1.Creep.Creeper)
             {
                 field2.Creep.Creeper = field1.Creep.Creeper;
-                triggerHandler.InvokeTriggered(field2);
+                CreeperChanged(field2);
             }
         }
         else if (flow < 0)
@@ -350,7 +383,7 @@ public class CreepBehaviour : MonoBehaviour
             if (field1.Creep.Creeper != field2.Creep.Creeper)
             {
                 field1.Creep.Creeper = field2.Creep.Creeper;
-                triggerHandler. InvokeTriggered(field1);
+                CreeperChanged(field1);
             }
         }
     }

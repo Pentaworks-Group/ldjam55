@@ -1,3 +1,4 @@
+using Assets.Scripts.Core.Model;
 using System.Collections.Generic;
 
 namespace Assets.Scripts.Core.Definitions
@@ -7,6 +8,8 @@ namespace Assets.Scripts.Core.Definitions
         public GameField GameField {  get; set; }
 
         public List<Model.Creeper> Creepers { get; set; }
+
+        public List<GameEndCondition> EndConditions { get; set; }
 
         public float NothingFlowRate { get; set; } = 0.1f;
         public float FlowSpeed { get; set; } = 0.5f;

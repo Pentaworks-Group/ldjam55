@@ -1,3 +1,5 @@
+using Assets.Scripts.Core.Model;
+using Assets.Scripts.Scenes.GameScene;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -153,5 +155,15 @@ public class TimeManagerBehaviour : MonoBehaviour
         {
             nextEventTime = default;
         }
+    }
+
+    internal static void Win(GameEndCondition condition)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal static void Lose(GameEndCondition condition)
+    {
+        throw new NotImplementedException();
     }
 }
