@@ -37,6 +37,7 @@ public class TerrainBehaviour : MonoBehaviour
     // Start is called before the first frame update    
     void Start()
     {
+        //TODO: isInit?
         int minX = 0;
         int minY = 0;
         float minZ = 0;
