@@ -503,6 +503,13 @@
           "Model": "Wall",
           "IsReferenced": false
         },
+        "Methods": [
+          {
+            "Method": "DestroyBorder",
+            "Trigger" : "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 0, \"TriggerCreeperId\" : \"CreeperWater\"}"
+          }
+        ],
         "BorderStatus": {
           "Value": 0.0
         }

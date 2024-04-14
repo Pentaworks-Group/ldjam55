@@ -4,9 +4,9 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.XR;
+using static CreepBehaviour;
 
 public class CreepBehaviour : MonoBehaviour
 {
@@ -22,6 +22,7 @@ public class CreepBehaviour : MonoBehaviour
     private Dictionary<string, Creeper> creepers;
 
     public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
+    public Dictionary<string, List<ActionContainer>> FieldCreeperChangeEvent = new Dictionary<string, List<ActionContainer>>();
 
 
     void Update()
@@ -53,24 +54,6 @@ public class CreepBehaviour : MonoBehaviour
     {
         var bordersAdded = new HashSet<string>();
         var borders = new List<Border>();
-        foreach (var border in Core.Game.State.GameField.Borders)
-        {
-            borders.Add(border);
-            bordersAdded.Add(GetBorderKey(border));
-            if (border.Methods != null)
-            {
-                foreach (var method in border.Methods)
-                {
-                    if (method.Method == "DestroyBorder")
-                    {
-                        JObject paramsObject = JObject.Parse(method.ArumentsJson);
-                        float time = float.Parse(paramsObject["Time"].ToString());
-                        TimeManagerBehaviour.RegisterEvent(time, () => DestroyBorder(border), method.Method + GetBorderKey(border));
-                    }
-                }
-            }
-        }
-
         var topFields = new Dictionary<string, Field>();
         foreach (var field in Core.Game.State.GameField.Fields)
         {
@@ -87,6 +70,38 @@ public class CreepBehaviour : MonoBehaviour
                 topFields[fieldKey] = field;
             }
         }
+
+        var allFields = Core.Game.State.GameField.Fields.ToDictionary(field => field.ID);
+        foreach (var border in Core.Game.State.GameField.Borders)
+        {
+            borders.Add(border);
+            bordersAdded.Add(GetBorderKey(border));
+            if (border.Methods != null)
+            {
+                foreach (var method in border.Methods)
+                {
+                    if (method.Method == "DestroyBorder")
+                    {
+                        JObject paramsObject = JObject.Parse(method.ArumentsJson);
+                        float time = float.Parse(paramsObject["Time"].ToString());
+                        Action lam = () => DestroyBorder(border);
+                        if (method.Trigger == null)
+                        {
+                            TimeManagerBehaviour.RegisterEvent(time, lam, method.Method + GetBorderKey(border));
+                        } else if (method.Trigger == "CreepTrigger")
+                        {
+                            string creeperId = paramsObject["TriggerCreeperId"].ToString();
+                            //float amount = paramsObject["triggercreeperId"].ToString();
+
+                            CreeperTrigger(allFields[border.Field1.ID], creeperId, 0, lam);
+                            CreeperTrigger(allFields[border.Field2.ID], creeperId, 0, lam);
+                        }
+                    }
+                }
+            }
+        }
+
+        
         foreach (var field in Core.Game.State.GameField.Fields)
         {
             var neighbours = GetNeighbours(field, topFields);
@@ -182,6 +197,7 @@ public class CreepBehaviour : MonoBehaviour
         }
     }
 
+
     public void SpawnCreepAt(Field field, float amount, string creeperId)
     {
         if (field.Creep != null && field.Creep.Creeper != null)
@@ -226,6 +242,53 @@ public class CreepBehaviour : MonoBehaviour
         }
     }
 
+
+    public class ActionContainer
+    {
+        public Field field; public string creeperId; public float amount; public Action triggeredAction;
+    }
+
+    private void CreeperTrigger(Field field, string creeperId, float amount, Action triggeredAction)
+    {
+        var actionContainer = new ActionContainer() { triggeredAction = triggeredAction, amount = amount, creeperId = creeperId, field = field };
+        if (!FieldCreeperChangeEvent.TryGetValue(field.ID, out var actions))
+        {
+            actions = new List<ActionContainer>();
+            FieldCreeperChangeEvent.Add(field.ID, actions);
+        }
+        actions.Add(actionContainer);
+    }
+
+    private void InvokeTriggered(Field field)
+    {
+        if (FieldCreeperChangeEvent.TryGetValue(field.ID, out List<ActionContainer> actionContainers))
+        {
+            for (int i = actionContainers.Count - 1; i >= 0; i--)
+            {
+                var container = actionContainers[i];
+                if (container.creeperId != null && field.Creep.Creeper.ID == container.creeperId)
+                {
+                    container.triggeredAction.Invoke();
+                    DeregisterTrigger(field.ID, container);
+                }
+            }
+        }
+    }
+
+
+
+    private void DeregisterTrigger(string fieldId, ActionContainer container)
+    {
+        if (FieldCreeperChangeEvent.TryGetValue(fieldId, out var actions))
+        {
+            actions.Remove(container);
+            if (actions.Count == 0)
+            {
+                FieldCreeperChangeEvent[fieldId] = null;
+            }
+        }
+    }
+
     private List<Field> GetNeighbours(Field field, Dictionary<string, Field> topFields)
     {
         var neighbours = new List<Field>();
@@ -264,8 +327,10 @@ public class CreepBehaviour : MonoBehaviour
             }
         }
 
-        foreach (var border in borders)
+
+        for (int i = borders.Count - 1; i >= 0; i--)
         {
+            var border = borders[i];
             float flow = getFlow(border.Field1, border.Field2, border.BorderStatus.FlowValue);
             if (border.Field1.Creep == null)
             {
@@ -288,11 +353,19 @@ public class CreepBehaviour : MonoBehaviour
         //TODO: what happens if both fields have a creeper -> Game Over/Win?
         if (flow > 0)
         {
-            field2.Creep.Creeper = field1.Creep.Creeper;
+            if (field2.Creep.Creeper != field1.Creep.Creeper)
+            {
+                field2.Creep.Creeper = field1.Creep.Creeper;
+                InvokeTriggered(field2);
+            }
         }
         else if (flow < 0)
         {
-            field1.Creep.Creeper = field2.Creep.Creeper;
+            if (field1.Creep.Creeper != field2.Creep.Creeper)
+            {
+                field1.Creep.Creeper = field2.Creep.Creeper;
+                InvokeTriggered(field1);
+            }
         }
     }
 
