@@ -36,20 +36,18 @@ namespace Assets.Scripts.Core
             GameFrame.Base.Audio.Effects.Play("Button");
         }
 
+
+        public GameState GetInitGameState()
+        {
+            return InitializeGameState();
+        }
         protected override GameState InitializeGameState()
         {
             if (SelectedGameMode == default)
             {
                 if (this.availableGameModes.Count > 0)
                 {
-                    if (this.availableGameModes.TryGetValue("default", out var defaultGameMode))
-                    {
-                        SelectedGameMode = defaultGameMode;
-                    }
-                    else
-                    {
-                        throw new Exception("No 'default' GameMode defined!");
-                    }
+                    SelectDefaultGameMode();
                 }
                 else
                 {
@@ -66,6 +64,18 @@ namespace Assets.Scripts.Core
             };
 
             return gameState;
+        }
+
+        private void SelectDefaultGameMode()
+        {
+            if (this.availableGameModes.TryGetValue("default", out var defaultGameMode))
+            {
+                SelectedGameMode = defaultGameMode;
+            }
+            else
+            {
+                throw new Exception("No 'default' GameMode defined!");
+            }
         }
 
         protected override PlayerOptions InitialzePlayerOptions()

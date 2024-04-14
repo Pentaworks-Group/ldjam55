@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Scenes.GameScene
 {
-    public class GameSceneMenuBehaviour : MonoBehaviour
+    public class GameFieldTestingMenuBehaviour : MonoBehaviour
     {
         [SerializeField]
         private GameDisplayBehaviour gameDisplayBehaviour;
@@ -17,7 +17,9 @@ namespace Assets.Scripts.Scenes.GameScene
             
             if (Base.Core.Game.State == default)
             {
-                Base.Core.Game.Start();
+                var gameState = Base.Core.Game.GetInitGameState();
+                gameState.CurrentScene = Constants.SceneNames.GameFieldTest;
+                Base.Core.Game.Start(gameState);
             }
         }
 
