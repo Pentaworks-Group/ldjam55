@@ -22,6 +22,7 @@ namespace Assets.Scripts.Scenes.GameScene
 
         private Dictionary<string, GameObject> WorldCreep;
         private Dictionary<string, GameObject> Borders;
+        private Dictionary<int, GameObject> FieldObjectCache;
 
 
 
@@ -36,10 +37,13 @@ namespace Assets.Scripts.Scenes.GameScene
         private void Start()
         {
             CreepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
+            CreepBehaviour.DestroyFieldObjectEvent.Add(DestroyFieldObject);
         }
 
         public void GenerateGameField()
         {
+            FieldObjectCache = new Dictionary<int, GameObject>();
+
             var fieldTemplate = Templates["Field"];
             foreach (var field in Base.Core.Game.State.GameField.Fields)
             {
@@ -88,6 +92,15 @@ namespace Assets.Scripts.Scenes.GameScene
             }
         }
 
+
+        public void DestroyFieldObject(FieldObject fieldObject)
+        {
+            if (FieldObjectCache.TryGetValue(fieldObject.GetHashCode(), out var fieldObjectGO))
+            {
+                Destroy(fieldObjectGO);
+            }
+        }
+
         private void SpawnFieldObject(GameObject field, FieldObject fieldObject)
         {
             var fieldTemplate = Templates[fieldObject.Model];
@@ -103,6 +116,7 @@ namespace Assets.Scripts.Scenes.GameScene
             }
             newFieldGO.name = GetFieldObjectName(field.name);
             newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
+            FieldObjectCache.Add(fieldObject.GetHashCode(), newFieldGO);
             newFieldGO.SetActive(true);
         }
 

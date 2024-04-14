@@ -506,7 +506,7 @@
         "Methods": [
           {
             "Method": "DestroyBorder",
-            "Trigger" : "CreepTrigger",
+            "Trigger": "CreepTrigger",
             "ArumentsJson": "{\"Time\": 0, \"TriggerCreeperId\" : \"CreeperWater\"}"
           }
         ],
@@ -574,6 +574,28 @@
           {
             "Method": "SpawnCreep",
             "ArumentsJson": "{\"Amount\": 25,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"IsIntervall\": true}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "BOOOM",
+        "Material": "Fire",
+        "Model": "SpawnerSmall",
+        "FieldReference": "1--5--2",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 200,\"Time\": 8,\"Creeper\": \"CreeperFire\", \"IsIntervall\": false}"
+          },
+          {
+            "Method": "DestoryFieldObject",
+            "ArumentsJson": "{\"Time\": 8.5}"
+          },
+          {
+            "Trigger": "CreepTrigger",
+            "Method": "DestoryFieldObject",
+            "ArumentsJson": "{\"Amount\": 200,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"IsIntervall\": false, \"TriggerCreeperId\" : \"CreeperWater\"}"
           }
         ],
         "IsReferenced": false
