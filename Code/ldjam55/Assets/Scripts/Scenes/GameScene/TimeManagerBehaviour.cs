@@ -10,9 +10,11 @@ public class TimeManagerBehaviour : MonoBehaviour
         public float Time;
         public Action EventAction;
         public string EventName;
+        public float Interval;
     }
 
     private List<SheduledEvent> sheduledEvents = new List<SheduledEvent>();
+    private Dictionary<int, List<SheduledEvent>> eventsByObjectID = new();
     private float nextEventTime;
 
 
@@ -31,22 +33,43 @@ public class TimeManagerBehaviour : MonoBehaviour
     {
         if (nextEventTime != default && nextEventTime < Time.time)
         {
-            sheduledEvents[0].EventAction();
-            sheduledEvents.RemoveAt(0);
-            if (sheduledEvents.Count > 0)
+            SheduledEvent sheduledEvent = sheduledEvents[0];
+            //sheduledEvents.RemoveAt(0);
+            sheduledEvent.EventAction();
+            sheduledEvents.Remove(sheduledEvent);
+            if (sheduledEvent.Interval > 0)
             {
-                nextEventTime = sheduledEvents[0].Time;
-            } 
+                sheduledEvent.Time += sheduledEvent.Interval;
+                InsertEvent(sheduledEvent);
+            }
             else
             {
-                nextEventTime = 0;
+                if (sheduledEvents.Count > 0)
+                {
+                    nextEventTime = sheduledEvent.Time;
+                }
+                else
+                {
+                    nextEventTime = 0;
+                }
             }
+
         }
     }
 
-    public void RegisterEvent(float time, Action action, string eventName, bool fromNow = true)
+    private void AddToEventsByObjectID(int objectId, SheduledEvent sheduledEvent)
     {
-        var newEvent = new SheduledEvent { EventName = eventName, EventAction = action };
+        if (!eventsByObjectID.TryGetValue(objectId, out var sheduledEs))
+        {
+            sheduledEs = new();
+            eventsByObjectID[objectId] = sheduledEs;
+        }
+        sheduledEs.Add(sheduledEvent);
+    }
+
+    public void RegisterEvent(float time, Action action, string eventName, int objectId, float Interval = 0, bool fromNow = true)
+    {
+        var newEvent = new SheduledEvent { EventName = eventName, EventAction = action, Interval = Interval };
         float eventTime;
         if (fromNow)
         {
@@ -57,13 +80,20 @@ public class TimeManagerBehaviour : MonoBehaviour
             eventTime = time;
         }
         newEvent.Time = eventTime;
+        AddToEventsByObjectID(objectId, newEvent);
+        InsertEvent(newEvent);
+    }
+
+    private void InsertEvent(SheduledEvent newEvent)
+    {
+        float eventTime = newEvent.Time;
         for (int i = 0; i < sheduledEvents.Count; i++)
         {
             var shEvent = sheduledEvents[i];
             if (eventTime < shEvent.Time)
             {
                 sheduledEvents.Insert(i, newEvent);
-                nextEventTime = eventTime;
+                nextEventTime = sheduledEvents[0].Time;
                 return;
             }
         }
@@ -74,9 +104,30 @@ public class TimeManagerBehaviour : MonoBehaviour
         }
     }
 
+    public void UnregisterByObjectID(int objectId)
+    {
+        if (eventsByObjectID.TryGetValue(objectId, out var sheduledEs))
+        {
+            foreach (var sheduledE in sheduledEs)
+            {
+                sheduledEvents.Remove(sheduledE);
+            }
+            eventsByObjectID.Remove(objectId);
+
+            if (sheduledEvents.Count > 0)
+            {
+                nextEventTime = sheduledEvents[0].Time;
+            }
+            else
+            {
+                nextEventTime = default;
+            }
+        }
+    }
+
     public void UnregisterEvent(string eventName, bool startingWith = false)
     {
-        for (int i = sheduledEvents.Count - 1; i >= 0 ; i--)
+        for (int i = sheduledEvents.Count - 1; i >= 0; i--)
         {
             var shEvent = sheduledEvents[i];
             if (startingWith)
@@ -85,7 +136,8 @@ public class TimeManagerBehaviour : MonoBehaviour
                 {
                     sheduledEvents.RemoveAt(i);
                 }
-            } else
+            }
+            else
             {
                 if (shEvent.EventName == eventName)
                 {
@@ -96,7 +148,8 @@ public class TimeManagerBehaviour : MonoBehaviour
         if (sheduledEvents.Count > 0)
         {
             nextEventTime = sheduledEvents[0].Time;
-        } else
+        }
+        else
         {
             nextEventTime = default;
         }
