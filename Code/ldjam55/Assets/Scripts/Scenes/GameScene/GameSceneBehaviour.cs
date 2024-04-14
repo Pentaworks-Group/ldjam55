@@ -1,4 +1,5 @@
 using Assets.Scripts.Base;
+using Assets.Scripts.Core.Definitions;
 using Assets.Scripts.Core.Model;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ public class GameSceneBehaviour : MonoBehaviour
     private TerrainBehaviour terrainBehaviour;
 
     private Dictionary<string, GameObject> Templates;
+
+    private Dictionary<string, GameObject> Borders;
 
     private void Awake()
     {
@@ -51,10 +54,32 @@ public class GameSceneBehaviour : MonoBehaviour
         {
             Templates.Add(tran.name, tran.gameObject);
         }
-    }
-        
 
-    private void SpawnFieldObject(FieldObject fieldObject)
+        Borders = new Dictionary<string, GameObject>();
+        var wallTemplate = Templates["Wall"];
+        foreach (var border in Core.Game.State.GameField.Borders)
+        {
+            if (border.BorderType.Name == "BorderWall")
+            {
+                var newFieldGO = Instantiate(wallTemplate, World.transform);
+                newFieldGO.name = "Wall";
+                var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
+                container.ContainedObject = border;
+                container.ObjectType = "Wall";
+                SetBorderPositionAndRotation(border, newFieldGO);
+                newFieldGO.SetActive(true);
+                Borders.Add(GetBorderKey(border), newFieldGO);
+            }
+        }
+    }
+
+    private string GetBorderKey(Assets.Scripts.Core.Model.Border border)
+    {
+        return border.BorderType.Name + border.Field1.ID + border.Field2.ID;
+    }
+
+
+    private void SpawnFieldObject(Assets.Scripts.Core.Model.FieldObject fieldObject)
     {
         var fieldTemplate = Templates[fieldObject.Model];
         var newFieldGO = Instantiate(fieldTemplate, World.transform);
@@ -89,4 +114,20 @@ public class GameSceneBehaviour : MonoBehaviour
         return pos;
     }
 
+    private void SetBorderPositionAndRotation(Assets.Scripts.Core.Model.Border border, GameObject borderObject)
+    {
+        float x1 = border.Field1.Coords.X;
+        float y1 = border.Field1.Coords.Y;
+        var x = (x1 - border.Field2.Coords.X) / 2 - terrainBehaviour.XOffset;
+        var z = (y1 - border.Field2.Coords.Y) / 2 - terrainBehaviour.YOffset;
+        Vector3 mapPos = new Vector3(x1 - x, 0, y1 - z);
+        Vector3 terrainPos = getTerrainCoordinates(mapPos);
+        var height = Mathf.Max(border.Field1.Height, border.Field2.Height);
+//        borderObject.transform.position = new Vector3(x1 - x, height + 0.55f, y1 - z);
+        borderObject.transform.position = terrainPos;
+        if (x1 != border.Field2.Coords.X)
+        {
+            borderObject.transform.eulerAngles = new Vector3(0, 90, 0);
+        }
+    }
 }
