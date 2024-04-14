@@ -24,10 +24,6 @@ public class CreepBehaviour : MonoBehaviour
     public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
     public Dictionary<string, List<ActionContainer>> FieldCreeperChangeEvent = new Dictionary<string, List<ActionContainer>>();
 
-    private void Start()
-    {
-        StartGame();
-    }
     void Update()
     {
         if (isRunning)
