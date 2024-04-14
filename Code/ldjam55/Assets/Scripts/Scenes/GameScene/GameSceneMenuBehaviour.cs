@@ -14,6 +14,7 @@ namespace Assets.Scripts.Scenes.GameScene
 
         private void Awake()
         {
+            
             if (Base.Core.Game.State == default)
             {
                 Base.Core.Game.Start();
