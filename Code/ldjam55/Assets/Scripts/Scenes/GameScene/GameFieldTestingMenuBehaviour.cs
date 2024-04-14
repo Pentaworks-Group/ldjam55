@@ -8,7 +8,7 @@ namespace Assets.Scripts.Scenes.GameScene
         private GameDisplayBehaviour gameDisplayBehaviour;
 
         [SerializeField]
-        private CreepBehaviour gameSceneBehaviour;
+        private CreepBehaviour creepBehaviour;
 
         private bool isRunning = false;
 
@@ -27,7 +27,7 @@ namespace Assets.Scripts.Scenes.GameScene
         private void Start()
         {
             gameDisplayBehaviour.GenerateGameField();
-            gameSceneBehaviour.StartGame();
+            creepBehaviour.StartGame();
             isRunning = true;
         }
 
@@ -49,7 +49,7 @@ namespace Assets.Scripts.Scenes.GameScene
         public void ToggleCreeperActivity()
         {
             isRunning = !isRunning;
-            gameSceneBehaviour.ToggleCreeperActivity();
+            creepBehaviour.ToggleCreeperActivity();
             if (isRunning )
             {
                 Time.timeScale = 1f;

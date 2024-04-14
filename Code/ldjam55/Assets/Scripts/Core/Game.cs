@@ -187,7 +187,10 @@ namespace Assets.Scripts.Core
             {
                 Name = selectedGameMode.Name,
                 Description = selectedGameMode.Description,
-                Creepers = selectedGameMode.Creepers
+                Creepers = selectedGameMode.Creepers,
+                FlowSpeed = selectedGameMode.FlowSpeed,
+                MinFlow = selectedGameMode.MinFlow,
+                NothingFlowRate = selectedGameMode.NothingFlowRate
                 //JunkSpawnInterval = selectedGameMode.JunkSpawnInterval.GetValueOrDefault(-1),
                 //JunkSpawnInitialDistance = selectedGameMode.JunkSpawnInitialDistance.GetValueOrDefault(),
                 //JunkSpawnPosition = selectedGameMode.JunkSpawnPosition?.Copy(),

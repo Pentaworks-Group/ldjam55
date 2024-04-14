@@ -3,6 +3,9 @@
         "Reference": "default",
         "Name": "Default GameMode",
         "Description": "Default Default Default",
+        "NothingFlowRate": 1,
+        "FlowSpeed": 0.5,
+        "MinFlow" : 0.00001,
         "GameField": {
             "IsReferenced": true,
             "Reference": "default"

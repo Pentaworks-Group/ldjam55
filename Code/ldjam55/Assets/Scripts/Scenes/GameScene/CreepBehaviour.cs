@@ -11,9 +11,7 @@ public class CreepBehaviour : MonoBehaviour
     [SerializeField]
     private TimeManagerBehaviour TimeManagerBehaviour;
 
-    private float flow_rate = 0.1f; //MOVE to gameMode
-    private float flowSpeed = 0.5f;
-    private float minFlow = 0.0001f;
+
     private List<Border> borders = new List<Border>();
     private bool isRunning = false;
 
@@ -78,7 +76,7 @@ public class CreepBehaviour : MonoBehaviour
                 {
                     continue;
                 }
-                var borderStatus = new BorderStatus() { Value = flow_rate };
+                var borderStatus = new BorderStatus() { Value = Core.Game.State.Mode.NothingFlowRate };
                 var borderType = new BorderType() { Name = "Nothing" };
                 var newBorder = new Border { Field1 = field, Field2 = neighbour, BorderStatus = borderStatus, BorderType = borderType };
                 bordersAdded.Add(GetBorderKey(newBorder));
@@ -250,8 +248,8 @@ public class CreepBehaviour : MonoBehaviour
         {
             valueField2 = field2.Creep.ValueOld;
         }
-        float flow = (valueField1 - valueField2) * borderState * Time.deltaTime * flowSpeed;
-        if (flow > -minFlow && flow < minFlow)
+        float flow = (valueField1 - valueField2) * borderState * Time.deltaTime * Core.Game.State.Mode.FlowSpeed;
+        if (flow > -Core.Game.State.Mode.MinFlow && flow < Core.Game.State.Mode.MinFlow)
         {
             flow = 0;
         }
