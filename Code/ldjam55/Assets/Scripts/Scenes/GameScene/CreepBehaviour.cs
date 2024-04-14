@@ -23,7 +23,6 @@ public class CreepBehaviour : MonoBehaviour
     public List<Action<FieldObject>> DestroyFieldObjectEvent = new();
     public Dictionary<string, List<ActionContainer>> FieldCreeperChangeEvent = new Dictionary<string, List<ActionContainer>>();
 
-
     void Update()
     {
         if (isRunning)
