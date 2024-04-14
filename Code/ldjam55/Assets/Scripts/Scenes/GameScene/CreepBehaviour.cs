@@ -12,6 +12,7 @@ public class CreepBehaviour : MonoBehaviour
     private TimeManagerBehaviour TimeManagerBehaviour;
 
 
+    //private Dictionary<Creeper, List<Border>> bordersByCreep = new Dictionary<Creeper, List<Border>>();
     private List<Border> borders = new List<Border>();
     private bool isRunning = false;
 
@@ -30,14 +31,23 @@ public class CreepBehaviour : MonoBehaviour
     {
         ConvertBorders();
         ConvertFieldObjectMethods();
-        creepers = Core.Game.State.Mode.Creepers.ToDictionary(creep  => creep.ID);
+        creepers = Core.Game.State.Mode.Creepers.ToDictionary(creep => creep.ID);
         isRunning = true;
     }
 
     private void ConvertBorders()
     {
+
+        borders = ConvertBordersForCreeper(null);
+        //foreach (var creeper in Core.Game.State.Mode.Creepers)
+        //{
+        //    ConvertBordersForCreeper(creeper);
+        //}
+    }
+    private List<Border> ConvertBordersForCreeper(Creeper creeper)
+    {
         var bordersAdded = new HashSet<string>();
-        borders.Clear();
+        var borders = new List<Border>();
         foreach (var border in Core.Game.State.GameField.Borders)
         {
             borders.Add(border);
@@ -47,9 +57,8 @@ public class CreepBehaviour : MonoBehaviour
         var topFields = new Dictionary<string, Field>();
         foreach (var field in Core.Game.State.GameField.Fields)
         {
-            Field cField;
             string fieldKey = GetFieldKey(field);
-            if (topFields.TryGetValue(fieldKey, out cField))
+            if (topFields.TryGetValue(fieldKey, out Field cField))
             {
                 if (cField.Height < field.Height)
                 {
@@ -76,13 +85,17 @@ public class CreepBehaviour : MonoBehaviour
                 {
                     continue;
                 }
-                var borderStatus = new BorderStatus() { Value = Core.Game.State.Mode.NothingFlowRate };
+                //var heightDiff = field.Height - neighbour.Height;
+                //var flowRate = Core.Game.State.Mode.NothingFlowRate * heightDiff * creeper.Parameters.HightTraverseRate; 
+                var flowRate = Core.Game.State.Mode.NothingFlowRate;
+                var borderStatus = new BorderStatus() { Value = flowRate };
                 var borderType = new BorderType() { Name = "Nothing" };
                 var newBorder = new Border { Field1 = field, Field2 = neighbour, BorderStatus = borderStatus, BorderType = borderType };
                 bordersAdded.Add(GetBorderKey(newBorder));
                 borders.Add(newBorder);
             }
         }
+        return borders;
     }
 
     public void ToggleCreeperActivity()
@@ -115,7 +128,8 @@ public class CreepBehaviour : MonoBehaviour
     {
         foreach (var fieldObject in Core.Game.State.GameField.FieldObjects)
         {
-            if (fieldObject.UpdateMethod == "SpawnCreep") { 
+            if (fieldObject.UpdateMethod == "SpawnCreep")
+            {
                 JObject paramsObject = JObject.Parse(fieldObject.UpdateMethodParameters);
                 float amount = float.Parse(paramsObject["Amount"].ToString());
                 float time = float.Parse(paramsObject["Time"].ToString());
@@ -149,7 +163,8 @@ public class CreepBehaviour : MonoBehaviour
                 if (div > 0)
                 {
                     field.Creep.Value = div;
-                } else
+                }
+                else
                 {
                     field.Creep.Value -= div;
                     field.Creep.Creeper = creepers[creeperId];
@@ -158,8 +173,9 @@ public class CreepBehaviour : MonoBehaviour
             else
             {
                 field.Creep.Value += amount;
-            } 
-        } else
+            }
+        }
+        else
         {
             var newCreep = new Creep() { Value = amount, Creeper = creepers[creeperId] };
             field.Creep = newCreep;
@@ -249,6 +265,25 @@ public class CreepBehaviour : MonoBehaviour
             valueField2 = field2.Creep.ValueOld;
         }
         float flow = (valueField1 - valueField2) * borderState * Time.deltaTime * Core.Game.State.Mode.FlowSpeed;
+
+        var heightDiff = field1.Height - field2.Height;
+        if (heightDiff > 0)
+        {
+            if (field1.Creep != null)
+            {
+                var flow1 = heightDiff * field1.Creep.Creeper.Parameters.HightTraverseRate;
+                var flow2 = heightDiff * field2.Creep.Creeper.Parameters.HightTraverseRate;
+                flow = flow1 - flow2;
+            }
+            else if (field1.Creep != null)
+            {
+                flow = heightDiff * field1.Creep.Creeper.Parameters.HightTraverseRate;
+            }
+            else if (field2.Creep != null)
+            {
+                flow = heightDiff * field2.Creep.Creeper.Parameters.HightTraverseRate;
+            }
+        }
         if (flow > -Core.Game.State.Mode.MinFlow && flow < Core.Game.State.Mode.MinFlow)
         {
             flow = 0;

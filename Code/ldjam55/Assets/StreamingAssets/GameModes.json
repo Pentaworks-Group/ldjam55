@@ -15,14 +15,16 @@
                 "ID": "CreeperWater",
                 "Name": "Holy Water",
                 "Parameters": {
-                    "Material": "Water"
+                    "Material": "Water",
+                    "HightTraverseRate": 1
                 }
             },
             {
                 "ID": "CreeperFire",
                 "Name": "Hell! Fire",
                 "Parameters": {
-                    "Material": "Fire"
+                    "Material": "Fire",
+                    "HightTraverseRate": -1
                 }
             }
         ]
