@@ -68,6 +68,10 @@ namespace Assets.Scripts.Scenes.GameScene
             var newFieldGO = Instantiate(fieldTemplate, World.transform);
             var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
             newFieldGO.GetComponent<Renderer>().material = material;
+            foreach(Transform child in newFieldGO.transform)
+            {
+                child.GetComponent<Renderer>().material = material;
+            }
             newFieldGO.name = GetFieldObjectName(field.name);
             newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
             newFieldGO.SetActive(true);
