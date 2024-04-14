@@ -18,6 +18,10 @@ public class CreepBehaviour : MonoBehaviour
 
     private Dictionary<string, Creeper> creepers;
 
+    private void Start()
+    {
+        StartGame();
+    }
 
     void Update()
     {

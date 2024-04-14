@@ -13,9 +13,5 @@ namespace Assets.Scripts.Core.Model
         public List<FieldObject> FieldObjects { get; set; } = new List<FieldObject>();
 
         public Creep Creep { get; set; }
-
-
-
-
     }
 }

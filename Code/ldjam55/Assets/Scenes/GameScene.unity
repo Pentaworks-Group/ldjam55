@@ -208,13 +208,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 119510461}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.120076075, y: 0.29422954, z: -0.037290353, w: 0.9474282}
-  m_LocalPosition: {x: 31.3, y: 4.8, z: 14.2}
+  m_LocalRotation: {x: 0.24380295, y: 0.28675583, z: -0.075714484, w: 0.9233626}
+  m_LocalPosition: {x: 38.3, y: 52.5, z: 24.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 14.446, y: 34.505, z: 0}
+  m_LocalEulerAnglesHint: {x: 29.581, y: 34.505, z: 0}
 --- !u!1 &261588233
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,6 +228,8 @@ GameObject:
   - component: {fileID: 261588235}
   - component: {fileID: 261588234}
   - component: {fileID: 261588238}
+  - component: {fileID: 261588239}
+  - component: {fileID: 261588240}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -340,6 +342,31 @@ MonoBehaviour:
   stone2LayerID: 2
   slimeYellowLayerID: 3
   slimeRedLayerID: 4
+--- !u!114 &261588239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261588233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b18e14a1b3a353a49bf25ff39148248c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TimeManagerBehaviour: {fileID: 261588240}
+--- !u!114 &261588240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261588233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c08ba0c4ad724a49a7e221d60d0bdc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1247735537
 GameObject:
   m_ObjectHideFlags: 0

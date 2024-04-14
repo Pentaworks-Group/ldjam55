@@ -1,6 +1,11 @@
+using Assets.Scripts.Base;
+using Assets.Scripts.Core.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
+using static UnityEditor.PlayerSettings;
 
 public class TerrainPaintBehaviour : MonoBehaviour
 {
@@ -15,11 +20,37 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private float scaleFactorX = 1f;
     private float scaleFactorY = 1f;
 
-    private float creepSize = 0;
+    private int countX = 0;
+    private int countY = 0;
+    private float xOffset = 0;
+    private float yOffset = 0;
+
+    private float time = 0;
 
     // Start is called before the first frame update
     void Start()
     {
+        int minX = 0;
+        int minY = 0;
+        float minZ = 0;
+        int maxX = 0;
+        int maxY = 0;
+        float maxZ = 0;
+        foreach (var field in Core.Game.State.GameField.Fields)
+        {
+            minX = (int)Math.Min(field.Coords.X, minX);
+            minY = (int)Math.Min(field.Coords.Y, minY);
+            minZ = Mathf.Min(field.Height, minZ);
+            maxX = (int)Math.Max(field.Coords.X, maxX);
+            maxY = (int)Math.Max(field.Coords.Y, maxY);
+            maxZ = Mathf.Max(field.Height, maxZ);
+        }
+        countX = (maxX - minX) + 1;
+        countY = (maxY - minY) + 1;
+
+        xOffset = minX;
+        yOffset = minY;
+
         scaleFactorY = mainTerrain.terrainData.alphamapHeight / mainTerrain.terrainData.size.z;
         scaleFactorX = mainTerrain.terrainData.alphamapWidth / mainTerrain.terrainData.size.x;
 
@@ -50,35 +81,53 @@ public class TerrainPaintBehaviour : MonoBehaviour
             }
         }
         mainTerrain.terrainData.SetAlphamaps(0, 0, map);
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        float delta = Time.deltaTime * 20f;
-        creepSize += delta;
+        time += Time.deltaTime;
 
-        paintCreep();
+/*        int xPos = (int)(Math.Floor(time) % 9 + xOffset);
+        int yPos = (int)(Math.Floor(Math.Floor(time) / 9) + yOffset);
+        Field f = new Field { Coords = new GameFrame.Core.Math.Vector2(xPos, yPos) };
+        paintCreep(f);*/
+
+        foreach (var field in Core.Game.State.GameField.Fields)
+        {
+            if(field.Creep != null)
+            {
+                Debug.Log(field.Coords.X + ", " + field.Coords.Y);
+                paintCreep(field);
+            }
+        }
     }
 
-    private void paintCreep()
+    private void paintCreep(Field field)
     {
         //TODO: add Creep def
-        Vector2Int pos = new Vector2Int((int) (100 - creepSize / 2), (int)(100 - creepSize / 2));
-        paintSlimeArea(slimeRedLayerID, pos.x, pos.y, (int)creepSize, (int)(creepSize / 2));
+        Vector2Int mapPos = new Vector2Int((int) (field.Coords.X-xOffset), (int) (field.Coords.Y-yOffset));
+        Vector2Int creepCenter = getTextureMapCoord(mapPos);
+        int sizeX = (int)(mainTerrain.terrainData.size.x / countX);
+        int sizeY = (int)(mainTerrain.terrainData.size.z / countY);
+        int radius =  (int)(Mathf.Min(field.Creep.Value, 1f) * sizeX / 2);
+
+        paintSlimeArea(slimeRedLayerID, creepCenter.x-sizeX/2, creepCenter.y-sizeY/2, sizeX, sizeY, radius, 0);
+//        paintSlimeArea(slimeRedLayerID, pos.x, pos.y, sizeX, sizeY, (int)creepSize, (int)(creepSize / 2));
     }
 
-    private void paintSlimeArea(int slimeLayerID, int x, int y, int radius, int hardness)
+    private void paintSlimeArea(int slimeLayerID, int x, int y, int width, int height, int radius, int hardness)
     {
         if(x < 0) x = 0;
         if(y < 0) y = 0;
 
-        int width = (int) (2 * radius * scaleFactorY);
-        int height = (int)(2 * radius * scaleFactorX);
+        width = (int) (width * scaleFactorY);
+        height = (int)(height * scaleFactorX);
+        x = (int) (x * scaleFactorX);
+        y = (int) (y * scaleFactorY);
 
-        width = Mathf.Min(width, mainTerrain.terrainData.alphamapHeight - x);
-        height = Mathf.Min(height, mainTerrain.terrainData.alphamapWidth - y);
+        width = Mathf.Min(width, mainTerrain.terrainData.alphamapHeight - x - 1);
+        height = Mathf.Min(height, mainTerrain.terrainData.alphamapWidth - y - 1);
 
         float[,,] map = new float[width, height, mainTerrain.terrainData.alphamapLayers];
         float[,,] currentValues = mainTerrain.terrainData.GetAlphamaps( x , y , width, height);
@@ -111,18 +160,25 @@ public class TerrainPaintBehaviour : MonoBehaviour
                         }
                         else
                         {
-                            map[i, j, k] = currentValues[0, 0, k] * (1-strength);
+                            map[i, j, k] = currentValues[j, i, k] * (1-strength);
                         }
 
                     }
                     else
                     {
-                        map[i, j, k] = currentValues[0, 0, k];
+                        map[i, j, k] = currentValues[j, i, k];
 
                     }
                 }
             }
         }
         mainTerrain.terrainData.SetAlphamaps(x, y, map);
+    }
+
+    private Vector2Int getTextureMapCoord(Vector2Int pos)
+    {
+        pos.x = (int)((2 * pos.x + 1) * mainTerrain.terrainData.size.x / (2 * countX));
+        pos.y = (int)((2 * pos.y + 1) * mainTerrain.terrainData.size.z / (2 * countY));
+        return pos;
     }
 }
