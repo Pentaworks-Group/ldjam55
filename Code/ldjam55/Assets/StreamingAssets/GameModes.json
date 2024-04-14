@@ -3,6 +3,9 @@
         "Reference": "default",
         "Name": "Default GameMode",
         "Description": "Default Default Default",
+        "NothingFlowRate": 1,
+        "FlowSpeed": 0.5,
+        "MinFlow" : 0.00001,
         "GameField": {
             "IsReferenced": true,
             "Reference": "default"
@@ -12,14 +15,16 @@
                 "ID": "CreeperWater",
                 "Name": "Holy Water",
                 "Parameters": {
-                    "Material": "Water"
+                    "Material": "Water",
+                    "HightTraverseRate": 1
                 }
             },
             {
                 "ID": "CreeperFire",
                 "Name": "Hell! Fire",
                 "Parameters": {
-                    "Material": "Fire"
+                    "Material": "Fire",
+                    "HightTraverseRate": -1
                 }
             }
         ]

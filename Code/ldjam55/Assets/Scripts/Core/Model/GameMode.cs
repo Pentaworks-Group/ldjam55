@@ -10,5 +10,8 @@ namespace Assets.Scripts.Core.Model
 
 
         public List<Creeper> Creepers { get; set; }
+        public float NothingFlowRate { get; set; } = 0.1f;
+        public float FlowSpeed { get; set; } = 0.5f;
+        public float MinFlow { get; set; } = 0.0001f;
     }
 }

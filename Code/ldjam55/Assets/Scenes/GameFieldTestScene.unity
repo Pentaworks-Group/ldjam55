@@ -1015,7 +1015,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameDisplayBehaviour: {fileID: 1799709689}
-  gameSceneBehaviour: {fileID: 1157423381}
+  creepBehaviour: {fileID: 1157423381}
 --- !u!114 &1157423381
 MonoBehaviour:
   m_ObjectHideFlags: 0

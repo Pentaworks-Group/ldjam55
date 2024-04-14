@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace Assets.Scripts.Scenes.GameScene
 {
-    public class GameSceneMenuBehaviour : MonoBehaviour
+    public class GameFieldTestingMenuBehaviour : MonoBehaviour
     {
         [SerializeField]
         private GameDisplayBehaviour gameDisplayBehaviour;
 
         [SerializeField]
-        private CreepBehaviour gameSceneBehaviour;
+        private CreepBehaviour creepBehaviour;
 
         private bool isRunning = false;
 
@@ -17,7 +17,9 @@ namespace Assets.Scripts.Scenes.GameScene
             
             if (Base.Core.Game.State == default)
             {
-                Base.Core.Game.Start();
+                var gameState = Base.Core.Game.GetInitGameState();
+                gameState.CurrentScene = Constants.SceneNames.GameFieldTest;
+                Base.Core.Game.Start(gameState);
             }
         }
 
@@ -25,7 +27,7 @@ namespace Assets.Scripts.Scenes.GameScene
         private void Start()
         {
             gameDisplayBehaviour.GenerateGameField();
-            gameSceneBehaviour.StartGame();
+            creepBehaviour.StartGame();
             isRunning = true;
         }
 
@@ -47,7 +49,7 @@ namespace Assets.Scripts.Scenes.GameScene
         public void ToggleCreeperActivity()
         {
             isRunning = !isRunning;
-            gameSceneBehaviour.ToggleCreeperActivity();
+            creepBehaviour.ToggleCreeperActivity();
             if (isRunning )
             {
                 Time.timeScale = 1f;
