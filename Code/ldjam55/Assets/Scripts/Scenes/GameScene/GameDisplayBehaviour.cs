@@ -16,7 +16,7 @@ namespace Assets.Scripts.Scenes.GameScene
         private GameObject World;
 
         [SerializeField]
-        private CreepBehaviour CreepBehaviour;
+        private CreepBehaviour creepBehaviour;
 
         private Dictionary<string, GameObject> Templates;
 
@@ -36,9 +36,11 @@ namespace Assets.Scripts.Scenes.GameScene
 
         private void Start()
         {
-            CreepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
-            CreepBehaviour.DestroyFieldObjectEvent.Add(DestroyFieldObject);
+            creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
+            creepBehaviour.DestroyFieldObjectEvent.Add(DestroyFieldObject);
         }
+
+
 
         public void GenerateGameField()
         {
@@ -103,21 +105,24 @@ namespace Assets.Scripts.Scenes.GameScene
 
         private void SpawnFieldObject(GameObject field, FieldObject fieldObject)
         {
-            var fieldTemplate = Templates[fieldObject.Model];
-            var newFieldGO = Instantiate(fieldTemplate, World.transform);
-            var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
-            container.ContainedObject = fieldObject;
-            container.ObjectType = "FieldObject";
-            var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
-            newFieldGO.GetComponent<Renderer>().material = material;
-            foreach (Transform child in newFieldGO.transform)
+            if (!fieldObject.Hidden)
             {
-                child.GetComponent<Renderer>().material = material;
-            }
-            newFieldGO.name = GetFieldObjectName(field.name);
-            newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
-            FieldObjectCache.Add(fieldObject.GetHashCode(), newFieldGO);
-            newFieldGO.SetActive(true);
+                var fieldTemplate = Templates[fieldObject.Model];
+                var newFieldGO = Instantiate(fieldTemplate, World.transform);
+                var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
+                container.ContainedObject = fieldObject;
+                container.ObjectType = "FieldObject";
+                var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
+                newFieldGO.GetComponent<Renderer>().material = material;
+                foreach (Transform child in newFieldGO.transform)
+                {
+                    child.GetComponent<Renderer>().material = material;
+                }
+                newFieldGO.name = GetFieldObjectName(field.name);
+                newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
+                FieldObjectCache.Add(fieldObject.GetHashCode(), newFieldGO);
+                newFieldGO.SetActive(true);
+            }            
         }
 
         private static string GetFieldObjectName(string fieldName)

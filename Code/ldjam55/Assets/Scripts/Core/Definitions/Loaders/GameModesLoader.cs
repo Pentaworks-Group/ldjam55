@@ -27,6 +27,10 @@ namespace Assets.Scripts.Core.Definitions.Loaders
                         Name = loadedGameMode.Name,
                         Description = loadedGameMode.Description,
                         Creepers = loadedGameMode.Creepers,
+                        EndConditions = loadedGameMode.EndConditions,
+                        FlowSpeed = loadedGameMode.FlowSpeed,
+                        MinFlow = loadedGameMode.MinFlow,
+                        NothingFlowRate = loadedGameMode.NothingFlowRate,
                     };
 
                     newGameMode.GameField = CheckItem(loadedGameMode.GameField, this.gameFieldCache);

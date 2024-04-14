@@ -2379,7 +2379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TemplateParent: {fileID: 1468809383}
   World: {fileID: 1902564596}
-  CreepBehaviour: {fileID: 1157423381}
+  creepBehaviour: {fileID: 1157423381}
 --- !u!4 &1799709690
 Transform:
   m_ObjectHideFlags: 0

@@ -30,8 +30,8 @@
         ],
         "EndConditions": [
             {
-                "Name": "Timer",
-                "IsWin": true,
+                "Name": "WinTimer",
+                "IsWin": false,
                 "WinCount": 1
             }
         ]
