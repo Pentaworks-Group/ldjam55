@@ -8,7 +8,7 @@ public class TimeManagerBehaviour : MonoBehaviour
     private class SheduledEvent
     {
         public float Time;
-        public Action<TimeManagerBehaviour> EventAction;
+        public Action EventAction;
         public string EventName;
     }
 
@@ -31,7 +31,7 @@ public class TimeManagerBehaviour : MonoBehaviour
     {
         if (nextEventTime != default && nextEventTime < Time.time)
         {
-            sheduledEvents[0].EventAction(this);
+            sheduledEvents[0].EventAction();
             sheduledEvents.RemoveAt(0);
             if (sheduledEvents.Count > 0)
             {
@@ -44,7 +44,7 @@ public class TimeManagerBehaviour : MonoBehaviour
         }
     }
 
-    public void RegisterEvent(float time, Action<TimeManagerBehaviour> action, string eventName, bool fromNow = true)
+    public void RegisterEvent(float time, Action action, string eventName, bool fromNow = true)
     {
         var newEvent = new SheduledEvent { EventName = eventName, EventAction = action };
         float eventTime;

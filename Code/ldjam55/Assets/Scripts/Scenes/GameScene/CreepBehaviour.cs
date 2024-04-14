@@ -1,9 +1,12 @@
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CreepBehaviour : MonoBehaviour
 {
@@ -17,6 +20,8 @@ public class CreepBehaviour : MonoBehaviour
     private bool isRunning = false;
 
     private Dictionary<string, Creeper> creepers;
+
+    public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
 
 
     void Update()
@@ -85,17 +90,23 @@ public class CreepBehaviour : MonoBehaviour
                 {
                     continue;
                 }
-                //var heightDiff = field.Height - neighbour.Height;
-                //var flowRate = Core.Game.State.Mode.NothingFlowRate * heightDiff * creeper.Parameters.HightTraverseRate; 
-                var flowRate = Core.Game.State.Mode.NothingFlowRate;
-                var borderStatus = new BorderStatus() { Value = flowRate };
-                var borderType = new BorderType() { Name = "Nothing" };
-                var newBorder = new Border { Field1 = field, Field2 = neighbour, BorderStatus = borderStatus, BorderType = borderType };
+                var newBorder = CreateNewDefaultBorder(field, neighbour, borders);
                 bordersAdded.Add(GetBorderKey(newBorder));
-                borders.Add(newBorder);
             }
         }
         return borders;
+    }
+
+    private Border CreateNewDefaultBorder(Field field1, Field field2, List<Border> borders)
+    {
+        //var heightDiff = field.Height - neighbour.Height;
+        //var flowRate = Core.Game.State.Mode.NothingFlowRate * heightDiff * creeper.Parameters.HightTraverseRate; 
+        var flowRate = Core.Game.State.Mode.NothingFlowRate;
+        var borderStatus = new BorderStatus() { Value = flowRate };
+        var borderType = new BorderType() { Name = "Nothing" };
+        var newBorder = new Border { Field1 = field1, Field2 = field2, BorderStatus = borderStatus, BorderType = borderType };
+        borders.Add(newBorder);
+        return newBorder;
     }
 
     public void ToggleCreeperActivity()
@@ -141,19 +152,19 @@ public class CreepBehaviour : MonoBehaviour
 
     private void RegisterSpawn(FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId)
     {
-        TimeManagerBehaviour.RegisterEvent(time, (TimeManagerBehaviour timeManager) => Spawn(timeManager, fieldObject, amount, time, isIntervall, creeperId), fieldObject.Name + fieldObject.UpdateMethod);
+        TimeManagerBehaviour.RegisterEvent(time, () => Spawn(fieldObject, amount, time, isIntervall, creeperId), fieldObject.Name + fieldObject.UpdateMethod);
     }
 
-    private void Spawn(TimeManagerBehaviour timeManager, FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId)
+    private void Spawn(FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId)
     {
         SpawnCreepAt(fieldObject.Field, amount, creeperId);
         if (isIntervall)
         {
-            TimeManagerBehaviour.RegisterEvent(time, (TimeManagerBehaviour timeManager) => Spawn(timeManager, fieldObject, amount, time, isIntervall, creeperId), fieldObject.Name + fieldObject.UpdateMethod);
+            TimeManagerBehaviour.RegisterEvent(time, () => Spawn(fieldObject, amount, time, isIntervall, creeperId), fieldObject.Name + fieldObject.UpdateMethod);
         }
     }
 
-    private void SpawnCreepAt(Field field, float amount, string creeperId)
+    public void SpawnCreepAt(Field field, float amount, string creeperId)
     {
         if (field.Creep != null && field.Creep.Creeper != null)
         {
@@ -179,6 +190,21 @@ public class CreepBehaviour : MonoBehaviour
         {
             var newCreep = new Creep() { Value = amount, Creeper = creepers[creeperId] };
             field.Creep = newCreep;
+        }
+    }
+
+    public void DestroyBorder(Border border)
+    {
+        if (border != null)
+        {
+            borders.Remove(border);
+            Core.Game.State.GameField.Borders.Remove(border);
+
+            CreateNewDefaultBorder(border.Field1, border.Field2, borders);
+            foreach (var action in DestroyBorderEvent)
+            {
+                action.Invoke(border);
+            }
         }
     }
 

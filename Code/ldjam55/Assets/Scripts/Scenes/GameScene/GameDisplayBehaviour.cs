@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Assets.Scripts.Scenes.GameScene
 {
@@ -15,14 +14,16 @@ namespace Assets.Scripts.Scenes.GameScene
 
         [SerializeField]
         private GameObject World;
+
         [SerializeField]
-        private Material FireMat;
-        [SerializeField]
-        private Material WaterMat;
+        private CreepBehaviour CreepBehaviour;
 
         private Dictionary<string, GameObject> Templates;
 
         private Dictionary<string, GameObject> WorldCreep;
+        private Dictionary<string, GameObject> Borders;
+
+
 
 
         private void Awake()
@@ -30,6 +31,10 @@ namespace Assets.Scripts.Scenes.GameScene
             FetchTemplates();
         }
 
+        private void Start()
+        {
+            CreepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
+        }
 
 
 
@@ -42,11 +47,16 @@ namespace Assets.Scripts.Scenes.GameScene
                 newFieldGO.name = "Field:" + field.ID;
                 newFieldGO.transform.position = new Vector3(field.Coords.X, field.Height, field.Coords.Y);
                 newFieldGO.SetActive(true);
+                var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
+                container.ContainedObject = field;
+                container.ObjectType = "Field";
                 foreach (var fieldObject in field.FieldObjects)
                 {
                     SpawnFieldObject(newFieldGO, fieldObject);
                 }
             }
+
+            Borders = new Dictionary<string, GameObject>();
             var wallTemplate = Templates["Wall"];
             foreach (var border in Base.Core.Game.State.GameField.Borders)
             {
@@ -54,21 +64,40 @@ namespace Assets.Scripts.Scenes.GameScene
                 {
                     var newFieldGO = Instantiate(wallTemplate, World.transform);
                     newFieldGO.name = "Wall";
+                    var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
+                    container.ContainedObject = border;
+                    container.ObjectType = "Wall";
                     SetBorderPositionAndRotation(border, newFieldGO);
                     newFieldGO.SetActive(true);
+                    Borders.Add(GetBorderKey(border), newFieldGO);
                 }
             }
             WorldCreep = new Dictionary<string, GameObject>();
         }
 
+        private string GetBorderKey(Border border)
+        {
+            return border.BorderType.Name + border.Field1.ID + border.Field2.ID;
+        }
+
+        public void DestroyBorder(Border border)
+        {
+            if (Borders.TryGetValue(GetBorderKey(border), out var borderGO))
+            {
+                Destroy(borderGO);
+            }
+        }
 
         private void SpawnFieldObject(GameObject field, FieldObject fieldObject)
         {
             var fieldTemplate = Templates[fieldObject.Model];
             var newFieldGO = Instantiate(fieldTemplate, World.transform);
+            var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
+            container.ContainedObject = fieldObject;
+            container.ObjectType = "FieldObject";
             var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
             newFieldGO.GetComponent<Renderer>().material = material;
-            foreach(Transform child in newFieldGO.transform)
+            foreach (Transform child in newFieldGO.transform)
             {
                 child.GetComponent<Renderer>().material = material;
             }
@@ -105,6 +134,8 @@ namespace Assets.Scripts.Scenes.GameScene
             }
         }
 
+
+
         public void DumpStructure()
         {
             Dictionary<string, Field> fields = new Dictionary<string, Field>();
@@ -113,7 +144,8 @@ namespace Assets.Scripts.Scenes.GameScene
             foreach (Transform tran in World.transform)
             {
                 var gO = tran.gameObject;
-                if (gO.name.StartsWith("Field:"))
+                var container = tran.gameObject.GetComponent<GameFieldContainerBehaviour>();
+                if (container.ObjectType == "Field")
                 {
                     var Field = new Field();
                     var x = Mathf.RoundToInt(gO.transform.position.x);
@@ -128,17 +160,17 @@ namespace Assets.Scripts.Scenes.GameScene
                     }
                     fields.Add(Field.ID, Field);
                 }
-                else if (gO.name.StartsWith("Wall"))
+                else if (container.ObjectType == "Wall")
                 {
                     rawWalls.Add(gO);
                 }
-                else if (gO.name.StartsWith("FieldObject:"))
+                else if (container.ObjectType == "FieldObject")
                 {
                     rawFieldObjects.Add(gO);
                 }
-                else if (gO.name.StartsWith("Creep_"))
+                else if (container.ObjectType == "Creep")
                 {
-                    
+
                 }
                 else
                 {
@@ -175,8 +207,7 @@ namespace Assets.Scripts.Scenes.GameScene
                 {
                     var fieldO = new Core.Definitions.FieldObject();
                     var fieldID = rawFO.name.Substring(prefixL);
-                    FieldObject f;
-                    if (fieldDict.TryGetValue(fieldID, out f))
+                    if (fieldDict.TryGetValue(fieldID, out FieldObject f))
                     {
                         if (!fieldO.IsReferenced)
                         {
@@ -297,6 +328,9 @@ namespace Assets.Scripts.Scenes.GameScene
                     {
                         creepGO = Instantiate(creepTemplate, World.transform);
                         creepGO.name = "Creep_" + field.Creep.Creeper.Name;
+                        var container = creepGO.AddComponent<GameFieldContainerBehaviour>();
+                        container.ContainedObject = field;
+                        container.ObjectType = "Creep";
 
                         creepGO.transform.position = new Vector3(field.Coords.X, field.Height + 1, field.Coords.Y);
                         WorldCreep[field.ID] = creepGO;

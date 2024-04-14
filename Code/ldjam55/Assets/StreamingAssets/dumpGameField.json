@@ -537,14 +537,16 @@
   "FieldObjects": [
     {
       "Name": "Water Spawner",
+      "Model": "Spawner",
       "Material": "Water",
-      "FieldReference": "0-0--2",
+      "FieldReference": "1-1--1",
       "UpdateMethod": "SpawnCreep",
       "UpdateMethodParameters": "{\"Amount\": 10,\"Time\": 2,\"Creeper\": \"CreeperWater\", \"IsIntervall\": true}",
       "IsReferenced": false
     },
     {
       "Name": "Fire Spawner",
+      "Model": "Spawner",
       "Material": "Fire",
       "FieldReference": "4-2--2",
       "UpdateMethod": "SpawnCreep",
