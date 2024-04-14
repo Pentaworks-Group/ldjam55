@@ -81,7 +81,7 @@ public class TimeManagerBehaviour : MonoBehaviour
             var shEvent = sheduledEvents[i];
             if (startingWith)
             {
-                if (shEvent.EventName.StartsWith(eventName)) ;
+                if (shEvent.EventName.StartsWith(eventName))
                 {
                     sheduledEvents.RemoveAt(i);
                 }

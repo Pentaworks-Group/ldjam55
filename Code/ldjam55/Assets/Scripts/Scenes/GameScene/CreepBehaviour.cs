@@ -5,13 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class GameSceneBehaviour : MonoBehaviour
+public class CreepBehaviour : MonoBehaviour
 {
 
     [SerializeField]
     private TimeManagerBehaviour TimeManagerBehaviour;
 
-    float flow_rate = 0.1f; //MOVE to gameMode
+    private float flow_rate = 0.1f; //MOVE to gameMode
+    private float flowSpeed = 0.5f;
+    private float minFlow = 0.0001f;
     private List<Border> borders = new List<Border>();
     private bool isRunning = false;
 
@@ -248,7 +250,11 @@ public class GameSceneBehaviour : MonoBehaviour
         {
             valueField2 = field2.Creep.ValueOld;
         }
-        float flow = (valueField1 - valueField2) * borderState * Time.deltaTime;
+        float flow = (valueField1 - valueField2) * borderState * Time.deltaTime * flowSpeed;
+        if (flow > -minFlow && flow < minFlow)
+        {
+            flow = 0;
+        }
         return flow;
     }
 

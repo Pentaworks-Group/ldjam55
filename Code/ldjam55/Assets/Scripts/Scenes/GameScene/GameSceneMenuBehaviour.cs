@@ -8,7 +8,7 @@ namespace Assets.Scripts.Scenes.GameScene
         private GameDisplayBehaviour gameDisplayBehaviour;
 
         [SerializeField]
-        private GameSceneBehaviour gameSceneBehaviour;
+        private CreepBehaviour gameSceneBehaviour;
 
         private bool isRunning = false;
 
