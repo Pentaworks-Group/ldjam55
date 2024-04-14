@@ -40,20 +40,6 @@ public class GameSceneBehaviour : MonoBehaviour
         {
             SpawnFieldObject(fieldObject);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
-    private void FetchTemplates()
-    {
-        Templates = new Dictionary<string, GameObject>();
-        foreach (Transform tran in TemplateParent.transform)
-        {
-            Templates.Add(tran.name, tran.gameObject);
-        }
 
         Borders = new Dictionary<string, GameObject>();
         var wallTemplate = Templates["Wall"];
@@ -71,11 +57,35 @@ public class GameSceneBehaviour : MonoBehaviour
                 Borders.Add(GetBorderKey(border), newFieldGO);
             }
         }
+
+        creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+    }
+
+    private void FetchTemplates()
+    {
+        Templates = new Dictionary<string, GameObject>();
+        foreach (Transform tran in TemplateParent.transform)
+        {
+            Templates.Add(tran.name, tran.gameObject);
+        }
     }
 
     private string GetBorderKey(Assets.Scripts.Core.Model.Border border)
     {
         return border.BorderType.Name + border.Field1.ID + border.Field2.ID;
+    }
+
+    public void DestroyBorder(Assets.Scripts.Core.Model.Border border)
+    {
+        if (Borders.TryGetValue(GetBorderKey(border), out var borderGO))
+        {
+            Destroy(borderGO);
+        }
     }
 
 
@@ -113,19 +123,21 @@ public class GameSceneBehaviour : MonoBehaviour
         pos.z = (int)((2 * pos.z + 1) * mapSize.z / (2 * terrainBehaviour.FieldCountY));
         return pos;
     }
-
+        
     private void SetBorderPositionAndRotation(Assets.Scripts.Core.Model.Border border, GameObject borderObject)
     {
         float x1 = border.Field1.Coords.X;
         float y1 = border.Field1.Coords.Y;
-        var x = (x1 - border.Field2.Coords.X) / 2 - terrainBehaviour.XOffset;
-        var z = (y1 - border.Field2.Coords.Y) / 2 - terrainBehaviour.YOffset;
-        Vector3 mapPos = new Vector3(x1 - x, 0, y1 - z);
+        float x2 = border.Field2.Coords.X;
+        float y2 = border.Field2.Coords.Y;
+        float x = (x2 - x1) / 2f;
+        float z = (y2 - y1) / 2f;
+        Vector3 mapPos = new Vector3(x1 + x, 0, y1 + z);
         Vector3 terrainPos = getTerrainCoordinates(mapPos);
         var height = Mathf.Max(border.Field1.Height, border.Field2.Height);
 //        borderObject.transform.position = new Vector3(x1 - x, height + 0.55f, y1 - z);
         borderObject.transform.position = terrainPos;
-        if (x1 != border.Field2.Coords.X)
+        if (border.Field1.Coords.Y != border.Field2.Coords.Y)
         {
             borderObject.transform.eulerAngles = new Vector3(0, 90, 0);
         }

@@ -9,21 +9,21 @@ using static UnityEditor.PlayerSettings;
 
 public class TerrainPaintBehaviour : MonoBehaviour
 {
-    public Terrain mainTerrain;
+    [SerializeField]
+    private Terrain mainTerrain;
+
+    [SerializeField]
+    private TerrainBehaviour terrainBehaviour;
 
     public int grassLayerID = 0;
     public int stone1LayerID = 1;
     public int stone2LayerID = 2;
     public int slimeYellowLayerID = 3;
     public int slimeRedLayerID = 4;
+    public int rottenGroundLayerID = 5;
 
     private float scaleFactorX = 1f;
     private float scaleFactorY = 1f;
-
-    private int countX = 0;
-    private int countY = 0;
-    private float xOffset = 0;
-    private float yOffset = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -43,11 +43,6 @@ public class TerrainPaintBehaviour : MonoBehaviour
             maxY = (int)Math.Max(field.Coords.Y, maxY);
             maxZ = Mathf.Max(field.Height, maxZ);
         }
-        countX = (maxX - minX) + 1;
-        countY = (maxY - minY) + 1;
-
-        xOffset = minX;
-        yOffset = minY;
 
         scaleFactorY = mainTerrain.terrainData.alphamapHeight / mainTerrain.terrainData.size.z;
         scaleFactorX = mainTerrain.terrainData.alphamapWidth / mainTerrain.terrainData.size.x;
@@ -61,8 +56,15 @@ public class TerrainPaintBehaviour : MonoBehaviour
             for (int x = 0; x < mainTerrain.terrainData.alphamapWidth; x++)
             {
                 float frac = getSteepnessFactor(x, y);
+                Vector2Int mapPos = getMapCoordFromTextureCoord(new Vector2Int(y, x));
+                Field field = getField(mapPos.x, mapPos.y);
                 for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++) {
-                    map[x, y, z] = getSteepnessAlpha(z, frac);
+                    int layerID = rottenGroundLayerID;
+                    if (field == null)
+                    {
+                        layerID = grassLayerID;
+                    }
+                    map[x, y, z] = getSteepnessAlpha(z, frac, layerID);
                 }
             }
         }
@@ -88,16 +90,16 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private void paintCreep(Field field)
     {
         //TODO: add Creep def
-        int sizeX = (int)(mainTerrain.terrainData.size.x / countX);
+        int sizeX = (int)(mainTerrain.terrainData.size.x / terrainBehaviour.FieldCountX);
         int radius = (int)(Mathf.Min(field.Creep.Value, 1f) * 2f * sizeX);
         if(radius != field.Creep.PaintRadiusOld)
         {
             field.Creep.PaintRadiusOld = radius;
 
-            Vector2Int mapPos = new Vector2Int((int)(field.Coords.X - xOffset), (int)(field.Coords.Y - yOffset));
+            Vector2Int mapPos = new Vector2Int((int)(field.Coords.X - terrainBehaviour.XOffset), (int)(field.Coords.Y - terrainBehaviour.YOffset));
             Vector2Int creepCenter = getTextureMapCoord(mapPos);
             int layerID = getSlimeLayerID(field.Creep.Creeper);
-            int sizeY = (int)(mainTerrain.terrainData.size.z / countY);
+            int sizeY = (int)(mainTerrain.terrainData.size.z / terrainBehaviour.FieldCountY);
 
             paintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, radius/2);
         }
@@ -158,13 +160,13 @@ public class TerrainPaintBehaviour : MonoBehaviour
                         }
                         else
                         {
-                            map[i, j, k] = getSteepnessAlpha(k, frac) * (1 - strength);
+                            map[i, j, k] = getSteepnessAlpha(k, frac, grassLayerID) * (1 - strength);
                         }
 
                     }
                     else
                     {
-                        map[i, j, k] = getSteepnessAlpha(k, frac);
+                        map[i, j, k] = getSteepnessAlpha(k, frac, grassLayerID);
                     }
                 }
             }
@@ -174,12 +176,18 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
     private Vector2Int getTextureMapCoord(Vector2Int pos)
     {
-        pos.x = (int)((2 * pos.x + 1) * mainTerrain.terrainData.size.x / (2 * countX));
-        pos.y = (int)((2 * pos.y + 1) * mainTerrain.terrainData.size.z / (2 * countY));
+        pos.x = (int)((2 * pos.x + 1) * mainTerrain.terrainData.size.x / (2 * terrainBehaviour.FieldCountX));
+        pos.y = (int)((2 * pos.y + 1) * mainTerrain.terrainData.size.z / (2 * terrainBehaviour.FieldCountY));
         return pos;
     }
 
-    private float getSteepnessAlpha(int layerID, float frac)
+    private Vector2Int getMapCoordFromTextureCoord(Vector2Int pos) {
+        pos.x = (int)Mathf.Floor(pos.x * terrainBehaviour.FieldCountX / mainTerrain.terrainData.alphamapWidth);
+        pos.y = (int)Mathf.Floor(pos.y * terrainBehaviour.FieldCountY / mainTerrain.terrainData.alphamapHeight);
+        return pos;
+    }
+
+    private float getSteepnessAlpha(int layerID, float frac, int grassLayerID)
     {
         if(layerID == grassLayerID)
         {
@@ -205,4 +213,12 @@ public class TerrainPaintBehaviour : MonoBehaviour
         // by 90 to get an alpha blending value in the range 0..1.
         return angle / 45.0f;
     }
+
+    private Field getField(int x, int y)
+    {
+        //Shift negative to 0
+        Field f = Core.Game.State.GameField.Fields.Find(field => field.Coords.X == x + terrainBehaviour.XOffset && field.Coords.Y == y + terrainBehaviour.YOffset);
+        return f;
+    }
+
 }
