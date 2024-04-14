@@ -23,7 +23,10 @@ public class CreepBehaviour : MonoBehaviour
 
     public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
 
-
+    private void Start()
+    {
+        StartGame();
+    }
     void Update()
     {
         if (isRunning)
