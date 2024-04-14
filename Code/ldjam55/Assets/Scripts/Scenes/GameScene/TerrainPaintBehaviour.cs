@@ -93,12 +93,12 @@ public class TerrainPaintBehaviour : MonoBehaviour
         }
     }
 
-    private void paintCreep(Field field)
+    private void paintCreep(Field field, bool forceUpdate = false)
     {
         //TODO: add Creep def
         int sizeX = (int)(mainTerrain.terrainData.size.x / terrainBehaviour.FieldCountX);
         int radius = (int)(Mathf.Min(field.Creep.Value, 1f) * 2f * sizeX);
-        if(radius != field.Creep.PaintRadiusOld)
+        if(radius != field.Creep.PaintRadiusOld || forceUpdate)
         {
             field.Creep.PaintRadiusOld = radius;
 
