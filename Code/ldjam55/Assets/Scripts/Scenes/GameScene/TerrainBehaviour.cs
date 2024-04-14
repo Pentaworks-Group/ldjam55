@@ -35,13 +35,6 @@ public class TerrainBehaviour : MonoBehaviour
     // Start is called before the first frame update    
     void Start()
     {
-/*        Core.Game.State.GameField.Fields = new List<Field>
-        {
-            new Field{ Coords = new GameFrame.Core.Math.Vector2(0, 0), Height = 0, ID="0, 0" },
-            new Field{ Coords = new GameFrame.Core.Math.Vector2(1, 0), Height = 1, ID="1, 0" },
-        };*/
-
-
         int minX = 0;
         int minY = 0;
         float minZ = 0;
@@ -82,33 +75,6 @@ public class TerrainBehaviour : MonoBehaviour
         }
 
         mainTerrain.terrainData.SetHeights(0, 0, heights );
-
-        //Texture test
-        //TODO: Layer count?
-        float[,,] map = new float[mainTerrain.terrainData.alphamapWidth, mainTerrain.terrainData.alphamapHeight, 3];
-
-        //For each point on the alphamap
-        for (int y = 0; y < mainTerrain.terrainData.alphamapHeight; y++)
-        {
-            for (int x = 0; x < mainTerrain.terrainData.alphamapWidth; x++)
-            {
-                // Get the normalized terrain coordinate that
-                // corresponds to the point
-                float normX = x * 1.0f / (mainTerrain.terrainData.alphamapWidth - 1);
-                float normY = y * 1.0f / (mainTerrain.terrainData.alphamapHeight - 1);
-
-                // Get the steepness value at the normalized coordinate
-                var angle = mainTerrain.terrainData.GetSteepness(normY, normX);
-
-                // Steepness is given as an angle, 0..90 degrees. Divide
-                // by 90 to get an alpha blending value in the range 0..1.
-                var frac = angle / 45.0;
-                map[x, y, 0] = (float)(1-frac);
-                map[x, y, 1] = (float)(0);
-                map[x, y, 2] = (float)(frac);
-            }
-        }
-        mainTerrain.terrainData.SetAlphamaps(0, 0, map);
     }
 
     // Update is called once per frame
