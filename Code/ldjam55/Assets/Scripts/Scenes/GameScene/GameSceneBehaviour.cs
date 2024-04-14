@@ -141,11 +141,24 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private void SpawnCreepAt(Field field, float amount, string creeperId)
     {
-        if (field.Creep != null)
+        if (field.Creep != null && field.Creep.Creeper != null)
         {
-            field.Creep.Value += amount;
-            field.Creep.Creeper = creepers[creeperId];  
-            Debug.Log("How do we handle spawn of different creep?");
+            if (field.Creep.Creeper.ID != creeperId)
+            {
+                var div = field.Creep.Value - amount;
+                if (div > 0)
+                {
+                    field.Creep.Value = div;
+                } else
+                {
+                    field.Creep.Value -= div;
+                    field.Creep.Creeper = creepers[creeperId];
+                }
+            }
+            else
+            {
+                field.Creep.Value += amount;
+            } 
         } else
         {
             var newCreep = new Creep() { Value = amount, Creeper = creepers[creeperId] };

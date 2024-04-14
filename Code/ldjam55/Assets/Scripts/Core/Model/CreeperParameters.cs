@@ -8,6 +8,6 @@ public class CreeperParameters
 
     public float Speed { get; set; } = 1f;
 
-    public string Texture { get; set; }
+    public string Material { get; set; }
 
 }
