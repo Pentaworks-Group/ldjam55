@@ -468,6 +468,12 @@
       {
         "Field1Ref": "0-0--2",
         "Field2Ref": "1-0--2",
+        "Methods": [
+          {
+            "Method": "DestroyBorder",
+            "ArumentsJson": "{\"Time\": 10}"
+          }
+        ],
         "BorderType": {
           "Name": "BorderWall",
           "Model": "Wall",
@@ -544,8 +550,12 @@
         "Material": "Water",
         "Model": "Spawner",
         "FieldReference": "0-0--2",
-        "UpdateMethod": "SpawnCreep",
-        "UpdateMethodParameters": "{\"Amount\": 10,\"Time\": 2,\"Creeper\": \"CreeperWater\", \"IsIntervall\": true}",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 10,\"Time\": 2,\"Creeper\": \"CreeperWater\", \"IsIntervall\": true}"
+          }
+        ],
         "IsReferenced": false
       },
       {
@@ -553,8 +563,12 @@
         "Material": "Fire",
         "Model": "Spawner",
         "FieldReference": "4-2--2",
-        "UpdateMethod": "SpawnCreep",
-        "UpdateMethodParameters": "{\"Amount\": 25,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"IsIntervall\": true}",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 25,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"IsIntervall\": true}"
+          }
+        ],
         "IsReferenced": false
       }
     ]

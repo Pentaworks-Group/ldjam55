@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Core.Model
 {
@@ -10,10 +11,7 @@ namespace Assets.Scripts.Core.Model
         public string Material { get; set; }
         public Field Field { get; set; }
 
-        public string UpdateMethod { get; set; }
 
-        public string UpdateMethodParameters { get; set; }
-
-        public Action UpdateMethodAction { get; set; }
+        public List<MethodBundle> Methods { get; set; }
     }
 }

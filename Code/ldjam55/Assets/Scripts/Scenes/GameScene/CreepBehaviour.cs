@@ -57,6 +57,18 @@ public class CreepBehaviour : MonoBehaviour
         {
             borders.Add(border);
             bordersAdded.Add(GetBorderKey(border));
+            if (border.Methods != null)
+            {
+                foreach (var method in border.Methods)
+                {
+                    if (method.Method == "DestroyBorder")
+                    {
+                        JObject paramsObject = JObject.Parse(method.ArumentsJson);
+                        float time = float.Parse(paramsObject["Time"].ToString());
+                        TimeManagerBehaviour.RegisterEvent(time, () => DestroyBorder(border), method.Method + GetBorderKey(border));
+                    }
+                }
+            }
         }
 
         var topFields = new Dictionary<string, Field>();
@@ -102,7 +114,7 @@ public class CreepBehaviour : MonoBehaviour
         //var heightDiff = field.Height - neighbour.Height;
         //var flowRate = Core.Game.State.Mode.NothingFlowRate * heightDiff * creeper.Parameters.HightTraverseRate; 
         var flowRate = Core.Game.State.Mode.NothingFlowRate;
-        var borderStatus = new BorderStatus() { Value = flowRate };
+        var borderStatus = new BorderStatus() { FlowValue = flowRate };
         var borderType = new BorderType() { Name = "Nothing" };
         var newBorder = new Border { Field1 = field1, Field2 = field2, BorderStatus = borderStatus, BorderType = borderType };
         borders.Add(newBorder);
@@ -139,28 +151,34 @@ public class CreepBehaviour : MonoBehaviour
     {
         foreach (var fieldObject in Core.Game.State.GameField.FieldObjects)
         {
-            if (fieldObject.UpdateMethod == "SpawnCreep")
+            if (fieldObject != null)
             {
-                JObject paramsObject = JObject.Parse(fieldObject.UpdateMethodParameters);
-                float amount = float.Parse(paramsObject["Amount"].ToString());
-                float time = float.Parse(paramsObject["Time"].ToString());
-                bool isIntervall = bool.Parse(paramsObject["IsIntervall"].ToString());
-                RegisterSpawn(fieldObject, amount, time, isIntervall, paramsObject["Creeper"].ToString());
+                foreach (var method in fieldObject.Methods)
+                {
+                    if (method.Method == "SpawnCreep")
+                    {
+                        JObject paramsObject = JObject.Parse(method.ArumentsJson);
+                        float amount = float.Parse(paramsObject["Amount"].ToString());
+                        float time = float.Parse(paramsObject["Time"].ToString());
+                        bool isIntervall = bool.Parse(paramsObject["IsIntervall"].ToString());
+                        RegisterSpawn(fieldObject, amount, time, isIntervall, paramsObject["Creeper"].ToString(), fieldObject.Name + method.Method);
+                    }
+                }
             }
         }
     }
 
-    private void RegisterSpawn(FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId)
+    private void RegisterSpawn(FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId, string ID)
     {
-        TimeManagerBehaviour.RegisterEvent(time, () => Spawn(fieldObject, amount, time, isIntervall, creeperId), fieldObject.Name + fieldObject.UpdateMethod);
+        TimeManagerBehaviour.RegisterEvent(time, () => Spawn(fieldObject, amount, time, isIntervall, creeperId, ID), ID);
     }
 
-    private void Spawn(FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId)
+    private void Spawn(FieldObject fieldObject, float amount, float time, bool isIntervall, string creeperId, string ID)
     {
         SpawnCreepAt(fieldObject.Field, amount, creeperId);
         if (isIntervall)
         {
-            TimeManagerBehaviour.RegisterEvent(time, () => Spawn(fieldObject, amount, time, isIntervall, creeperId), fieldObject.Name + fieldObject.UpdateMethod);
+            TimeManagerBehaviour.RegisterEvent(time, () => Spawn(fieldObject, amount, time, isIntervall, creeperId, ID), ID);
         }
     }
 
@@ -248,7 +266,7 @@ public class CreepBehaviour : MonoBehaviour
 
         foreach (var border in borders)
         {
-            float flow = getFlow(border.Field1, border.Field2, border.BorderStatus.Value);
+            float flow = getFlow(border.Field1, border.Field2, border.BorderStatus.FlowValue);
             if (border.Field1.Creep == null)
             {
                 border.Field1.Creep = new Creep { Value = 0 };
