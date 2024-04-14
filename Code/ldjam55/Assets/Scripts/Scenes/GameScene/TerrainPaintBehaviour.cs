@@ -160,13 +160,13 @@ public class TerrainPaintBehaviour : MonoBehaviour
                         }
                         else
                         {
-                            map[i, j, k] = getSteepnessAlpha(k, frac, grassLayerID) * (1 - strength);
+                            map[i, j, k] = getSteepnessAlpha(k, frac, rottenGroundLayerID) * (1 - strength);
                         }
 
                     }
                     else
                     {
-                        map[i, j, k] = getSteepnessAlpha(k, frac, grassLayerID);
+                        map[i, j, k] = getSteepnessAlpha(k, frac, rottenGroundLayerID);
                     }
                 }
             }
