@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CreepBehaviour : MonoBehaviour
@@ -28,23 +29,6 @@ public class CreepBehaviour : MonoBehaviour
     private TriggerHandler triggerHandler = new();
     private GameEndConditionHandler gameEndConditionHandler = new GameEndConditionHandler(TimeManagerBehaviour.Win, TimeManagerBehaviour.Lose);
 
-
-    public static CreepBehaviour instance;
-    void Awake()
-    {
-        if ((instance != default) && (instance != this))
-        {
-            Destroy(this.gameObject);
-
-            return;
-        }
-        else
-        {
-            instance = this;
-        }
-
-        DontDestroyOnLoad(this.gameObject);
-    }
 
     void Update()
     {
