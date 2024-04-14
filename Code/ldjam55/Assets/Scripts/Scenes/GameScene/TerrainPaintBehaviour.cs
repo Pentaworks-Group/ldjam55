@@ -62,25 +62,17 @@ public class TerrainPaintBehaviour : MonoBehaviour
         {
             for (int x = 0; x < mainTerrain.terrainData.alphamapWidth; x++)
             {
-                // Get the normalized terrain coordinate that
-                // corresponds to the point
-                float normX = x * 1.0f / (mainTerrain.terrainData.alphamapWidth - 1);
-                float normY = y * 1.0f / (mainTerrain.terrainData.alphamapHeight - 1);
-
-                // Get the steepness value at the normalized coordinate
-                var angle = mainTerrain.terrainData.GetSteepness(normY, normX);
-
-                // Steepness is given as an angle, 0..90 degrees. Divide
-                // by 90 to get an alpha blending value in the range 0..1.
-                var frac = angle / 45.0;
-                map[x, y, grassLayerID] = (float)(1 - frac);
-                map[x, y, stone1LayerID] = 0;
-                map[x, y, stone2LayerID] = (float)(frac);
-                map[x, y, slimeYellowLayerID] = 0;
-                map[x, y, slimeRedLayerID] = 0;
+                float frac = getSteepnessFactor(x, y);
+                for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++) {
+                    map[x, y, z] = getSteepnessAlpha(z, frac);
+                }
             }
         }
         mainTerrain.terrainData.SetAlphamaps(0, 0, map);
+
+        //        Field f = new Field { Coords = new GameFrame.Core.Math.Vector2(0, 0) };
+        //        paintCreep(f);
+
     }
 
     // Update is called once per frame
@@ -88,16 +80,10 @@ public class TerrainPaintBehaviour : MonoBehaviour
     {
         time += Time.deltaTime;
 
-/*        int xPos = (int)(Math.Floor(time) % 9 + xOffset);
-        int yPos = (int)(Math.Floor(Math.Floor(time) / 9) + yOffset);
-        Field f = new Field { Coords = new GameFrame.Core.Math.Vector2(xPos, yPos) };
-        paintCreep(f);*/
-
         foreach (var field in Core.Game.State.GameField.Fields)
         {
             if(field.Creep != null)
             {
-                Debug.Log(field.Coords.X + ", " + field.Coords.Y);
                 paintCreep(field);
             }
         }
@@ -106,41 +92,57 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private void paintCreep(Field field)
     {
         //TODO: add Creep def
-        Vector2Int mapPos = new Vector2Int((int) (field.Coords.X-xOffset), (int) (field.Coords.Y-yOffset));
-        Vector2Int creepCenter = getTextureMapCoord(mapPos);
         int sizeX = (int)(mainTerrain.terrainData.size.x / countX);
-        int sizeY = (int)(mainTerrain.terrainData.size.z / countY);
-        int radius =  (int)(Mathf.Min(field.Creep.Value, 1f) * sizeX / 2);
+        int radius = (int)(Mathf.Min(field.Creep.Value, 1f) * 2* sizeX);
+        if(radius != field.Creep.PaintRadiusOld)
+        {
+            field.Creep.PaintRadiusOld = radius;
 
-        paintSlimeArea(slimeRedLayerID, creepCenter.x-sizeX/2, creepCenter.y-sizeY/2, sizeX, sizeY, radius, 0);
-//        paintSlimeArea(slimeRedLayerID, pos.x, pos.y, sizeX, sizeY, (int)creepSize, (int)(creepSize / 2));
+            Vector2Int mapPos = new Vector2Int((int)(field.Coords.X - xOffset), (int)(field.Coords.Y - yOffset));
+            Vector2Int creepCenter = getTextureMapCoord(mapPos);
+            int layerID = getSlimeLayerID(field.Creep.Creeper);
+            int sizeY = (int)(mainTerrain.terrainData.size.z / countY);
+
+            paintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, 0);
+        }
+
+    }
+
+    private int getSlimeLayerID(Creeper creeper)
+    {
+        //TODO: change
+        if(creeper != null && creeper.Parameters!= null && creeper.Parameters.Material != null && creeper.Parameters.Material=="Water")
+        {
+            return slimeYellowLayerID;
+        }
+        return slimeRedLayerID;
     }
 
     private void paintSlimeArea(int slimeLayerID, int x, int y, int width, int height, int radius, int hardness)
     {
-        if(x < 0) x = 0;
-        if(y < 0) y = 0;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
 
-        width = (int) (width * scaleFactorY);
+        width = (int)(width * scaleFactorY);
         height = (int)(height * scaleFactorX);
-        x = (int) (x * scaleFactorX);
-        y = (int) (y * scaleFactorY);
+        x = (int)(x * scaleFactorX);
+        y = (int)(y * scaleFactorY);
 
         width = Mathf.Min(width, mainTerrain.terrainData.alphamapHeight - x - 1);
         height = Mathf.Min(height, mainTerrain.terrainData.alphamapWidth - y - 1);
 
         float[,,] map = new float[width, height, mainTerrain.terrainData.alphamapLayers];
-        float[,,] currentValues = mainTerrain.terrainData.GetAlphamaps( x , y , width, height);
 
         for (int j = 0; j < height; j++)
         {
             for (int i = 0; i < width; i++)
             {
-                float distance = Vector2.Distance(new Vector2(width/(2*scaleFactorY), height/(2*scaleFactorX)), new Vector2(i/scaleFactorY, j/scaleFactorX));
+                float distance = Vector2.Distance(new Vector2(width / (2 * scaleFactorY), height / (2 * scaleFactorX)), new Vector2(i / scaleFactorY, j / scaleFactorX));
+                float frac = getSteepnessFactor(y + i, x + j);
 
                 for (int k = 0; k < mainTerrain.terrainData.alphamapLayers; k++)
                 {
-                    if (distance < radius - hardness )
+                    if (distance < radius - hardness)
                     {
                         if (k == slimeLayerID && distance <= radius)
                         {
@@ -160,14 +162,13 @@ public class TerrainPaintBehaviour : MonoBehaviour
                         }
                         else
                         {
-                            map[i, j, k] = currentValues[j, i, k] * (1-strength);
+                            map[i, j, k] = getSteepnessAlpha(k, frac) * (1 - strength);
                         }
 
                     }
                     else
                     {
-                        map[i, j, k] = currentValues[j, i, k];
-
+                        map[i, j, k] = getSteepnessAlpha(k, frac);
                     }
                 }
             }
@@ -180,5 +181,32 @@ public class TerrainPaintBehaviour : MonoBehaviour
         pos.x = (int)((2 * pos.x + 1) * mainTerrain.terrainData.size.x / (2 * countX));
         pos.y = (int)((2 * pos.y + 1) * mainTerrain.terrainData.size.z / (2 * countY));
         return pos;
+    }
+
+    private float getSteepnessAlpha(int layerID, float frac)
+    {
+        if(layerID == grassLayerID)
+        {
+            return (float)(1 - frac);
+        } else if(layerID == stone2LayerID) 
+        {
+            return frac;
+        }
+        return 0;
+    }
+
+    private float getSteepnessFactor(int x, int y)
+    {
+        // Get the normalized terrain coordinate that
+        // corresponds to the point
+        float normX = x * 1.0f / (mainTerrain.terrainData.alphamapWidth - 1);
+        float normY = y * 1.0f / (mainTerrain.terrainData.alphamapHeight - 1);
+
+        // Get the steepness value at the normalized coordinate
+        var angle = mainTerrain.terrainData.GetSteepness(normY, normX);
+
+        // Steepness is given as an angle, 0..90 degrees. Divide
+        // by 90 to get an alpha blending value in the range 0..1.
+        return angle / 45.0f;
     }
 }
