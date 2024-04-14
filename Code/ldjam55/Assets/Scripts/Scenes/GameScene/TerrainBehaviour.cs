@@ -9,8 +9,8 @@ public class TerrainBehaviour : MonoBehaviour
 {
     public Terrain mainTerrain;
 
-    private float fieldSize = 50f;
-    private float flatFieldSize = 30f;
+    private float fieldSize = 8f;
+    private float flatFieldSize = 4f;
 
     private float scalingFactorX = 1.0f;
     private float scalingFactorY = 1.0f;
@@ -22,7 +22,7 @@ public class TerrainBehaviour : MonoBehaviour
     private float yOffset = 0;
     private float zOffset = 0;
 
-    private float maxHeight = 0.1f;
+    private float maxHeight = 0.01f;
 
     private void Awake()
     {

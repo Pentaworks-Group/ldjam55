@@ -31,11 +31,6 @@ namespace Assets.Scripts.Scenes.GameScene
             FetchTemplates();
         }
 
-        private void Start()
-        {
-            CreepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
-        }
-
 
 
         public void GenerateGameField()
