@@ -15,6 +15,9 @@ public class TerrainPaintBehaviour : MonoBehaviour
     [SerializeField]
     private TerrainBehaviour terrainBehaviour;
 
+    [SerializeField]
+    private CreepBehaviour creepBehaviour;
+
     public int grassLayerID = 0;
     public int stone1LayerID = 1;
     public int stone2LayerID = 2;
@@ -28,7 +31,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        CreepBehaviour.instance.OnCreeperChanged.Add(field => paintCreep(field, true));
+        creepBehaviour.OnCreeperChanged.Add(field => paintCreep(field, true));
     }
 
     // Start is called before the first frame update
