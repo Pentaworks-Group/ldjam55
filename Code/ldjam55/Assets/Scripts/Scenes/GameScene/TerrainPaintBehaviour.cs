@@ -25,6 +25,12 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private float scaleFactorX = 1f;
     private float scaleFactorY = 1f;
 
+
+    private void Awake()
+    {
+        CreepBehaviour.instance.OnCreeperChanged.Add(paintCreep);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
