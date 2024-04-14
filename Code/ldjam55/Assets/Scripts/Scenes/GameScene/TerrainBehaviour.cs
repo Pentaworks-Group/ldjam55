@@ -26,40 +26,22 @@ public class TerrainBehaviour : MonoBehaviour
 
     private float maxHeight = 0.01f;
 
+    private bool isInit = false;
+
     private void Awake()
     {
         if(Core.Game.State == default)
         {
             Core.Game.Start();
         }
+        init();
     }
 
     // Start is called before the first frame update    
     void Start()
     {
         //TODO: isInit?
-        int minX = 0;
-        int minY = 0;
-        float minZ = 0;
-        int maxX = 0;
-        int maxY = 0;
-        float maxZ = 0;
-        foreach (var field in Core.Game.State.GameField.Fields)
-        {
-            minX = (int)Math.Min(field.Coords.X, minX);
-            minY = (int)Math.Min(field.Coords.Y, minY);
-            minZ = Mathf.Min(field.Height, minZ);
-            maxX = (int)Math.Max(field.Coords.X, maxX);
-            maxY = (int)Math.Max(field.Coords.Y, maxY);
-            maxZ = Mathf.Max(field.Height, maxZ);
-        }
-        FieldCountX = (maxX - minX)+1;
-        FieldCountY = (maxY - minY)+1;
-
-        zFactor = maxHeight / (maxZ-minZ);
-        XOffset = minX;
-        YOffset = minY;
-        zOffset = minZ;
+        init();
             
         mainTerrain.terrainData.size = new Vector3(FieldCountX*fieldSize, 500, FieldCountY*fieldSize);
 
@@ -84,6 +66,36 @@ public class TerrainBehaviour : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void init()
+    {
+        if(!isInit)
+        {
+            int minX = 0;
+            int minY = 0;
+            float minZ = 0;
+            int maxX = 0;
+            int maxY = 0;
+            float maxZ = 0;
+            foreach (var field in Core.Game.State.GameField.Fields)
+            {
+                minX = (int)Math.Min(field.Coords.X, minX);
+                minY = (int)Math.Min(field.Coords.Y, minY);
+                minZ = Mathf.Min(field.Height, minZ);
+                maxX = (int)Math.Max(field.Coords.X, maxX);
+                maxY = (int)Math.Max(field.Coords.Y, maxY);
+                maxZ = Mathf.Max(field.Height, maxZ);
+            }
+            FieldCountX = (maxX - minX) + 1;
+            FieldCountY = (maxY - minY) + 1;
+
+            zFactor = maxHeight / (maxZ - minZ);
+            XOffset = minX;
+            YOffset = minY;
+            zOffset = minZ;
+            isInit = true;
+        }
     }
 
     private float getHeightmapValue(int x, int y)

@@ -419,6 +419,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainTerrain: {fileID: 261588236}
+  terrainBehaviour: {fileID: 261588234}
   grassLayerID: 0
   stone1LayerID: 1
   stone2LayerID: 2
