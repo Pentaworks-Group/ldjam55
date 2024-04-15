@@ -112,11 +112,12 @@ namespace Assets.Scripts.Core
         {
             var backgroundAudioClips = new List<AudioClip>()
             {
+                //TODO: change when scene changes
                 GameFrame.Base.Resources.Manager.Audio.Get("Music_1"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Music_2"),
+/*                GameFrame.Base.Resources.Manager.Audio.Get("Music_2"),
                 GameFrame.Base.Resources.Manager.Audio.Get("Music_3"),
                 GameFrame.Base.Resources.Manager.Audio.Get("Music_4"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Music_5")
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_5")*/
             };
 
             GameFrame.Base.Audio.Background.Play(backgroundAudioClips);
