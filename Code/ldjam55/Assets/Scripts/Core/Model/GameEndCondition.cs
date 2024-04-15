@@ -7,5 +7,6 @@ namespace Assets.Scripts.Core.Model
         public int WinCount = 0;
         public int CurrentCount = 0;
         public bool Done = false;
+        public string Description = "";
     }
 }
