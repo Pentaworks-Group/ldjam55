@@ -2,6 +2,7 @@ using Assets.Scripts.Core.Model;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UserActionBehavior : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class UserActionBehavior : MonoBehaviour
     private TMP_Text Name; 
     [SerializeField]
     private TMP_Text Remaining;
+    [SerializeField]
+    private Image backgroundImage;
 
 
     private UserAction userAction;
@@ -18,6 +21,7 @@ public class UserActionBehavior : MonoBehaviour
     public void SelectThisAction()
     {
         selectAction.Invoke(userAction);
+
     }
 
     public void Init(UserAction userAction, Action<UserAction> selectAction, Func<UserAction> getSelectedAction)
@@ -31,9 +35,14 @@ public class UserActionBehavior : MonoBehaviour
     {
         Name.text = userAction.Name;
         Remaining.text = userAction.UsesRemaining.ToString();
-        if (getSelectedAction.Invoke() == userAction)
+
+        if(getSelectedAction.Invoke() == userAction)
         {
-            //HiglightTHIngs
+            backgroundImage.color = new Color { r = 255, g = 160, b = 194, a = 255 };
+        }
+        else
+        {
+            backgroundImage.color = new Color { r = 255, g = 0, b = 91, a = 255 };
         }
     }
 }
