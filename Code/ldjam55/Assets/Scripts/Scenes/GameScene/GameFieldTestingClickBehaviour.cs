@@ -1,5 +1,7 @@
+using Assets.Scripts.Core.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,6 +9,57 @@ namespace Assets.Scripts.Scene.GameScene
 {
     public class GameFieldTestingClickBehaviour : MonoBehaviour
     {
+        [SerializeField]
+        private UserActionBehavior actionTemplate;
+
+        private List<UserActionBehavior> actionBehaviors = new List<UserActionBehavior>();
+
+        public List<UserAction> actions => Base.Core.Game.UserActionHandler.UserActions;
+
+        public UserAction SelectedUserAction { get; set; }
+
+
+        public void SelectUserAction(UserAction action)
+        {
+            SelectedUserAction = action;
+        }
+
+        private void Start()
+        {
+            float increment = .22f;
+            float current = 0;
+            foreach (var action in actions) { 
+                var actionBehaviour = Instantiate<UserActionBehavior>(actionTemplate, actionTemplate.transform.parent);
+                var rect = actionBehaviour.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(rect.anchorMin.x + current, rect.anchorMin.y);
+                rect.anchorMax = new Vector2(rect.anchorMax.x + current, rect.anchorMax.y);
+                actionBehaviour.Init(action, this);   
+                actionBehaviour.gameObject.SetActive(true);
+                actionBehaviors.Add(actionBehaviour);
+                current += increment;
+            }
+            UpdateUI();
+        }
+
+
+        public void CastSelectedAction(GameFieldContainerBehaviour target)
+        {
+            if (SelectedUserAction != null)
+            {
+                Base.Core.Game.UserActionHandler.UseAction(SelectedUserAction, target.ContainedObject);
+                UpdateUI();
+            }
+        }
+
+        public void UpdateUI()
+        {
+            foreach (var action in actionBehaviors)
+            {
+                action.UpdateUI();
+            }
+        }
+
+
         private Action<GameFieldContainerBehaviour> SelectedAction;
 
         [SerializeField]
@@ -99,19 +152,21 @@ namespace Assets.Scripts.Scene.GameScene
                         {
                             if (raycastHit.transform.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var container))
                             {
-                                if (SelectedAction != null)
-                                {
-                                    SelectedAction(container);
-                                }
+                                CastSelectedAction(container);
+                                //if (SelectedAction != null)
+                                //{
+                                //    SelectedAction(container);
+                                //}
                             }
                             else
                             {
                                 if (raycastHit.transform.parent.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var parentContainer))
                                 {
-                                    if (SelectedAction != null)
-                                    {
-                                        SelectedAction(parentContainer);
-                                    }
+                                    CastSelectedAction(container);
+                                    //if (SelectedAction != null)
+                                    //{
+                                    //    SelectedAction(parentContainer);
+                                    //}
                                 }
                                 else
                                 {

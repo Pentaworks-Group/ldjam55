@@ -36,6 +36,7 @@ public class CreepBehaviour : MonoBehaviour
     {
         gameEndConditionHandler = GameEndConditionHandler.Instance;
         gameEndConditionHandler.Init(Win, Loose);
+        Core.Game.UserActionHandler.Init(this);
     }
 
     void Update()

@@ -29,6 +29,7 @@ namespace Assets.Scripts.Core
             }
         }
 
+        public UserActionHandler UserActionHandler { get; private set; } = new UserActionHandler();
 
 
         public void PlayButtonSound()
@@ -68,6 +69,7 @@ namespace Assets.Scripts.Core
                     if (level.Name == SelectedGameMode.StartLevel)
                     {
                         gameState.CurrentLevel = ConvertLevel(level);
+                        break;
                     }
                 }
             }
