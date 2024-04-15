@@ -6,14 +6,14 @@
         "NothingFlowRate": 1,
         "FlowSpeed": 0.1,
         "MinFlow": 0.00001,
-        "StartLevel": "Level 1",
+        "StartLevel": "Level 4",
         "Creepers": [
             {
                 "ID": "CreeperWater",
                 "Name": "Holy Water",
                 "Parameters": {
                     "Material": "Water",
-                    "HightTraverseRate": 1
+                    "HightTraverseRate": 1.2
                 }
             },
             {
@@ -21,7 +21,7 @@
                 "Name": "Hell! Fire",
                 "Parameters": {
                     "Material": "Fire",
-                    "HightTraverseRate": -1
+                    "HightTraverseRate": -1.2
                 }
             }
         ],
@@ -76,11 +76,6 @@
                         "Name": "SpawnCreep",
                         "UsesRemaining": 1,
                         "ActionParamers": "{\"Amount\": 25,\"Creeper\": \"CreeperWater\"}"
-                    },
-                    {
-                        "Name": "CreateWall",
-                        "UsesRemaining": 1,
-                        "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     }
                 ],
                 "GameField": {
@@ -158,16 +153,59 @@
             {
                 "Name": "Level 4",
                 "Description": "Build exactly one wall. Yellow must reach the Grail before red.",
-                "NextLevel" : "Level 1",
+                "NextLevel" : "Level 5",
                 "UserActions": [
                     {
                         "Name": "CreateWall",
-                        "UsesRemaining": 1
+                        "UsesRemaining": 1,
+                        "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     }
                 ],
                 "GameField": {
                     "IsReferenced": true,
                     "Reference": "World3"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "InstantWin",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "WinTouch",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
+            },
+            {
+                "Name": "Level 5",
+                "Description": "Protect the red grail from the red slime. You can only place two yellow slimes. You'll loose anyway",
+                "NextLevel" : "Level 1",
+                "UserActions": [
+                    {
+                        "Name": "SpawnCreep",
+                        "UsesRemaining": 2,
+                        "ActionParamers": "{\"Amount\": 0.1,\"Creeper\": \"CreeperWater\"}"
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "World4"
                 },
                 "EndConditions": [
                     {

@@ -15,6 +15,8 @@ namespace Assets.Scripts.Core
 
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
+        public bool isRunning = false;
+
         public List<AudioClip> EffectsClipList { get; set; }
 
         public IList<Definitions.GameMode> AvailableGameModes
@@ -284,12 +286,48 @@ namespace Assets.Scripts.Core
             {
                 Name = level.Name,
                 Description = level.Description,
-                EndConditions = level.EndConditions,
-                UserActions = level.UserActions,
+                EndConditions = CopyGameEndCondition(level.EndConditions),
+                UserActions = CopyUserActions(level.UserActions),
                 NextLevel = level.NextLevel
             };
             modelLevel.GameField = ConvertGameField(level.GameField);
             return modelLevel;
+        }
+
+        private List<UserAction> CopyUserActions(List<UserAction> actions)
+        {
+            var cps = new List<UserAction>();
+            foreach (var action in actions)
+            {
+                cps.Add(new UserAction()
+                {
+                    Name = action.Name,
+                    ActionParamers = action.ActionParamers,
+                    Cooldown = action.Cooldown,
+                    UsesRemaining = action.UsesRemaining
+                });
+            }
+
+            return cps;
+        }
+
+        private List<GameEndCondition> CopyGameEndCondition(List<GameEndCondition> conditions)
+        {
+            var cps = new List<GameEndCondition>();
+            foreach (var action in conditions)
+            {
+                cps.Add(new GameEndCondition()
+                {
+                    Name = action.Name,
+                    CurrentCount = action.CurrentCount,
+                    Description = action.Description,
+                    Done = action.Done,
+                    IsWin = action.IsWin,
+                    WinCount = action.WinCount
+                });
+            }
+
+            return cps;
         }
 
         private Model.GameMode ConvertGameMode(Definitions.GameMode selectedGameMode)
