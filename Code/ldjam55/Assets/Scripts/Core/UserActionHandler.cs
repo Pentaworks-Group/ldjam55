@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using UnityEngine;
 
 public class UserActionHandler
 {
@@ -63,21 +64,38 @@ public class UserActionHandler
         }
         else if (action.Name == "CreateWall")
         {
-            Func<object, bool> builtAction = CreateBorder;
+            Func<object, bool> builtAction = BuildCreateBorderAction(action);
             buildActions.Add(action, builtAction);
             return builtAction;
         }
         return null;
     }
 
-    private bool CreateBorder(object target)
+    private Func<object, bool> BuildCreateBorderAction(UserAction action)
+    {
+        JObject paramsObject = JObject.Parse(action.ActionParamers);
+        float flowRate = float.Parse(paramsObject["FlowRate"].ToString());
+        var borderTypeName = GetStr(paramsObject, "BorderTypeName", "");
+        var model = GetStr(paramsObject, "Model", "Wall");
+        var method = new MethodBundle();
+        var borderStatus = new BorderStatus() { FlowValue = flowRate };
+        var borderType = new BorderType() { Name = borderTypeName, Model = model };
+        var newBorder = new Border {BorderStatus = borderStatus, BorderType = borderType };
+
+        return (target) => CreateBorder(target, newBorder);
+
+    }
+
+    private bool CreateBorder(object target, Border rawBorder)
     {
         if (target is Border)
         {
             Border border = (Border)target;
             if (border.Field2 != null && border.Field1 != null)
             {
-                return creepBehaviour.SpawnBorder((Border)target);
+                rawBorder.Field1 = border.Field2;
+                rawBorder.Field2 = border.Field1;   
+                return creepBehaviour.SpawnBorder(rawBorder);
             }
         }
         return false;

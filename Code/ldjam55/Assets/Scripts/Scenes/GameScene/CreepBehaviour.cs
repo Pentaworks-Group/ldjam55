@@ -248,27 +248,30 @@ public class CreepBehaviour : MonoBehaviour
 
     public bool SpawnBorder(Border border)
     {
-        if (DoesSuchABorderExist(border))
+        if (TryGetBorderWithSameFields(border, out var existingBorder))
         {
-            return false;
+            DestroyBorder(existingBorder, false);
         }
-        var nBorder = CreateNewDefaultBorder(border.Field1, border.Field2, borders);
+        borders.Add(border);
+        Core.Game.State.CurrentLevel.GameField.Borders.Add(border);
         foreach (var listener in CreateBorderEvent)
         {
-            listener.Invoke(nBorder);
+            listener.Invoke(border);
         }
         return true;
     }
 
-    private bool DoesSuchABorderExist(Border border)
+    private bool TryGetBorderWithSameFields(Border border, out Border similarBorder)
     {
         foreach (var eBorder in borders)
         {
             if (eBorder.Field1 == border.Field1 && eBorder.Field2 == border.Field2)
             {
+                similarBorder = eBorder;
                 return true;
             }
         }
+        similarBorder = null;
         return false;
     }
 
@@ -454,14 +457,17 @@ public class CreepBehaviour : MonoBehaviour
         }
     }
 
-    public void DestroyBorder(Border border)
+    public void DestroyBorder(Border border, bool replace = true)
     {
         if (border != null)
         {
             borders.Remove(border);
             Core.Game.State.CurrentLevel.GameField.Borders.Remove(border);
 
-            CreateNewDefaultBorder(border.Field1, border.Field2, borders);
+            if (replace)
+            {
+                CreateNewDefaultBorder(border.Field1, border.Field2, borders);
+            }
             foreach (var action in DestroyBorderEvent)
             {
                 action.Invoke(border);

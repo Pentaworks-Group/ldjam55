@@ -30,7 +30,13 @@ public class GameSceneBehaviour : MonoBehaviour
     private GameEndScreenBehaviour gameEndScreenBehaviour;
 
     [SerializeField]
+    private CameraBehaviour cameraBehaviour;
+
+    [SerializeField]
     private TextMeshProUGUI timeElapsedDisplay;
+
+    [SerializeField]
+    private TextMeshProUGUI levelDisplay;
 
     private Dictionary<string, GameObject> Templates;
 
@@ -78,11 +84,16 @@ public class GameSceneBehaviour : MonoBehaviour
 
         GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
 
+        levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
+
         gameStartScreenBehaviour.ShowStartScreen();
+        cameraBehaviour.UpdatePosition();
     }
 
     public void StartLevel()
     {
+        Core.Game.PlayButtonSound();
+
         gameStartScreenBehaviour.HideStartScreen();
 
         creepBehaviour.StartGame();
@@ -132,13 +143,21 @@ public class GameSceneBehaviour : MonoBehaviour
     }
 
     public void StartNextLevel()
-    {        
+    {
+        Core.Game.PlayButtonSound();
+
         Core.Game.StartNextLevel();
+
+        levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
     }
 
     public void RestartLevel()
     {
+        Core.Game.PlayButtonSound();
+
         Core.Game.RestartLevel();
+
+        levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
     }
 
     private string GetBorderKey(Assets.Scripts.Core.Model.Border border)
