@@ -80,6 +80,7 @@ namespace Assets.Scripts.Core
             return gameState;
         }
 
+
         private void SelectDefaultGameMode()
         {
             if (this.availableGameModes.TryGetValue("default", out var defaultGameMode))

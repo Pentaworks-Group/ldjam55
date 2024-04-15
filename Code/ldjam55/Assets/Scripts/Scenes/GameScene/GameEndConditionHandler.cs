@@ -11,8 +11,10 @@ namespace Assets.Scripts.Scenes.GameScene
     {
         private Dictionary<string, GameEndCondition> conditions;
 
-        private Action<GameEndCondition> winAction;
-        private Action<GameEndCondition> loseAction;
+        //private Action<GameEndCondition> winAction;
+        //private Action<GameEndCondition> loseAction;
+
+        private List<Action<GameEndCondition>> actions = new();
 
         private static GameEndConditionHandler _Instance;
         public static GameEndConditionHandler Instance
@@ -27,10 +29,13 @@ namespace Assets.Scripts.Scenes.GameScene
             }
         }
 
-        public void Init(Action<GameEndCondition> winAction, Action<GameEndCondition> loseAction)
+        public void RegisterListener(Action<GameEndCondition> listener)
         {
-            this.winAction = winAction;
-            this.loseAction = loseAction;
+            actions.Add(listener);
+        }
+
+        public void Init()
+        {
             conditions = Base.Core.Game.State.CurrentLevel.EndConditions.ToDictionary(con => con.Name);
         }
 
@@ -55,16 +60,16 @@ namespace Assets.Scripts.Scenes.GameScene
             var gameEndCondition = conditions[name];
             if (IncrementCount(gameEndCondition))
             {
-                if (gameEndCondition.IsWin)
+                foreach (var listener in actions)
                 {
-                    winAction(gameEndCondition);
-                }
-                else
-                {
-                    loseAction(gameEndCondition);
+                    listener.Invoke(gameEndCondition);
                 }
             }
         }
 
+        internal void RegisterListener(object v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

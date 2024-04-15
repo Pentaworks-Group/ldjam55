@@ -1,6 +1,8 @@
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Definitions;
 using Assets.Scripts.Core.Model;
+using Assets.Scripts.Scenes.GameScene;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +23,9 @@ public class GameSceneBehaviour : MonoBehaviour
 
     [SerializeField]
     private TerrainBehaviour terrainBehaviour;
+
+    [SerializeField]
+    private GameEndScreenBehaviour gameEndScreenBehaviour;
 
     private Dictionary<string, GameObject> Templates;
 
@@ -61,6 +66,8 @@ public class GameSceneBehaviour : MonoBehaviour
         creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
         creepBehaviour.CreateFieldObjectEvent.Add(SpawnFieldObject);
 
+        GameEndConditionHandler.Instance.RegisterListener(GameEnded);
+
         var backgroundAudioClips = new List<AudioClip>()
             {
                 GameFrame.Base.Resources.Manager.Audio.Get("Music_2"),
@@ -72,9 +79,10 @@ public class GameSceneBehaviour : MonoBehaviour
         GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void GameEnded(GameEndCondition conditon)
     {
+        gameEndScreenBehaviour.UpdateUI(conditon, "");
+        gameEndScreenBehaviour.gameObject.SetActive(true);
     }
 
     private void FetchTemplates()
@@ -84,6 +92,14 @@ public class GameSceneBehaviour : MonoBehaviour
         {
             Templates.Add(tran.name, tran.gameObject);
         }
+    }
+
+    public void StartNextLevel()
+    {
+        var gameMode = Core.Game.State.Mode;
+        var nL = Core.Game.State.CurrentLevel.NextLevel;
+        Core.Game.State.CurrentLevel = gameMode.Levels.Find(l => l.Name == nL);
+        Core.Game.ChangeScene(Core.Game.State.CurrentScene);
     }
 
     private string GetBorderKey(Assets.Scripts.Core.Model.Border border)
