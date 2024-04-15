@@ -209,6 +209,14 @@ public class TerrainBehaviour : MonoBehaviour
         return pos;
         //        return (int) Math.Floor(x * mapSize / heightMapSize);
     }
+
+    public Vector2Int TransformMapCoordToTerrainCoord(Vector2Int pos)
+    {
+        pos.x = (int)((2 * pos.x + 1) * mainTerrain.terrainData.size.x / (2 * FieldCountX));
+        pos.y = (int)((2 * pos.y + 1) * mainTerrain.terrainData.size.z / (2 * FieldCountY));
+        return pos;
+    }
+
     public Field getField(int x, int y)
     {
         //Shift negative to 0

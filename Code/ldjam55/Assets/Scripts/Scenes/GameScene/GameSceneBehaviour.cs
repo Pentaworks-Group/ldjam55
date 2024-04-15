@@ -1,13 +1,9 @@
 using Assets.Scripts.Base;
-using Assets.Scripts.Core.Definitions;
 using Assets.Scripts.Core.Model;
 using Assets.Scripts.Scenes.GameScene;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class GameSceneBehaviour : MonoBehaviour
 {
@@ -195,4 +191,5 @@ public class GameSceneBehaviour : MonoBehaviour
             borderObject.transform.eulerAngles = new Vector3(0, 90, 0);
         }
     }
+
 }
