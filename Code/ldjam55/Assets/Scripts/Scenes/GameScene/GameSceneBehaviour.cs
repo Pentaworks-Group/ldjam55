@@ -141,7 +141,9 @@ public class GameSceneBehaviour : MonoBehaviour
     }
 
     public void StartNextLevel()
-    {        
+    {
+        Core.Game.PlayButtonSound();
+
         Core.Game.StartNextLevel();
 
         levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
@@ -149,6 +151,8 @@ public class GameSceneBehaviour : MonoBehaviour
 
     public void RestartLevel()
     {
+        Core.Game.PlayButtonSound();
+
         Core.Game.RestartLevel();
 
         levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
