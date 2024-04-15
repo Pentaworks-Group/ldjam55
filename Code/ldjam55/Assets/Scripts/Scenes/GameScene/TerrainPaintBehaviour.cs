@@ -1,11 +1,7 @@
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
-using static UnityEditor.PlayerSettings;
 
 public class TerrainPaintBehaviour : MonoBehaviour
 {
