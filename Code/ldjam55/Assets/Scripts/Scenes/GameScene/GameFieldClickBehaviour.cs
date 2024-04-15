@@ -93,7 +93,6 @@ namespace Assets.Scripts.Scene.GameScene
                                 Vector2Int mapPoint = terrainBehaviour.TransformTerrainCoordToMap(new Vector2Int((int)raycastHit.point.x, (int)raycastHit.point.z));
                                 var field = terrainBehaviour.getField(mapPoint.x, mapPoint.y);
                                 CastSelectedAction(field);
-                                Debug.Log("Hit Terrain: " + raycastHit.ToString() + ", " + mapPoint.ToString());
                             }
                             else
                             {
