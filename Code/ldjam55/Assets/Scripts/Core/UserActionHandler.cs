@@ -77,7 +77,6 @@ public class UserActionHandler
         float flowRate = float.Parse(paramsObject["FlowRate"].ToString());
         var borderTypeName = GetStr(paramsObject, "BorderTypeName", "");
         var model = GetStr(paramsObject, "Model", "Wall");
-        var method = new MethodBundle();
         var borderStatus = new BorderStatus() { FlowValue = flowRate };
         var borderType = new BorderType() { Name = borderTypeName, Model = model };
         var newBorder = new Border {BorderStatus = borderStatus, BorderType = borderType };

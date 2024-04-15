@@ -95,6 +95,8 @@ public class GameSceneBehaviour : MonoBehaviour
         gameStartScreenBehaviour.HideStartScreen();
 
         creepBehaviour.StartGame();
+
+        Core.Game.isRunning = true;
     }
 
     private void SpawnBorder(Border border)
@@ -126,9 +128,9 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private void GameEnded(GameEndCondition conditon)
     {
-        var t = transform.Find("GameEndScreen");
         gameEndScreenBehaviour.UpdateUI(conditon, conditon.Description);
         gameEndScreenBehaviour.gameObject.SetActive(true);
+        Core.Game.isRunning = false;
     }
 
     private void FetchTemplates()
