@@ -90,12 +90,10 @@ namespace Assets.Scripts.Scene.GameScene
                 neighborMapPoint = new Vector2Int(mapPoint.x, mapPoint.y + 1);
             }
 
-
             var field = terrainBehaviour.getField(mapPoint.x, mapPoint.y);
             var neighbor = terrainBehaviour.getField(neighborMapPoint.x, neighborMapPoint.y);
-            Debug.Log(distance.ToString() + " => " + field.Coords.ToString()+", "+neighbor.Coords.ToString());
 
-            Border border = new Border { Field1 = field };
+            Border border = new Border { Field1 = field, Field2 = neighbor };
             return border;
         }
 
