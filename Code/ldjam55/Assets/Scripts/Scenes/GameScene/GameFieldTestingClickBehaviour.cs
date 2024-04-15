@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,6 +19,8 @@ namespace Assets.Scripts.Scene.GameScene
         private TMP_InputField InputAmount;
         [SerializeField]
         private TMP_InputField InputCreeper;
+        [SerializeField]
+        private TMP_InputField InputIntervall;
 
 
 
@@ -50,7 +53,35 @@ namespace Assets.Scripts.Scene.GameScene
                 CreepBehaviour.SpawnCreepAt((Core.Model.Field)container.ContainedObject, amount, creeperId);
             }
         }
+        public void SetCreateSpawnerAction()
+        {
+            float amount = float.Parse(InputAmount.text);
+            string creeperId = InputCreeper.text;
+            float intervall = float.Parse(InputIntervall.text);
+            SelectedAction = (GameFieldContainerBehaviour container) => CreateSpawnerAtField(container, amount, intervall, creeperId);
+            SelectedActionText.text = "Spawn";
+        }
 
+        private void CreateSpawnerAtField(GameFieldContainerBehaviour container, float amount, float intervall, string creeperId)
+        {
+            if (container.ObjectType == "Field" || container.ObjectType == "Creep")
+            {
+                Core.Model.FieldObject spawner = new();
+                spawner.Name = "SomeHotSauceStuff";
+                spawner.Description = "Blablabla";
+                spawner.Material = "Creeper_Yellow_Stage_3";
+                spawner.Model = "Spawner_3";
+                spawner.Hidden = false;
+                var method = new MethodBundle();
+                method.Method = "SpawnCreep";
+                method.ArumentsJson = $"{{\"Amount\": {amount},\"Time\": {intervall},\"Creeper\": \"{creeperId}\", \"Intervall\": {intervall}}}";
+                spawner.Methods = new List<MethodBundle>
+                {
+                    method
+                };
+                CreepBehaviour.CreateSpawner((Core.Model.Field)container.ContainedObject, spawner);
+            }
+        }
         private void LateUpdate()
         {
             //if (!CameraBehaviour.IsPanning())

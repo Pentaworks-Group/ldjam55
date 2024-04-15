@@ -6,8 +6,5 @@ namespace Assets.Scripts.Core.Definitions
     {
         public string Name { get; set; }
         public string Model { get; set; }
-        public string UpdateMethod { get; set; }
-
-        public string UpdateMethodArguments { get; set; }
     }
 }

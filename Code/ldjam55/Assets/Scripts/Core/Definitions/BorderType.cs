@@ -6,6 +6,5 @@ namespace Assets.Scripts.Core.Model
     {
         public string Name { get; set; }
         public string Model { get; set; }
-        public Action<Border> UpdateBorder { get; set; }
     }
 }

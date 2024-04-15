@@ -185,6 +185,51 @@
         "FieldObjects": []
       },
       {
+        "ID": "-4--3--2",
+        "Coords": {
+          "X": -4.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-4--5--2",
+        "Coords": {
+          "X": -4.0,
+          "Y": -5.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-3--5--2",
+        "Coords": {
+          "X": -3.0,
+          "Y": -5.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-6--1--2",
+        "Coords": {
+          "X": -6.0,
+          "Y": -1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-5--1--2",
+        "Coords": {
+          "X": -5.0,
+          "Y": -1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
         "ID": "-3--3--2",
         "Coords": {
           "X": -3.0,
@@ -194,10 +239,37 @@
         "FieldObjects": []
       },
       {
-        "ID": "-2--3--2",
+        "ID": "-4--1--2",
         "Coords": {
-          "X": -2.0,
-          "Y": -3.0
+          "X": -4.0,
+          "Y": -1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-4-1--2",
+        "Coords": {
+          "X": -4.0,
+          "Y": 1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-3-1--2",
+        "Coords": {
+          "X": -3.0,
+          "Y": 1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-3--1--2",
+        "Coords": {
+          "X": -3.0,
+          "Y": -1.0
         },
         "Height": -2,
         "FieldObjects": []
@@ -468,20 +540,20 @@
       {
         "Field1Ref": "0-0--2",
         "Field2Ref": "1-0--2",
-        "Methods": [
-          {
-            "Method": "DestroyBorder",
-            "ArumentsJson": "{\"Time\": 10}"
-          }
-        ],
         "BorderType": {
           "Name": "BorderWall",
           "Model": "Wall",
           "IsReferenced": false
         },
         "BorderStatus": {
-          "Value": 0.0
-        }
+          "FlowValue": 0.0
+        },
+        "Methods": [
+          {
+            "Method": "DestroyBorder",
+            "ArumentsJson": "{\"Time\": 10}"
+          }
+        ]
       },
       {
         "Field1Ref": "3--3--2",
@@ -492,7 +564,7 @@
           "IsReferenced": false
         },
         "BorderStatus": {
-          "Value": 0.0
+          "FlowValue": 0.0
         }
       },
       {
@@ -503,16 +575,16 @@
           "Model": "Wall",
           "IsReferenced": false
         },
+        "BorderStatus": {
+          "FlowValue": 0.0
+        },
         "Methods": [
           {
             "Method": "DestroyBorder",
             "Trigger": "CreepTrigger",
             "ArumentsJson": "{\"Time\": 0, \"TriggerCreeperId\" : \"CreeperWater\"}"
           }
-        ],
-        "BorderStatus": {
-          "Value": 0.0
-        }
+        ]
       },
       {
         "Field1Ref": "0-1--2",
@@ -523,7 +595,7 @@
           "IsReferenced": false
         },
         "BorderStatus": {
-          "Value": 0.0
+          "FlowValue": 0.0
         }
       },
       {
@@ -535,7 +607,7 @@
           "IsReferenced": false
         },
         "BorderStatus": {
-          "Value": 0.0
+          "FlowValue": 0.0
         }
       },
       {
@@ -547,15 +619,16 @@
           "IsReferenced": false
         },
         "BorderStatus": {
-          "Value": 0.0
+          "FlowValue": 0.0
         }
       }
     ],
     "FieldObjects": [
       {
         "Name": "Water Spawner",
-        "Material": "Creeper_Yellow_Stage_1",
         "Model": "Spawner_1",
+        "Material": "Creeper_Yellow_Stage_1",
+        "Hidden": false,
         "FieldReference": "0-0--2",
         "Methods": [
           {
@@ -566,9 +639,108 @@
         "IsReferenced": false
       },
       {
-        "Name": "Fire Spawner",
+        "Name": "HitToWin",
+        "Model": "GraleTree_",
         "Material": "Creeper_Red_Stage_1",
+        "Hidden": false,
+        "FieldReference": "-4--3--2",
+        "Methods": [
+          {
+            "Method": "CountDown",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "HitToWin",
+        "Model": "LoseTree",
+        "Material": "Creeper_Yellow_Stage_1",
+        "Hidden": false,
+        "FieldReference": "-4--5--2",
+        "Methods": [
+          {
+            "Method": "CountDown",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"LooseTouch\", \"TriggerCreeperId\" : \"CreeperFire\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "HitToWin",
+        "Model": "GraleTree_",
+        "Material": "Creeper_Red_Stage_1",
+        "Hidden": false,
+        "FieldReference": "-6--1--2",
+        "Methods": [
+          {
+            "Method": "CountDown",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "HitToWin",
+        "Model": "GraleTree_",
+        "Material": "Creeper_Red_Stage_1",
+        "Hidden": false,
+        "FieldReference": "-4--1--2",
+        "Methods": [
+          {
+            "Method": "CountDown",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "HitToWin",
+        "Model": "GraleTree_",
+        "Material": "Creeper_Red_Stage_1",
+        "Hidden": false,
+        "FieldReference": "-4-1--2",
+        "Methods": [
+          {
+            "Method": "CountDown",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "BOOOM",
+        "Model": "Spawner_2",
+        "Material": "Creeper_Red_Stage_2",
+        "Hidden": false,
+        "FieldReference": "1--5--2",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 200,\"Time\": 8,\"Creeper\": \"CreeperFire\"}"
+          },
+          {
+            "Method": "DestoryFieldObject",
+            "ArumentsJson": "{\"Time\": 8.5}"
+          },
+          {
+            "Method": "DestoryFieldObject",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Amount\": 200,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "Fire Spawner",
         "Model": "Spawner_1",
+        "Material": "Creeper_Red_Stage_1",
+        "Hidden": false,
         "FieldReference": "4-2--2",
         "Methods": [
           {
@@ -579,46 +751,10 @@
         "IsReferenced": false
       },
       {
-        "Name": "BOOOM",
-        "Material": "Creeper_Red_Stage_2",
-        "Model": "Spawner_2",
-        "FieldReference": "1--5--2",
-        "Methods": [
-          {
-            "Method": "SpawnCreep",
-            "ArumentsJson": "{\"Amount\": 200,\"Time\": 8,\"Creeper\": \"CreeperFire\", \"IsIntervall\": false}"
-          },
-          {
-            "Method": "DestoryFieldObject",
-            "ArumentsJson": "{\"Time\": 8.5}"
-          },
-          {
-            "Trigger": "CreepTrigger",
-            "Method": "DestoryFieldObject",
-            "ArumentsJson": "{\"Amount\": 200,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"IsIntervall\": false, \"TriggerCreeperId\" : \"CreeperWater\"}"
-          }
-        ],
-        "IsReferenced": false
-      },
-      {
         "Name": "HiddenStuff",
-        "Hidden": true,
-        "Material": "Creeper_Red_Stage_1",
         "Model": "Spawner_1",
-        "FieldReference": "4-2--2",
-        "Methods": [
-          {
-            "Method": "CountDown",
-            "ArumentsJson": "{\"Time\": 50,\"ConditionName\": \"WinTimer\"}"
-          }
-        ],
-        "IsReferenced": false
-      },
-      {
-        "Name": "HiddenStuff",
-        "Hidden": true,
         "Material": "Creeper_Red_Stage_1",
-        "Model": "Spawner_1",
+        "Hidden": false,
         "FieldReference": "4-2--2",
         "Methods": [
           {
