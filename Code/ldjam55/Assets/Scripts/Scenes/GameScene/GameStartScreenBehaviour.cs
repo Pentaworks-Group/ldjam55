@@ -28,6 +28,7 @@ public class GameStartScreenBehaviour : MonoBehaviour
             gameObject.SetActive(false);
         }
 
+        Time.timeScale = 0.0f;
     }
 
     private void updateUI()
@@ -45,5 +46,6 @@ public class GameStartScreenBehaviour : MonoBehaviour
             gameObject.SetActive(true);
         }
 
+        Time.timeScale = 1.0f;
     }
 }
