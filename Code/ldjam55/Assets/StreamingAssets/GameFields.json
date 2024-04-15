@@ -44,11 +44,11 @@
     ],
     "Borders": [
       {
-        "Field1Ref": "0-1-0",
-        "Field2Ref": "0-2-0",
+        "Field1Ref": "0-3-0",
+        "Field2Ref": "0-4-0",
         "BorderType": {
           "Name": "BorderWall",
-          "Model": "Wall",
+          "Model": "Red_Wall",
           "IsReferenced": false
         },
         "BorderStatus": {

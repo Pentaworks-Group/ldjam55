@@ -37,24 +37,8 @@ public class TerrainPaintBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int minX = 0;
-        int minY = 0;
-        float minZ = 0;
-        int maxX = 0;
-        int maxY = 0;
-        float maxZ = 0;
-        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
-        {
-            minX = (int)Math.Min(field.Coords.X, minX);
-            minY = (int)Math.Min(field.Coords.Y, minY);
-            minZ = Mathf.Min(field.Height, minZ);
-            maxX = (int)Math.Max(field.Coords.X, maxX);
-            maxY = (int)Math.Max(field.Coords.Y, maxY);
-            maxZ = Mathf.Max(field.Height, maxZ);
-        }
-
-        scaleFactorY = mainTerrain.terrainData.alphamapHeight / mainTerrain.terrainData.size.z;
         scaleFactorX = mainTerrain.terrainData.alphamapWidth / mainTerrain.terrainData.size.x;
+        scaleFactorY = mainTerrain.terrainData.alphamapHeight / mainTerrain.terrainData.size.z;
 
         //Texture test
         float[,,] map = new float[mainTerrain.terrainData.alphamapWidth, mainTerrain.terrainData.alphamapHeight, mainTerrain.terrainData.alphamapLayers];
@@ -134,8 +118,13 @@ public class TerrainPaintBehaviour : MonoBehaviour
         x = (int)(x * scaleFactorX);
         y = (int)(y * scaleFactorY);
 
-        width = Mathf.Min(width, mainTerrain.terrainData.alphamapHeight - x - 1);
-        height = Mathf.Min(height, mainTerrain.terrainData.alphamapWidth - y - 1);
+//        width = Mathf.Min(width, mainTerrain.terrainData.alphamapWidth - x - 1);
+//        height = Mathf.Min(height, mainTerrain.terrainData.alphamapHeight - y - 1);
+
+//        Debug.Log("Paint Slime: " + x + ", " + y + ", " + width + ", " + height + ", " + radius);
+
+//        width = 80;
+//        height = 30;
 
         float[,,] map = new float[width, height, mainTerrain.terrainData.alphamapLayers];
 
