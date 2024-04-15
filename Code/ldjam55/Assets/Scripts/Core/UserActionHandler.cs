@@ -104,12 +104,22 @@ public class UserActionHandler
         return def;
     }
 
+    private void SpawnTargetSave(object target, float amount, string creeperId)
+    {
+        if (target is Field)
+        {
+            creepBehaviour.SpawnCreepAt((Field)target, amount, creeperId);
+        }
+    }
+
     private Action<object> BuildSpawnCreepAction(UserAction action)
     {
-        JObject paramsObject = JObject.Parse(action.ActionParamers);
-        float amount = float.Parse(paramsObject["Amount"].ToString());
-        string creeperId = paramsObject["Creeper"].ToString();
-        return (target) => creepBehaviour.SpawnCreepAt((Field)target, amount, creeperId);
+        {
+            JObject paramsObject = JObject.Parse(action.ActionParamers);
+            float amount = float.Parse(paramsObject["Amount"].ToString());
+            string creeperId = paramsObject["Creeper"].ToString();
+            return (target) => SpawnTargetSave(target, amount, creeperId);
+        };
 
     }
 
