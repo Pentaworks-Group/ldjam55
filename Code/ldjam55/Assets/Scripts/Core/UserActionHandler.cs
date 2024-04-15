@@ -16,10 +16,8 @@ public class UserActionHandler
 
     public void Init(CreepBehaviour creepBehaviour)
     {
-        if (this.creepBehaviour == null)
-        {
-            this.creepBehaviour = creepBehaviour;
-        }
+        this.creepBehaviour = creepBehaviour;
+        buildActions.Clear();
     }
     public bool UseAction(UserAction action, object target)
     {

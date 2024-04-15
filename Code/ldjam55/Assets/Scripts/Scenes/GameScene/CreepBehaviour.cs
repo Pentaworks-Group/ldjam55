@@ -29,8 +29,18 @@ public class CreepBehaviour : MonoBehaviour
 
 
     private TriggerHandler triggerHandler = new();
-    public GameEndConditionHandler gameEndConditionHandler { get; private set; }
-
+    private GameEndConditionHandler _gameEndConditionHandler;
+    public GameEndConditionHandler gameEndConditionHandler
+    {
+        get
+        {
+            if (_gameEndConditionHandler == null)
+            {
+                _gameEndConditionHandler = new GameEndConditionHandler();
+            }
+            return _gameEndConditionHandler;
+        }
+    }
 
     private void Awake()
     {
@@ -39,8 +49,8 @@ public class CreepBehaviour : MonoBehaviour
 
     private void Start()
     {
-        gameEndConditionHandler = GameEndConditionHandler.Instance;
-        gameEndConditionHandler.Init();
+        //gameEndConditionHandler = GameEndConditionHandler.Instance;
+        //gameEndConditionHandler.Init();
         gameEndConditionHandler.RegisterListener(Stop);
     }
 

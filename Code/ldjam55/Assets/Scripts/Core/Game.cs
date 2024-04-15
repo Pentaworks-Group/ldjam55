@@ -45,6 +45,7 @@ namespace Assets.Scripts.Core
         }
         protected override GameState InitializeGameState()
         {
+
             if (SelectedGameMode == default)
             {
                 if (this.availableGameModes.Count > 0)
@@ -68,7 +69,8 @@ namespace Assets.Scripts.Core
             {
                 gameState.CurrentLevel = GetLevel(SelectedGameMode.StartLevel);
             }
-            if (gameState.CurrentLevel == null) {
+            if (gameState.CurrentLevel == null)
+            {
                 gameState.CurrentLevel = ConvertLevel(SelectedGameMode.Levels[0]);
             }
 
@@ -187,7 +189,7 @@ namespace Assets.Scripts.Core
 
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
-            var gameField = new Model.GameField() {  IsReferenced = gameFieldDefinition.IsReferenced, Reference = gameFieldDefinition.Reference };
+            var gameField = new Model.GameField() { IsReferenced = gameFieldDefinition.IsReferenced, Reference = gameFieldDefinition.Reference };
             gameField.Fields = ConvertFields(gameFieldDefinition.Fields);
             var fields = gameField.Fields.ToDictionary(field => field.ID, field => field);
             gameField.Borders = ConvertBordersForGameField(gameFieldDefinition.Borders, fields);
