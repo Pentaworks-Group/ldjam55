@@ -42,7 +42,7 @@ public class UserActionBehavior : MonoBehaviour
         }
         else
         {
-            overlayImage.gameObject.SetActive(true);
+            overlayImage.gameObject.SetActive(false);
         }
     }
 }
