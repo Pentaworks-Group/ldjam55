@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using Assets.Scripts.Constants;
@@ -22,6 +23,17 @@ namespace Assets.Scripts.Scenes.MainMenu
         {
             Base.Core.Game.PlayButtonSound();
             Base.Core.Game.Start();
+
+            var backgroundAudioClips = new List<AudioClip>()
+            {
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_2"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_3"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_4"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_5")
+            };
+
+            GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
+
         }
 
         public void ShowGameModes()
