@@ -13,6 +13,7 @@ public class CreepBehaviour : MonoBehaviour
     public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
     public List<Action<Field>> OnCreeperChanged = new List<Action<Field>>();
     public List<Action<FieldObject>> DestroyFieldObjectEvent = new();
+    public List<Action<FieldObject>> CreateFieldObjectEvent = new();
 
     [SerializeField]
     private TimeManagerBehaviour timeManagerBehaviour;
@@ -46,18 +47,20 @@ public class CreepBehaviour : MonoBehaviour
     public void StartGame()
     {
         ConvertBorders();
-        ConvertFieldObjectMethods();
+        ConvertFieldObjectMethodsForAllFlieldObjects();
         creepers = Core.Game.State.Mode.Creepers.ToDictionary(creep => creep.ID);
         isRunning = true;
     }
 
     private void Loose(GameEndCondition condition)
     {
+        Debug.Log("You have lost");
         Core.Game.ChangeScene(SceneNames.GameOver);
     }
 
     private void Win(GameEndCondition condition)
     {
+        Debug.Log("You have won");
         Core.Game.ChangeScene(SceneNames.GameOver);
     }
 
@@ -182,73 +185,103 @@ public class CreepBehaviour : MonoBehaviour
     }
 
 
-    private void ConvertFieldObjectMethods()
+    private void ConvertFieldObjectMethodsForAllFlieldObjects()
     {
         foreach (var fieldObject in Core.Game.State.GameField.FieldObjects)
         {
             if (fieldObject != null)
             {
-                foreach (var method in fieldObject.Methods)
-                {
-                    if (method.Method == "SpawnCreep")
-                    {
-                        JObject paramsObject = JObject.Parse(method.ArumentsJson);
-                        float amount = float.Parse(paramsObject["Amount"].ToString());
-                        float time = float.Parse(paramsObject["Time"].ToString());
-                        Debug.Log(paramsObject["Intervall"]);
-                        float interval;
-                        if (paramsObject.TryGetValue("Intervall", out var intervalS))
-                        {
-                            interval = float.Parse(intervalS.ToString());
-                        }
-                        else
-                        {
-                            interval = 0;
-                        }
-                        RegisterSpawn(fieldObject, amount, time, interval, paramsObject["Creeper"].ToString(), fieldObject.Name + method.Method, fieldObject.GetHashCode());
-                    }
-                    else if (method.Method == "DestoryFieldObject")
-                    {
-                        JObject paramsObject = JObject.Parse(method.ArumentsJson);
-                        float time = float.Parse(paramsObject["Time"].ToString());
-                        Action lam = () => DestroyFieldObject(fieldObject);
-                        if (method.Trigger != null && method.Trigger == "CreepTrigger")
-                        {
-                            string creeperId = paramsObject["TriggerCreeperId"].ToString();
-                            triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
-                        }
-                        else
-                        {
-                            timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
-                        }
-                    }
-                    else if (method.Method == "CountDown")
-                    {
-                        JObject paramsObject = JObject.Parse(method.ArumentsJson);
-                        float time = float.Parse(paramsObject["Time"].ToString());
-                        string conditionName = paramsObject["ConditionName"].ToString();
-                        Action lam = () => gameEndConditionHandler.IncreaseCount(conditionName);
-                        if (method.Trigger != null && method.Trigger == "CreepTrigger")
-                        {
-                            string creeperId = paramsObject["TriggerCreeperId"].ToString();
-                            triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
-                        }
-                        else
-                        {
-                            timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
-                        }
-                    }
-                }
+                ConvertFieldObjectMethods(fieldObject);
             }
         }
     }
 
+    private void ConvertFieldObjectMethods(FieldObject fieldObject)
+    {
+        foreach (var method in fieldObject.Methods)
+        {
+            if (method.Method == "SpawnCreep")
+            {
+                JObject paramsObject = JObject.Parse(method.ArumentsJson);
+                float amount = float.Parse(paramsObject["Amount"].ToString());
+                float time = float.Parse(paramsObject["Time"].ToString());
+                float interval;
+                if (paramsObject.TryGetValue("Intervall", out var intervalS))
+                {
+                    interval = float.Parse(intervalS.ToString());
+                }
+                else
+                {
+                    interval = 0;
+                }
+                RegisterSpawn(fieldObject, amount, time, interval, paramsObject["Creeper"].ToString(), fieldObject.Name + method.Method, fieldObject.GetHashCode());
+            }
+            else if (method.Method == "DestoryFieldObject")
+            {
+                JObject paramsObject = JObject.Parse(method.ArumentsJson);
+                float time = float.Parse(paramsObject["Time"].ToString());
+                Action lam = () => DestroyFieldObject(fieldObject);
+                if (method.Trigger != null && method.Trigger == "CreepTrigger")
+                {
+                    string creeperId = paramsObject["TriggerCreeperId"].ToString();
+                    triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
+                }
+                else
+                {
+                    timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
+                }
+            }
+            else if (method.Method == "CountDown")
+            {
+                JObject paramsObject = JObject.Parse(method.ArumentsJson);
+                float time = float.Parse(paramsObject["Time"].ToString());
+                string conditionName = paramsObject["ConditionName"].ToString();
+                Action lam = () => gameEndConditionHandler.IncreaseCount(conditionName);
+                if (method.Trigger != null && method.Trigger == "CreepTrigger")
+                {
+                    string creeperId = paramsObject["TriggerCreeperId"].ToString();
+                    triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
+                }
+                else
+                {
+                    timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
+                }
+            }
+            else if (method.Method == "CreepTouched")
+            {
+                JObject paramsObject = JObject.Parse(method.ArumentsJson);
+                float time = float.Parse(paramsObject["Time"].ToString());
+                string conditionName = paramsObject["ConditionName"].ToString();
+                Action lam = () => gameEndConditionHandler.IncreaseCount(conditionName);
+                if (method.Trigger != null && method.Trigger == "CreepTrigger")
+                {
+                    string creeperId = paramsObject["TriggerCreeperId"].ToString();
+                    triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
+                }
+                else
+                {
+                    timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
+                }
+            }
+        }
+    }
 
     private void RegisterSpawn(FieldObject fieldObject, float amount, float time, float interval, string creeperId, string ID, int objectID)
     {
         timeManagerBehaviour.RegisterEvent(time, () => SpawnCreepAt(fieldObject.Field, amount, creeperId), ID, objectID, interval);
     }
 
+    public void CreateSpawner(Field field, FieldObject spawner)
+    {
+        field.FieldObjects.Add(spawner);
+        spawner.Field = field;
+        Core.Game.State.GameField.FieldObjects.Add(spawner);
+        ConvertFieldObjectMethods(spawner);
+        foreach (var action in CreateFieldObjectEvent)
+        {
+            action.Invoke(spawner);
+        }
+    }
 
     public void SpawnCreepAt(Field field, float amount, string creeperId)
     {

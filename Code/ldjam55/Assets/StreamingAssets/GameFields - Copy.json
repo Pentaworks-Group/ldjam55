@@ -1,331 +1,634 @@
 [
-    {
-        "Reference": "default",
-        "Name": "Default Field",
-        "Description": "Default Default Default",
-        "Fields": [
+  {
+    "Reference": "default",
+    "Name": "Default Field",
+    "Description": "Default Default Default",
+    "Fields": [
+      {
+        "ID": "0-0--2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-1-0--2",
+        "Coords": {
+          "X": -1.0,
+          "Y": 0.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-1--1--2",
+        "Coords": {
+          "X": -1.0,
+          "Y": -1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-1--2--2",
+        "Coords": {
+          "X": -1.0,
+          "Y": -2.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "1-0--2",
+        "Coords": {
+          "X": 1.0,
+          "Y": 0.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "0-1--2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "2-0--2",
+        "Coords": {
+          "X": 2.0,
+          "Y": 0.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "0-2--2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 2.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "1-2--2",
+        "Coords": {
+          "X": 1.0,
+          "Y": 2.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "2-1--2",
+        "Coords": {
+          "X": 2.0,
+          "Y": 1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "2-2--2",
+        "Coords": {
+          "X": 2.0,
+          "Y": 2.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "1-1--1",
+        "Coords": {
+          "X": 1.0,
+          "Y": 1.0
+        },
+        "Height": -1,
+        "FieldObjects": []
+      },
+      {
+        "ID": "3-0--2",
+        "Coords": {
+          "X": 3.0,
+          "Y": 0.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "0-3--2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "1-3--2",
+        "Coords": {
+          "X": 1.0,
+          "Y": 3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "3--3--2",
+        "Coords": {
+          "X": 3.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "4--3--2",
+        "Coords": {
+          "X": 4.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "0--3--2",
+        "Coords": {
+          "X": 0.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "0--4--2",
+        "Coords": {
+          "X": 0.0,
+          "Y": -4.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "0--5--2",
+        "Coords": {
+          "X": 0.0,
+          "Y": -5.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-3--3--2",
+        "Coords": {
+          "X": -3.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-2--3--2",
+        "Coords": {
+          "X": -2.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "-1--3--2",
+        "Coords": {
+          "X": -1.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "1--5--2",
+        "Coords": {
+          "X": 1.0,
+          "Y": -5.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "2--5--2",
+        "Coords": {
+          "X": 2.0,
+          "Y": -5.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "1--4--2",
+        "Coords": {
+          "X": 1.0,
+          "Y": -4.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "2--4--2",
+        "Coords": {
+          "X": 2.0,
+          "Y": -4.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "1--3--2",
+        "Coords": {
+          "X": 1.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "2--3--2",
+        "Coords": {
+          "X": 2.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "3--2--2",
+        "Coords": {
+          "X": 3.0,
+          "Y": -2.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "5--3--2",
+        "Coords": {
+          "X": 5.0,
+          "Y": -3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "3--1--2",
+        "Coords": {
+          "X": 3.0,
+          "Y": -1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "4--1--2",
+        "Coords": {
+          "X": 4.0,
+          "Y": -1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "5--2--2",
+        "Coords": {
+          "X": 5.0,
+          "Y": -2.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "5--1--2",
+        "Coords": {
+          "X": 5.0,
+          "Y": -1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "4--2--1",
+        "Coords": {
+          "X": 4.0,
+          "Y": -2.0
+        },
+        "Height": -1,
+        "FieldObjects": []
+      },
+      {
+        "ID": "0-4--2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 4.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "2-3--2",
+        "Coords": {
+          "X": 2.0,
+          "Y": 3.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "0-5--2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 5.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "1-5--2",
+        "Coords": {
+          "X": 1.0,
+          "Y": 5.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "2-4--2",
+        "Coords": {
+          "X": 2.0,
+          "Y": 4.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "2-5--2",
+        "Coords": {
+          "X": 2.0,
+          "Y": 5.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "1-4--1",
+        "Coords": {
+          "X": 1.0,
+          "Y": 4.0
+        },
+        "Height": -1,
+        "FieldObjects": []
+      },
+      {
+        "ID": "4-0--2",
+        "Coords": {
+          "X": 4.0,
+          "Y": 0.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "3-1--2",
+        "Coords": {
+          "X": 3.0,
+          "Y": 1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "5-0--2",
+        "Coords": {
+          "X": 5.0,
+          "Y": 0.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "3-2--2",
+        "Coords": {
+          "X": 3.0,
+          "Y": 2.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "4-2--2",
+        "Coords": {
+          "X": 4.0,
+          "Y": 2.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "5-1--2",
+        "Coords": {
+          "X": 5.0,
+          "Y": 1.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "5-2--2",
+        "Coords": {
+          "X": 5.0,
+          "Y": 2.0
+        },
+        "Height": -2,
+        "FieldObjects": []
+      },
+      {
+        "ID": "4-1--1",
+        "Coords": {
+          "X": 4.0,
+          "Y": 1.0
+        },
+        "Height": -1,
+        "FieldObjects": []
+      }
+    ],
+    "Borders": [
+      {
+        "Field1Ref": "0-0--2",
+        "Field2Ref": "1-0--2",
+        "Methods": [
           {
-            "ID": "0-0--2",
-            "Coords": {
-              "X": 0.0,
-              "Y": 0.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "1-0--2",
-            "Coords": {
-              "X": 1.0,
-              "Y": 0.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "0-1--2",
-            "Coords": {
-              "X": 0.0,
-              "Y": 1.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "2-0--2",
-            "Coords": {
-              "X": 2.0,
-              "Y": 0.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "0-2--2",
-            "Coords": {
-              "X": 0.0,
-              "Y": 2.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "1-2--2",
-            "Coords": {
-              "X": 1.0,
-              "Y": 2.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "2-1--2",
-            "Coords": {
-              "X": 2.0,
-              "Y": 1.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "2-2--2",
-            "Coords": {
-              "X": 2.0,
-              "Y": 2.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "1-1--1",
-            "Coords": {
-              "X": 1.0,
-              "Y": 1.0
-            },
-            "Height": -1
-          },
-          {
-            "ID": "3-0--2",
-            "Coords": {
-              "X": 3.0,
-              "Y": 0.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "0-3--2",
-            "Coords": {
-              "X": 0.0,
-              "Y": 3.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "1-3--2",
-            "Coords": {
-              "X": 1.0,
-              "Y": 3.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "3--3--2",
-            "Coords": {
-              "X": 3.0,
-              "Y": -3.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "4--3--2",
-            "Coords": {
-              "X": 4.0,
-              "Y": -3.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "3--2--2",
-            "Coords": {
-              "X": 3.0,
-              "Y": -2.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "5--3--2",
-            "Coords": {
-              "X": 5.0,
-              "Y": -3.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "3--1--2",
-            "Coords": {
-              "X": 3.0,
-              "Y": -1.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "4--1--2",
-            "Coords": {
-              "X": 4.0,
-              "Y": -1.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "5--2--2",
-            "Coords": {
-              "X": 5.0,
-              "Y": -2.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "5--1--2",
-            "Coords": {
-              "X": 5.0,
-              "Y": -1.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "4--2--1",
-            "Coords": {
-              "X": 4.0,
-              "Y": -2.0
-            },
-            "Height": -1
-          },
-          {
-            "ID": "0-4--2",
-            "Coords": {
-              "X": 0.0,
-              "Y": 4.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "2-3--2",
-            "Coords": {
-              "X": 2.0,
-              "Y": 3.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "0-5--2",
-            "Coords": {
-              "X": 0.0,
-              "Y": 5.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "1-5--2",
-            "Coords": {
-              "X": 1.0,
-              "Y": 5.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "2-4--2",
-            "Coords": {
-              "X": 2.0,
-              "Y": 4.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "2-5--2",
-            "Coords": {
-              "X": 2.0,
-              "Y": 5.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "1-4--1",
-            "Coords": {
-              "X": 1.0,
-              "Y": 4.0
-            },
-            "Height": -1
-          },
-          {
-            "ID": "4-0--2",
-            "Coords": {
-              "X": 4.0,
-              "Y": 0.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "3-1--2",
-            "Coords": {
-              "X": 3.0,
-              "Y": 1.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "5-0--2",
-            "Coords": {
-              "X": 5.0,
-              "Y": 0.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "3-2--2",
-            "Coords": {
-              "X": 3.0,
-              "Y": 2.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "4-2--2",
-            "Coords": {
-              "X": 4.0,
-              "Y": 2.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "5-1--2",
-            "Coords": {
-              "X": 5.0,
-              "Y": 1.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "5-2--2",
-            "Coords": {
-              "X": 5.0,
-              "Y": 2.0
-            },
-            "Height": -2
-          },
-          {
-            "ID": "4-1--1",
-            "Coords": {
-              "X": 4.0,
-              "Y": 1.0
-            },
-            "Height": -1
+            "Method": "DestroyBorder",
+            "ArumentsJson": "{\"Time\": 10}"
           }
         ],
-        "Borders": [
+        "BorderType": {
+          "Name": "BorderWall",
+          "Model": "Wall",
+          "IsReferenced": false
+        },
+        "BorderStatus": {
+          "Value": 0.0
+        }
+      },
+      {
+        "Field1Ref": "3--3--2",
+        "Field2Ref": "4--3--2",
+        "BorderType": {
+          "Name": "BorderWall",
+          "Model": "Wall",
+          "IsReferenced": false
+        },
+        "BorderStatus": {
+          "Value": 0.0
+        }
+      },
+      {
+        "Field1Ref": "3--2--2",
+        "Field2Ref": "3--3--2",
+        "BorderType": {
+          "Name": "BorderWall",
+          "Model": "Wall",
+          "IsReferenced": false
+        },
+        "Methods": [
           {
-            "Field1Ref": "0-0--2",
-            "Field2Ref": "1-0--2",
-            "BorderType": {
-              "Model": "Wall",
-              "IsReferenced": false
-            }
-          },
-          {
-            "Field1Ref": "0-1--2",
-            "Field2Ref": "1-1--1",
-            "BorderType": {
-              "Model": "Wall",
-              "IsReferenced": false
-            }
-          },
-          {
-            "Field1Ref": "3-0--2",
-            "Field2Ref": "4-0--2",
-            "BorderType": {
-              "Model": "Wall",
-              "IsReferenced": false
-            }
-          },
-          {
-            "Field1Ref": "3-1--2",
-            "Field2Ref": "4-1--1",
-            "BorderType": {
-              "Model": "Wall",
-              "IsReferenced": false
-            }
+            "Method": "DestroyBorder",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 0, \"TriggerCreeperId\" : \"CreeperWater\"}"
           }
-        ]
-    }
+        ],
+        "BorderStatus": {
+          "Value": 0.0
+        }
+      },
+      {
+        "Field1Ref": "0-1--2",
+        "Field2Ref": "1-1--1",
+        "BorderType": {
+          "Name": "BorderWall",
+          "Model": "Wall",
+          "IsReferenced": false
+        },
+        "BorderStatus": {
+          "Value": 0.0
+        }
+      },
+      {
+        "Field1Ref": "3-0--2",
+        "Field2Ref": "4-0--2",
+        "BorderType": {
+          "Name": "BorderWall",
+          "Model": "Wall",
+          "IsReferenced": false
+        },
+        "BorderStatus": {
+          "Value": 0.0
+        }
+      },
+      {
+        "Field1Ref": "3-1--2",
+        "Field2Ref": "4-1--1",
+        "BorderType": {
+          "Name": "BorderWall",
+          "Model": "Wall",
+          "IsReferenced": false
+        },
+        "BorderStatus": {
+          "Value": 0.0
+        }
+      }
+    ],
+    "FieldObjects": [
+      {
+        "Name": "Water Spawner",
+        "Material": "Creeper_Yellow_Stage_1",
+        "Model": "Spawner_1",
+        "FieldReference": "0-0--2",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 10,\"Time\": 2,\"Creeper\": \"CreeperWater\", \"Intervall\": 2}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "Fire Spawner",
+        "Material": "Creeper_Red_Stage_1",
+        "Model": "Spawner_1",
+        "FieldReference": "4-2--2",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 25,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"Intervall\": 5}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "BOOOM",
+        "Material": "Creeper_Red_Stage_2",
+        "Model": "Spawner_2",
+        "FieldReference": "1--5--2",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 200,\"Time\": 8,\"Creeper\": \"CreeperFire\", \"IsIntervall\": false}"
+          },
+          {
+            "Method": "DestoryFieldObject",
+            "ArumentsJson": "{\"Time\": 8.5}"
+          },
+          {
+            "Trigger": "CreepTrigger",
+            "Method": "DestoryFieldObject",
+            "ArumentsJson": "{\"Amount\": 200,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"IsIntervall\": false, \"TriggerCreeperId\" : \"CreeperWater\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "HiddenStuff",
+        "Hidden": true,
+        "Material": "Creeper_Red_Stage_1",
+        "Model": "Spawner_1",
+        "FieldReference": "4-2--2",
+        "Methods": [
+          {
+            "Method": "CountDown",
+            "ArumentsJson": "{\"Time\": 50,\"ConditionName\": \"WinTimer\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "HitToWin",
+        "Hidden": false,
+        "Material": "Creeper_Red_Stage_1",
+        "Model": "Spawner_1",
+        "FieldReference": "4-2--2",
+        "Methods": [
+          {
+            "Trigger": "CreepTrigger",
+            "Method": "CountDown",
+            "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTimer\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          }
+        ],
+        "IsReferenced": false
+      }
+    ]
+  }
 ]

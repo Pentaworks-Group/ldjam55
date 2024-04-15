@@ -1,6 +1,7 @@
 
 using Assets.Scripts.Core.Model;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -23,6 +24,7 @@ namespace Assets.Scripts.Scenes.GameScene
         private Dictionary<string, GameObject> WorldCreep;
         private Dictionary<string, GameObject> Borders;
         private Dictionary<int, GameObject> FieldObjectCache;
+        private Dictionary<int, GameFieldContainerBehaviour> ObjectsInContainers;
 
 
 
@@ -38,6 +40,7 @@ namespace Assets.Scripts.Scenes.GameScene
         {
             creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
             creepBehaviour.DestroyFieldObjectEvent.Add(DestroyFieldObject);
+            creepBehaviour.CreateFieldObjectEvent.Add(SpawnFieldObject);
         }
 
 
@@ -45,6 +48,7 @@ namespace Assets.Scripts.Scenes.GameScene
         public void GenerateGameField()
         {
             FieldObjectCache = new Dictionary<int, GameObject>();
+            ObjectsInContainers = new Dictionary<int, GameFieldContainerBehaviour>();
 
             var fieldTemplate = Templates["Field"];
             foreach (var field in Base.Core.Game.State.GameField.Fields)
@@ -53,9 +57,7 @@ namespace Assets.Scripts.Scenes.GameScene
                 newFieldGO.name = "Field:" + field.ID;
                 newFieldGO.transform.position = new Vector3(field.Coords.X, field.Height, field.Coords.Y);
                 newFieldGO.SetActive(true);
-                var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
-                container.ContainedObject = field;
-                container.ObjectType = "Field";
+                AddContainer(field, newFieldGO, "Field");
                 foreach (var fieldObject in field.FieldObjects)
                 {
                     SpawnFieldObject(newFieldGO, fieldObject);
@@ -70,10 +72,8 @@ namespace Assets.Scripts.Scenes.GameScene
                 {
                     var newFieldGO = Instantiate(wallTemplate, World.transform);
                     newFieldGO.name = "Wall";
-                    var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
-                    container.ContainedObject = border;
-                    container.ObjectType = "Wall";
                     SetBorderPositionAndRotation(border, newFieldGO);
+                    AddContainer(border, newFieldGO, "Wall");
                     newFieldGO.SetActive(true);
                     Borders.Add(GetBorderKey(border), newFieldGO);
                 }
@@ -103,26 +103,37 @@ namespace Assets.Scripts.Scenes.GameScene
             }
         }
 
+        private void SpawnFieldObject(FieldObject fieldObject)
+        {
+            var container = ObjectsInContainers[fieldObject.Field.GetHashCode()];
+            var fieldGO = container.gameObject;
+            SpawnFieldObject(fieldGO, fieldObject);
+        }
+
         private void SpawnFieldObject(GameObject field, FieldObject fieldObject)
         {
-            if (!fieldObject.Hidden)
+            var fieldTemplate = Templates[fieldObject.Model];
+            var newFieldGO = Instantiate(fieldTemplate, World.transform);
+            AddContainer(fieldObject, newFieldGO, "FieldObject");
+            var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
+            newFieldGO.GetComponent<Renderer>().material = material;
+            foreach (Transform child in newFieldGO.transform)
             {
-                var fieldTemplate = Templates[fieldObject.Model];
-                var newFieldGO = Instantiate(fieldTemplate, World.transform);
-                var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
-                container.ContainedObject = fieldObject;
-                container.ObjectType = "FieldObject";
-                var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
-                newFieldGO.GetComponent<Renderer>().material = material;
-                foreach (Transform child in newFieldGO.transform)
-                {
-                    child.GetComponent<Renderer>().material = material;
-                }
-                newFieldGO.name = GetFieldObjectName(field.name);
-                newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
-                FieldObjectCache.Add(fieldObject.GetHashCode(), newFieldGO);
-                newFieldGO.SetActive(true);
-            }            
+                child.GetComponent<Renderer>().material = material;
+            }
+            newFieldGO.name = GetFieldObjectName(field.name);
+            newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
+            FieldObjectCache.Add(fieldObject.GetHashCode(), newFieldGO);
+            newFieldGO.SetActive(!fieldObject.Hidden);
+        }
+
+        private void AddContainer(object ob, GameObject newFieldGO, string objectType)
+        {
+            var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
+            container.ContainedObject = ob;
+            container.ObjectId = ob.GetHashCode();
+            container.ObjectType =  objectType;
+            ObjectsInContainers.TryAdd(ob.GetHashCode(), container);
         }
 
         private static string GetFieldObjectName(string fieldName)
@@ -163,7 +174,10 @@ namespace Assets.Scripts.Scenes.GameScene
             foreach (Transform tran in World.transform)
             {
                 var gO = tran.gameObject;
-                var container = tran.gameObject.GetComponent<GameFieldContainerBehaviour>();
+                if(!tran.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var container))
+                {
+                    continue;
+                }
                 if (container.ObjectType == "Field")
                 {
                     var Field = new Field();
@@ -210,9 +224,23 @@ namespace Assets.Scripts.Scenes.GameScene
             writer.Close();
         }
 
+
+        //private Dictionary<string, FieldObject> GetDict(List<FieldObject> fieldObjects)
+        //{
+        //    var dict = new Dictionary<string, FieldObject>();
+        //    foreach (var fieldObject in fieldObjects)
+        //    {
+        //        if(!dict.TryAdd(fieldObject.Field.ID, fieldObject))
+        //        {
+        //            Debug.Log(fieldObject.Field.ID);
+        //        }
+        //    }
+
+        //    return dict;
+        //}
         private List<Core.Definitions.FieldObject> GenerateFieldObjects(Dictionary<string, Field> fields, List<GameObject> rawFieldObjects)
         {
-            var fieldDict = Base.Core.Game.State.GameField.FieldObjects.ToDictionary(field => field.Field.ID, field => field);
+            //var fieldDict = GetDict(Base.Core.Game.State.GameField.FieldObjects);
             var fieldObjects = new List<Core.Definitions.FieldObject>();
             string prefix = "FieldObject:Field:";
             int prefixL = prefix.Length;
@@ -225,21 +253,28 @@ namespace Assets.Scripts.Scenes.GameScene
                 if (field != null)
                 {
                     var fieldO = new Core.Definitions.FieldObject();
-                    var fieldID = rawFO.name.Substring(prefixL);
-                    if (fieldDict.TryGetValue(fieldID, out FieldObject f))
+                    //var container = rawFO.gameObject.GetComponent<GameFieldContainerBehaviour>();
+                    if (!rawFO.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var container))
                     {
-                        if (!fieldO.IsReferenced)
-                        {
-                            fieldO.Methods = f.Methods;
-                            fieldO.Material = f.Material;
-                            fieldO.Model = f.Model;
-                            fieldO.Name = f.Name;
-                            fieldO.Description = f.Description;
-
-                        }
-                        fieldO.FieldReference = field.ID;
-                        fieldObjects.Add(fieldO);
+                        continue;
                     }
+                    FieldObject f = (FieldObject)container.ContainedObject;
+                    if (f == null)
+                    {
+                        f = (FieldObject)ObjectsInContainers[container.ObjectId].ContainedObject;
+                    }
+                    if (!fieldO.IsReferenced)
+                    {
+                        fieldO.Methods = f.Methods;
+                        fieldO.Material = f.Material;
+                        fieldO.Model = f.Model;
+                        fieldO.Name = f.Name;
+                        fieldO.Description = f.Description;
+
+                    }
+                    fieldO.FieldReference = field.ID;
+                    fieldObjects.Add(fieldO);
+
                 }
             }
             return fieldObjects;
@@ -288,12 +323,15 @@ namespace Assets.Scripts.Scenes.GameScene
                     field2 = FindHighestField(fields, (int)x, y2, heigth);
                 }
 
+                var container = rawWall.gameObject.GetComponent<GameFieldContainerBehaviour>();
+                var borderMod = (Border)container.ContainedObject;
                 var border = new Core.Definitions.Border
                 {
                     Field1Ref = field1.ID,
                     Field2Ref = field2.ID,
-                    BorderType = new Core.Definitions.BorderType() { Model = "Wall", Name = "BorderWall" },
-                    BorderStatus = new BorderStatus() { FlowValue = 0 }
+                    Methods = borderMod.Methods,
+                    BorderType = new Core.Definitions.BorderType() { Model = borderMod.BorderType.Model, Name = borderMod.BorderType.Name },
+                    BorderStatus = borderMod.BorderStatus
                 };
                 borders.Add(border);
             }
@@ -346,9 +384,8 @@ namespace Assets.Scripts.Scenes.GameScene
                     {
                         creepGO = Instantiate(creepTemplate, World.transform);
                         creepGO.name = "Creep_" + field.Creep.Creeper.Name;
-                        var container = creepGO.AddComponent<GameFieldContainerBehaviour>();
-                        container.ContainedObject = field;
-                        container.ObjectType = "Creep";
+
+                        AddContainer(field, creepGO, "Creep");
 
                         creepGO.transform.position = new Vector3(field.Coords.X, field.Height + 1, field.Coords.Y);
                         WorldCreep[field.ID] = creepGO;
@@ -357,6 +394,7 @@ namespace Assets.Scripts.Scenes.GameScene
                     var material = GameFrame.Base.Resources.Manager.Materials.Get(field.Creep.Creeper.Parameters.Material);
                     creepGO.GetComponent<Renderer>().material = material;
                     creepGO.transform.localScale = new Vector3(1, field.Creep.Value / 10, 1);
+                    creepGO.SetActive(true);
                 }
             }
         }
