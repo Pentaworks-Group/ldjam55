@@ -134,7 +134,8 @@ public class GameSceneBehaviour : MonoBehaviour
         }
         newFieldGO.name = GetFieldObjectName(fieldObject.Field.ID);
 
-        Vector3 mapPos = new Vector3(fieldObject.Field.Coords.X, terrainBehaviour.GetFieldHeight(fieldObject.Field), fieldObject.Field.Coords.Y);
+        float height = terrainBehaviour.GetFieldHeight(fieldObject.Field) * mainTerrain.terrainData.size.y;
+        Vector3 mapPos = new Vector3(fieldObject.Field.Coords.X, height, fieldObject.Field.Coords.Y);
         newFieldGO.transform.position = getTerrainCoordinates(mapPos);
         newFieldGO.SetActive(true);
     }
@@ -164,8 +165,12 @@ public class GameSceneBehaviour : MonoBehaviour
         float z = (y2 - y1) / 2f;
         Vector3 mapPos = new Vector3(x1 + x, 0, y1 + z);
         Vector3 terrainPos = getTerrainCoordinates(mapPos);
-        var height = Mathf.Max(border.Field1.Height, border.Field2.Height);
-//        borderObject.transform.position = new Vector3(x1 - x, height + 0.55f, y1 - z);
+
+        float height1 = terrainBehaviour.GetFieldHeight(border.Field1) * mainTerrain.terrainData.size.y;
+        float height2 = terrainBehaviour.GetFieldHeight(border.Field2) * mainTerrain.terrainData.size.y;
+        float height = Mathf.Min(height1, height2);
+        terrainPos.y = height;
+
         borderObject.transform.position = terrainPos;
         if (border.Field1.Coords.Y != border.Field2.Coords.Y)
         {
