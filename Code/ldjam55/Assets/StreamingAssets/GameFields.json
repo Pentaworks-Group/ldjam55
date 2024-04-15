@@ -94,50 +94,78 @@
   {
     "Fields": [
       {
-        "ID": "0-4-4",
+        "ID": "0-6-8",
         "Coords": {
           "X": 0.0,
-          "Y": 4.0
+          "Y": 6.0
+        },
+        "Height": 8,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "1-6-6",
+        "Coords": {
+          "X": 1.0,
+          "Y": 6.0
+        },
+        "Height": 6,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-6-4",
+        "Coords": {
+          "X": 2.0,
+          "Y": 6.0
         },
         "Height": 4,
         "FieldObjects":[]
       },
       {
-        "ID": "1-4-2",
+        "ID": "3-6-6",
         "Coords": {
-          "X": 1.0,
-          "Y": 4.0
+          "X": 3.0,
+          "Y": 6.0
         },
-        "Height": 2,
+        "Height": 6,
         "FieldObjects":[]
       },
       {
-        "ID": "2-4-0",
+        "ID": "4-6-8",
+        "Coords": {
+          "X": 4.0,
+          "Y": 6.0
+        },
+        "Height": 8,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-5-4",
+        "Coords": {
+          "X": 2.0,
+          "Y": 5.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-4-4",
         "Coords": {
           "X": 2.0,
           "Y": 4.0
         },
-        "Height": 0,
+        "Height": 4,
         "FieldObjects":[]
       },
       {
-        "ID": "3-4-2",
+        "ID": "2-3-4",
         "Coords": {
-          "X": 3.0,
-          "Y": 4.0
-        },
-        "Height": 2,
-        "FieldObjects":[]
-      },
-      {
-        "ID": "4-4-4",
-        "Coords": {
-          "X": 4.0,
-          "Y": 4.0
+          "X": 2.0,
+          "Y": 3.0
         },
         "Height": 4,
         "FieldObjects":[]
-      },{
+      }
+      ,{
         "ID": "0-2-0",
         "Coords": {
           "X": 0.0,
@@ -228,13 +256,39 @@
         "FieldObjects":[]
       }
     ],
+    "Borders": [
+      {
+        "Field1Ref": "2-5-4",
+        "Field2Ref": "2-4-4",
+        "BorderType": {
+          "Name": "BorderWall",
+          "Model": "Wall",
+          "IsReferenced": false
+        },
+        "BorderStatus": {
+          "FlowValue": 0.0
+        }
+      },
+      {
+        "Field1Ref": "2-4-4",
+        "Field2Ref": "2-3-4",
+        "BorderType": {
+          "Name": "BorderWall",
+          "Model": "Wall",
+          "IsReferenced": false
+        },
+        "BorderStatus": {
+          "FlowValue": 0.0
+        }
+      }
+    ],
    "FieldObjects": [
       {
         "Name": "Water Spawner",
         "Model": "Spawner_1",
         "Material": "Creeper_Yellow_Stage_1",
         "Hidden": false,
-        "FieldReference": "0-4-4",
+        "FieldReference": "0-6-8",
         "Methods": [
           {
             "Method": "SpawnCreep",
@@ -247,7 +301,7 @@
         "Model": "Spawner_1",
         "Material": "Creeper_Red_Stage_1",
         "Hidden": false,
-        "FieldReference": "4-4-4",
+        "FieldReference": "4-6-8",
         "Methods": [
           {
             "Method": "SpawnCreep",
@@ -298,7 +352,40 @@
           }
         ],
         "IsReferenced": false
+      },
+      {
+        "Name": "HitToWin",
+        "Model": "GraleTree",
+        "Material": "",
+        "Hidden": false,
+        "FieldReference": "2-4-4",
+        "Methods": [
+          
+                    {
+            "Method": "CountDown",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeper\" : \"CreeperWater\"}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "HitToLoose",
+        "Model": "GraleTree",
+        "Material": "",
+        "Hidden": false,
+        "FieldReference": "2-4-4",
+        "Methods": [
+          
+                    {
+            "Method": "CountDown",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"LooseTouch\", \"TriggerCreeper\" : \"CreeperFire\"}"
+          }
+        ],
+        "IsReferenced": false
       }
+
     ],
     "Reference": "World2",
     "IsReferenced": false
