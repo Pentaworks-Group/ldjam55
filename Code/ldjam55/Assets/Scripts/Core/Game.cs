@@ -112,7 +112,7 @@ namespace Assets.Scripts.Core
         {
             new ResourceLoader<Definitions.GameField>(this.availableGameFields).LoadDefinition("GameFields.json");
             //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
-            //new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
+            new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
         }
 
         private void InitializeAudioClips()
