@@ -26,15 +26,18 @@ namespace Assets.Scripts.Core.Definitions.Loaders
                         Reference = loadedGameMode.Reference,
                         Name = loadedGameMode.Name,
                         Description = loadedGameMode.Description,
+                        StartLevel = loadedGameMode.StartLevel,
                         Creepers = loadedGameMode.Creepers,
-                        EndConditions = loadedGameMode.EndConditions,
+                        Levels = loadedGameMode.Levels,
                         FlowSpeed = loadedGameMode.FlowSpeed,
                         MinFlow = loadedGameMode.MinFlow,
                         NothingFlowRate = loadedGameMode.NothingFlowRate,
                     };
 
-                    newGameMode.GameField = CheckItem(loadedGameMode.GameField, this.gameFieldCache);
-                    //CheckItems(loadedGameMode.Spacecrafts, newGameMode.Spacecrafts, this.spacecraftCache);
+                    foreach (var level in loadedGameMode.Levels)
+                    {
+                        level.GameField = CheckItem(level.GameField, this.gameFieldCache);
+                    }
                     //CheckItems(loadedGameMode.PlayerSpacecrafts, newGameMode.PlayerSpacecrafts, this.spacecraftCache);
 
                     targetCache[loadedGameMode.Reference] = newGameMode;

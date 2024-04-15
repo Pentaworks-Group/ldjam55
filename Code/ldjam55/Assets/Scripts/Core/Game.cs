@@ -59,9 +59,21 @@ namespace Assets.Scripts.Core
             {
                 CreatedOn = DateTime.Now,
                 CurrentScene = Constants.SceneNames.Game,
-                GameField = ConvertGameField(SelectedGameMode.GameField),
                 Mode = ConvertGameMode(SelectedGameMode),
             };
+
+            if (SelectedGameMode.StartLevel != null)
+            {
+                foreach (var level in SelectedGameMode.Levels) {
+                    if (level.Name == SelectedGameMode.StartLevel)
+                    {
+                        gameState.CurrentLevel = ConvertLevel(level);
+                    }
+                }
+            }
+            if (gameState.CurrentLevel == null) {
+                gameState.CurrentLevel = ConvertLevel(SelectedGameMode.Levels[0]);
+            }
 
             return gameState;
         }
@@ -181,6 +193,32 @@ namespace Assets.Scripts.Core
             return modelFieldObjects;
         }
 
+        private List<Model.Level> ConvertLevels(List<Definitions.Level> levels)
+        {
+            var modelLevels = new List<Model.Level>();
+
+            foreach (var level in levels)
+            {
+                Level modelLevel = ConvertLevel(level);
+                modelLevels.Add(modelLevel);
+            }
+
+            return modelLevels;
+        }
+
+        private Level ConvertLevel(Definitions.Level level)
+        {
+            var modelLevel = new Model.Level()
+            {
+                Name = level.Name,
+                Description = level.Description,
+                EndConditions = level.EndConditions,
+                UserActions = level.UserActions
+            };
+            modelLevel.GameField = ConvertGameField(level.GameField);
+            return modelLevel;
+        }
+
         private Model.GameMode ConvertGameMode(Definitions.GameMode selectedGameMode)
         {
             var gameMode = new Model.GameMode()
@@ -188,10 +226,11 @@ namespace Assets.Scripts.Core
                 Name = selectedGameMode.Name,
                 Description = selectedGameMode.Description,
                 Creepers = selectedGameMode.Creepers,
+                StartLevel = selectedGameMode.StartLevel,
                 FlowSpeed = selectedGameMode.FlowSpeed,
                 MinFlow = selectedGameMode.MinFlow,
                 NothingFlowRate = selectedGameMode.NothingFlowRate,
-                EndConditions = selectedGameMode.EndConditions,
+                Levels = ConvertLevels(selectedGameMode.Levels),
                 //JunkSpawnInterval = selectedGameMode.JunkSpawnInterval.GetValueOrDefault(-1),
                 //JunkSpawnInitialDistance = selectedGameMode.JunkSpawnInitialDistance.GetValueOrDefault(),
                 //JunkSpawnPosition = selectedGameMode.JunkSpawnPosition?.Copy(),

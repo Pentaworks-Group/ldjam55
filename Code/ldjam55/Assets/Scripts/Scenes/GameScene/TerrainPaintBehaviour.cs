@@ -43,7 +43,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
         int maxX = 0;
         int maxY = 0;
         float maxZ = 0;
-        foreach (var field in Core.Game.State.GameField.Fields)
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
         {
             minX = (int)Math.Min(field.Coords.X, minX);
             minY = (int)Math.Min(field.Coords.Y, minY);
@@ -87,7 +87,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (var field in Core.Game.State.GameField.Fields)
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
         {
             if(field.Creep != null)
             {
@@ -225,7 +225,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private Field getField(int x, int y)
     {
         //Shift negative to 0
-        Field f = Core.Game.State.GameField.Fields.Find(field => field.Coords.X == x + terrainBehaviour.XOffset && field.Coords.Y == y + terrainBehaviour.YOffset);
+        Field f = Core.Game.State.CurrentLevel.GameField.Fields.Find(field => field.Coords.X == x + terrainBehaviour.XOffset && field.Coords.Y == y + terrainBehaviour.YOffset);
         return f;
     }
 

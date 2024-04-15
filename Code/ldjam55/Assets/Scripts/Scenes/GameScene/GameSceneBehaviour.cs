@@ -36,14 +36,14 @@ public class GameSceneBehaviour : MonoBehaviour
     {
         creepBehaviour.StartGame();
 
-        foreach (var fieldObject in Core.Game.State.GameField.FieldObjects)
+        foreach (var fieldObject in Core.Game.State.CurrentLevel.GameField.FieldObjects)
         {
             SpawnFieldObject(fieldObject);
         }
 
         Borders = new Dictionary<string, GameObject>();
         var wallTemplate = Templates["Wall"];
-        foreach (var border in Core.Game.State.GameField.Borders)
+        foreach (var border in Core.Game.State.CurrentLevel.GameField.Borders)
         {
             if (border.BorderType.Name == "BorderWall")
             {

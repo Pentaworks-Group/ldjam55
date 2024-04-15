@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-
 using Assets.Scripts.Core.Model;
+using System;
 
 namespace Assets.Scripts.Core
 {
@@ -10,7 +8,8 @@ namespace Assets.Scripts.Core
         public GameMode Mode { get; set; }
         public Double TimeElapsed { get; set; }
 
-        public GameField GameField { get; set; }
+
+        public Level CurrentLevel { get; set; }
 
     }
 }

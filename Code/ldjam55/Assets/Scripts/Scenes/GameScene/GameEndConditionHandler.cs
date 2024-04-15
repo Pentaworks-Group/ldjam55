@@ -31,7 +31,7 @@ namespace Assets.Scripts.Scenes.GameScene
         {
             this.winAction = winAction;
             this.loseAction = loseAction;
-            conditions = Base.Core.Game.State.Mode.EndConditions.ToDictionary(con => con.Name);
+            conditions = Base.Core.Game.State.CurrentLevel.EndConditions.ToDictionary(con => con.Name);
         }
 
 

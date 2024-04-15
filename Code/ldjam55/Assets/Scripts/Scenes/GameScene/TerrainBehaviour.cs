@@ -78,7 +78,7 @@ public class TerrainBehaviour : MonoBehaviour
             int maxX = 0;
             int maxY = 0;
             float maxZ = 0;
-            foreach (var field in Core.Game.State.GameField.Fields)
+            foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
             {
                 minX = (int)Math.Min(field.Coords.X, minX);
                 minY = (int)Math.Min(field.Coords.Y, minY);
@@ -232,7 +232,7 @@ public class TerrainBehaviour : MonoBehaviour
     private Field getField(int x, int y)
     {
         //Shift negative to 0
-        Field f = Core.Game.State.GameField.Fields.Find(field => field.Coords.X==x+XOffset && field.Coords.Y==y+YOffset);
+        Field f = Core.Game.State.CurrentLevel.GameField.Fields.Find(field => field.Coords.X==x+XOffset && field.Coords.Y==y+YOffset);
         return f;
     }
 

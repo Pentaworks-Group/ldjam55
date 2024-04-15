@@ -1,6 +1,7 @@
+using Assets.Scripts.Core.Model;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.Core.Model
+namespace Assets.Scripts.Core.Definitions
 {
     public class Level
     {
@@ -10,6 +11,7 @@ namespace Assets.Scripts.Core.Model
 
         public List<GameEndCondition> EndConditions { get; set; }
         public GameField GameField { get; set; }
+
         public List<UserAction> UserActions { get; set; }
 
     }

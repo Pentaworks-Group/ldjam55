@@ -59,7 +59,7 @@ public class CreepBehaviour : MonoBehaviour
     private void CheckUniqueFields()
     {
         var fieldDict = new Dictionary<string, Field>();
-        foreach (var field in Core.Game.State.GameField.Fields)
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
         {
             fieldDict.Add(field.ID, field);
         }
@@ -72,7 +72,7 @@ public class CreepBehaviour : MonoBehaviour
         {
             creepsByCreeper.Add(creeper, new HashSet<Creep>());
         }
-        foreach (var field in Core.Game.State.GameField.Fields)
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
         {
             Creep creep = field.Creep;
             if (creep != null)
@@ -113,7 +113,7 @@ public class CreepBehaviour : MonoBehaviour
             }
         }
         var cnt = 0;
-        foreach (var fieldi in Core.Game.State.GameField.Fields)
+        foreach (var fieldi in Core.Game.State.CurrentLevel.GameField.Fields)
         {
             if (fieldi.Creep != null && fieldi.Creep.Creeper != null)
             {
@@ -150,7 +150,7 @@ public class CreepBehaviour : MonoBehaviour
         var bordersAdded = new HashSet<string>();
         var borders = new List<Border>();
         var topFields = new Dictionary<string, Field>();
-        foreach (var field in Core.Game.State.GameField.Fields)
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
         {
             string fieldKey = GetFieldKey(field);
             if (topFields.TryGetValue(fieldKey, out Field cField))
@@ -166,8 +166,8 @@ public class CreepBehaviour : MonoBehaviour
             }
         }
 
-        var allFields = Core.Game.State.GameField.Fields.ToDictionary(field => field.ID);
-        foreach (var border in Core.Game.State.GameField.Borders)
+        var allFields = Core.Game.State.CurrentLevel.GameField.Fields.ToDictionary(field => field.ID);
+        foreach (var border in Core.Game.State.CurrentLevel.GameField.Borders)
         {
             borders.Add(border);
             bordersAdded.Add(GetBorderKey(border));
@@ -198,7 +198,7 @@ public class CreepBehaviour : MonoBehaviour
         }
 
 
-        foreach (var field in Core.Game.State.GameField.Fields)
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
         {
             var neighbours = GetNeighbours(field, topFields);
             foreach (var neighbour in neighbours)
@@ -260,7 +260,7 @@ public class CreepBehaviour : MonoBehaviour
 
     private void ConvertFieldObjectMethodsForAllFlieldObjects()
     {
-        foreach (var fieldObject in Core.Game.State.GameField.FieldObjects)
+        foreach (var fieldObject in Core.Game.State.CurrentLevel.GameField.FieldObjects)
         {
             if (fieldObject != null)
             {
@@ -357,7 +357,7 @@ public class CreepBehaviour : MonoBehaviour
     {
         field.FieldObjects.Add(spawner);
         spawner.Field = field;
-        Core.Game.State.GameField.FieldObjects.Add(spawner);
+        Core.Game.State.CurrentLevel.GameField.FieldObjects.Add(spawner);
         ConvertFieldObjectMethods(spawner);
         foreach (var action in CreateFieldObjectEvent)
         {
@@ -406,7 +406,7 @@ public class CreepBehaviour : MonoBehaviour
         if (border != null)
         {
             borders.Remove(border);
-            Core.Game.State.GameField.Borders.Remove(border);
+            Core.Game.State.CurrentLevel.GameField.Borders.Remove(border);
 
             CreateNewDefaultBorder(border.Field1, border.Field2, borders);
             foreach (var action in DestroyBorderEvent)
@@ -422,7 +422,7 @@ public class CreepBehaviour : MonoBehaviour
     {
         if (fieldO != null)
         {
-            Core.Game.State.GameField.FieldObjects.Remove(fieldO);
+            Core.Game.State.CurrentLevel.GameField.FieldObjects.Remove(fieldO);
 
             foreach (var action in DestroyFieldObjectEvent)
             {
@@ -473,7 +473,7 @@ public class CreepBehaviour : MonoBehaviour
 
     private void distributeCreep()
     {
-        foreach (var field in Core.Game.State.GameField.Fields)
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
         {
             if (field.Creep != null)
             {

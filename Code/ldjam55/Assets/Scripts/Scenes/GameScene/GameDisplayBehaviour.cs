@@ -51,7 +51,7 @@ namespace Assets.Scripts.Scenes.GameScene
             ObjectsInContainers = new Dictionary<int, GameFieldContainerBehaviour>();
 
             var fieldTemplate = Templates["Field"];
-            foreach (var field in Base.Core.Game.State.GameField.Fields)
+            foreach (var field in Base.Core.Game.State.CurrentLevel.GameField.Fields)
             {
                 var newFieldGO = Instantiate(fieldTemplate, World.transform);
                 newFieldGO.name = "Field:" + field.ID;
@@ -66,7 +66,7 @@ namespace Assets.Scripts.Scenes.GameScene
 
             Borders = new Dictionary<string, GameObject>();
             var wallTemplate = Templates["Wall"];
-            foreach (var border in Base.Core.Game.State.GameField.Borders)
+            foreach (var border in Base.Core.Game.State.CurrentLevel.GameField.Borders)
             {
                 if (border.BorderType.Name == "BorderWall")
                 {
@@ -132,7 +132,7 @@ namespace Assets.Scripts.Scenes.GameScene
             var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
             container.ContainedObject = ob;
             container.ObjectId = ob.GetHashCode();
-            container.ObjectType =  objectType;
+            container.ObjectType = objectType;
             ObjectsInContainers.TryAdd(ob.GetHashCode(), container);
         }
 
@@ -174,7 +174,7 @@ namespace Assets.Scripts.Scenes.GameScene
             foreach (Transform tran in World.transform)
             {
                 var gO = tran.gameObject;
-                if(!tran.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var container))
+                if (!tran.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var container))
                 {
                     continue;
                 }
@@ -216,7 +216,12 @@ namespace Assets.Scripts.Scenes.GameScene
             List<Core.Definitions.FieldObject> fieldObjects = GenerateFieldObjects(fields, rawFieldObjects);
 
 
-            var gameField = new Core.Definitions.GameField() { FieldObjects = fieldObjects, Borders = borders, Fields = fields.Values.ToList(),  Reference = Base.Core.Game.State.GameField.Reference, IsReferenced = Base.Core.Game.State.GameField.IsReferenced};
+            var gameField = new Core.Definitions.GameField() { 
+                FieldObjects = fieldObjects, 
+                Borders = borders,
+                Fields = fields.Values.ToList(),
+                Reference = Base.Core.Game.State.CurrentLevel.GameField.Reference, 
+                IsReferenced = Base.Core.Game.State.CurrentLevel.GameField.IsReferenced };
 
             var json = GameFrame.Core.Json.Handler.SerializePrettyIgnoreNull(gameField);
             var filePath = Application.streamingAssetsPath + "/dumpGameField.json";
@@ -362,7 +367,7 @@ namespace Assets.Scripts.Scenes.GameScene
 
         public void ClearCreep()
         {
-            foreach (var field in Base.Core.Game.State.GameField.Fields)
+            foreach (var field in Base.Core.Game.State.CurrentLevel.GameField.Fields)
             {
                 field.Creep = null;
             }
@@ -376,7 +381,7 @@ namespace Assets.Scripts.Scenes.GameScene
         public void UpdateCreep()
         {
             var creepTemplate = Templates["Creep"];
-            foreach (var field in Base.Core.Game.State.GameField.Fields)
+            foreach (var field in Base.Core.Game.State.CurrentLevel.GameField.Fields)
             {
                 if (field.Creep != null && field.Creep.Value > 0)
                 {
