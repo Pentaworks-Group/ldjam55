@@ -58,7 +58,7 @@
       },
       {
         "Name": "HitToWin",
-        "Model": "GraleTree_",
+        "Model": "GraleTree",
         "Material": "Creeper_Red_Stage_1",
         "Hidden": false,
         "FieldReference": "5-4-0",
