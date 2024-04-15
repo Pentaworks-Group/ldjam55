@@ -118,7 +118,7 @@ namespace Assets.Scripts.Scene.GameScene
                             }
                             else if (raycastHit.transform.parent && raycastHit.transform.parent.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var parentContainer))
                             {
-                                CastSelectedAction(container.ContainedObject);
+                                CastSelectedAction(parentContainer.ContainedObject);
                             }
                             else if (raycastHit.transform.gameObject.Equals(mainTerrain.gameObject))
                             {
