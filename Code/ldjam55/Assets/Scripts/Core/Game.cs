@@ -15,6 +15,7 @@ namespace Assets.Scripts.Core
 
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
+        public List<AudioClip> EffectsClipList { get; set; }
 
         public IList<Definitions.GameMode> AvailableGameModes
         {
@@ -109,6 +110,19 @@ namespace Assets.Scripts.Core
 
             InitializeAudioClips();
 
+            EffectsClipList = new List<AudioClip>()
+            {
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_3"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_4"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_5"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_6"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_7"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_8"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_9"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_10"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_11"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_12"),
+            };
         }
 
         private void LoadGameSettings()
