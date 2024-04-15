@@ -1,14 +1,11 @@
 using Assets.Scripts.Base;
-using Assets.Scripts.Constants;
 using Assets.Scripts.Core.Model;
 using Assets.Scripts.Scenes.GameScene;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class CreepBehaviour : MonoBehaviour
 {
@@ -39,12 +36,6 @@ public class CreepBehaviour : MonoBehaviour
         Core.Game.UserActionHandler.Init(this);
     }
 
-    private void Start()
-    {
-        gameEndConditionHandler = GameEndConditionHandler.Instance;
-        gameEndConditionHandler.Init();
-        gameEndConditionHandler.RegisterListener(Stop);
-    }
 
     void Update()
     {
@@ -57,6 +48,18 @@ public class CreepBehaviour : MonoBehaviour
 
     public void StartGame()
     {
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
+        {
+            if (field.Creep != null)
+            {
+                Debug.Log("asdf");
+            }
+        }
+        gameEndConditionHandler = GameEndConditionHandler.Instance;
+        gameEndConditionHandler.Init();
+        gameEndConditionHandler.RegisterListener(Stop);
+        timeManagerBehaviour.Reset();
+        triggerHandler.Reset();
         CheckUniqueFields();
         ConvertBorders();
         ConvertFieldObjectMethodsForAllFlieldObjects();
@@ -509,7 +512,7 @@ public class CreepBehaviour : MonoBehaviour
         float heightDiff = border.Field1.Height - border.Field2.Height;
         if (creep1 == null)
         {
-            float flow = GetFlowPreassure(creep2, border.BorderStatus.FlowValue, tickFlowFactor, heightDiff); 
+            float flow = GetFlowPreassure(creep2, border.BorderStatus.FlowValue, tickFlowFactor, heightDiff);
             if (Mathf.Abs(flow) < Core.Game.State.Mode.MinFlow)
             {
                 return;
@@ -566,11 +569,13 @@ public class CreepBehaviour : MonoBehaviour
                     creep2.Value = diff - creep2.Value;
                     creep2.Creeper = creep1.Creeper;
                     CreeperChanged(border.Field2, oldCreeper);
-                } else
+                }
+                else
                 {
                     creep2.Value -= diff;
                 }
-            }  else
+            }
+            else
             {
                 if (creep1.Value < -diff)
                 {
@@ -583,12 +588,16 @@ public class CreepBehaviour : MonoBehaviour
                 {
                     creep1.Value += diff;
                 }
-            }  
+            }
         }
     }
 
     private float GetFlowPreassure(Creep creep, float borderFlowFactor, float tickFlowFactor, float heightDiff)
     {
+        if (heightDiff == 0)
+        {
+            return creep.Value * borderFlowFactor * tickFlowFactor;
+        }
         float creeperFactor = creep.Creeper.Parameters.HightTraverseRate;
         float hightFactor = creeperFactor * heightDiff;
         if (hightFactor < 0)

@@ -1,7 +1,6 @@
 
 using Assets.Scripts.Core.Model;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -115,12 +114,16 @@ namespace Assets.Scripts.Scenes.GameScene
             var fieldTemplate = Templates[fieldObject.Model];
             var newFieldGO = Instantiate(fieldTemplate, World.transform);
             AddContainer(fieldObject, newFieldGO, "FieldObject");
-            var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
-            newFieldGO.GetComponent<Renderer>().material = material;
-            foreach (Transform child in newFieldGO.transform)
+            if (fieldObject.Material != null && fieldObject.Material != "")
             {
-                child.GetComponent<Renderer>().material = material;
+                var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
+                newFieldGO.GetComponent<Renderer>().material = material;
+                foreach (Transform child in newFieldGO.transform)
+                {
+                    child.GetComponent<Renderer>().material = material;
+                }
             }
+            
             newFieldGO.name = GetFieldObjectName(field.name);
             newFieldGO.transform.position = field.transform.position + new Vector3(0, 1, 0);
             FieldObjectCache.Add(fieldObject.GetHashCode(), newFieldGO);
@@ -219,7 +222,7 @@ namespace Assets.Scripts.Scenes.GameScene
             var gameField = new Core.Definitions.GameField() { 
                 FieldObjects = fieldObjects, 
                 Borders = borders,
-                Fields = fields.Values.ToList(),
+                Fields = ConvertField(fields.Values.ToList()),
                 Reference = Base.Core.Game.State.CurrentLevel.GameField.Reference, 
                 IsReferenced = Base.Core.Game.State.CurrentLevel.GameField.IsReferenced };
 
@@ -228,6 +231,14 @@ namespace Assets.Scripts.Scenes.GameScene
             StreamWriter writer = new StreamWriter(filePath, false);
             writer.Write(json);
             writer.Close();
+        }
+
+        private List<Core.Definitions.Field> ConvertField(List<Field> fields)
+        {
+            var list = new List<Core.Definitions.Field>();
+
+
+            return list;
         }
 
 

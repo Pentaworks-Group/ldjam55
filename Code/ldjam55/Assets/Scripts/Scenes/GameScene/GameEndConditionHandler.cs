@@ -36,7 +36,8 @@ namespace Assets.Scripts.Scenes.GameScene
 
         public void Init()
         {
-            conditions = Base.Core.Game.State.CurrentLevel.EndConditions.ToDictionary(con => con.Name);
+            conditions = Base.Core.Game.State.CurrentLevel.EndConditions.ToDictionary(con => con.Name); 
+            actions = new();
         }
 
 

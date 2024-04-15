@@ -1,5 +1,6 @@
 using Assets.Scripts.Core.Definitions.Loaders;
 using Assets.Scripts.Core.Model;
+using GameFrame.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,13 +66,7 @@ namespace Assets.Scripts.Core
 
             if (SelectedGameMode.StartLevel != null)
             {
-                foreach (var level in SelectedGameMode.Levels) {
-                    if (level.Name == SelectedGameMode.StartLevel)
-                    {
-                        gameState.CurrentLevel = ConvertLevel(level);
-                        break;
-                    }
-                }
+                gameState.CurrentLevel = GetLevel(SelectedGameMode.StartLevel);
             }
             if (gameState.CurrentLevel == null) {
                 gameState.CurrentLevel = ConvertLevel(SelectedGameMode.Levels[0]);
@@ -80,6 +75,29 @@ namespace Assets.Scripts.Core
             return gameState;
         }
 
+        public Level GetLevel(string levelName)
+        {
+            foreach (var level in SelectedGameMode.Levels)
+            {
+                if (level.Name == levelName)
+                {
+                    return ConvertLevel(level);
+                }
+            }
+            return null;
+        }
+
+        public void StartNextLevel()
+        {
+            var nL = State.CurrentLevel.NextLevel;
+            State.CurrentLevel = GetLevel(nL);
+            ChangeScene(State.CurrentScene);
+        }
+        public Level GetNextLevel()
+        {
+            var nL = State.CurrentLevel.NextLevel;
+            return GetLevel(nL);
+        }
 
         private void SelectDefaultGameMode()
         {
@@ -148,13 +166,28 @@ namespace Assets.Scripts.Core
 
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
-            var gameField = new Model.GameField() { Fields = gameFieldDefinition.Fields, IsReferenced = gameFieldDefinition.IsReferenced, Reference = gameFieldDefinition.Reference };
+            var gameField = new Model.GameField() {  IsReferenced = gameFieldDefinition.IsReferenced, Reference = gameFieldDefinition.Reference };
+            gameField.Fields = ConvertFields(gameFieldDefinition.Fields);
             var fields = gameField.Fields.ToDictionary(field => field.ID, field => field);
             gameField.Borders = ConvertBordersForGameField(gameFieldDefinition.Borders, fields);
             gameField.FieldObjects = ConvertFieldObjects(gameFieldDefinition.FieldObjects, fields);
             return gameField;
         }
-
+        private List<Field> ConvertFields(List<Definitions.Field> borderDefinitionList)
+        {
+            var fieldList = new List<Model.Field>();
+            foreach (var borderDefinition in borderDefinitionList)
+            {
+                var field = new Model.Field()
+                {
+                    Coords = borderDefinition.Coords,
+                    Height = borderDefinition.Height,
+                    ID = borderDefinition.ID,
+                };
+                fieldList.Add(field);
+            }
+            return fieldList;
+        }
         private List<Border> ConvertBordersForGameField(List<Definitions.Border> borderDefinitionList, Dictionary<string, Model.Field> fieldDict)
         {
 

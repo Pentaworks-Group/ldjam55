@@ -5,7 +5,6 @@ using Assets.Scripts.Core.Model;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using static UnityEngine.GraphicsBuffer;
 
 public class UserActionHandler
 {

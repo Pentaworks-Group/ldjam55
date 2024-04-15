@@ -36,7 +36,6 @@ public class TimeManagerBehaviour : MonoBehaviour
         if (nextEventTime != default && nextEventTime < Time.time)
         {
             SheduledEvent sheduledEvent = sheduledEvents[0];
-            //sheduledEvents.RemoveAt(0);
             sheduledEvent.EventAction();
             sheduledEvents.Remove(sheduledEvent);
             if (sheduledEvent.Interval > 0)
@@ -57,6 +56,13 @@ public class TimeManagerBehaviour : MonoBehaviour
             }
 
         }
+    }
+
+    public void Reset()
+    {
+        sheduledEvents = new List<SheduledEvent>();
+        eventsByObjectID = new();
+        nextEventTime = 0;
     }
 
     private void AddToEventsByObjectID(int objectId, SheduledEvent sheduledEvent)

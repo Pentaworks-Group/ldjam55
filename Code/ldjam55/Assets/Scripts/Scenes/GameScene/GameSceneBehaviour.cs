@@ -116,11 +116,8 @@ public class GameSceneBehaviour : MonoBehaviour
     }
 
     public void StartNextLevel()
-    {
-        var gameMode = Core.Game.State.Mode;
-        var nL = Core.Game.State.CurrentLevel.NextLevel;
-        Core.Game.State.CurrentLevel = gameMode.Levels.Find(l => l.Name == nL);
-        Core.Game.ChangeScene(Core.Game.State.CurrentScene);
+    {        
+        Core.Game.StartNextLevel();
     }
 
     private string GetBorderKey(Assets.Scripts.Core.Model.Border border)

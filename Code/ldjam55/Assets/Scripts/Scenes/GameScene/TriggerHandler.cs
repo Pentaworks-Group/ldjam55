@@ -12,6 +12,12 @@ public class TriggerHandler
         public Field[] fields; public string creeperId; public float amount; public int objectID; public Action<Creeper> triggeredAction;
     }
 
+
+    public void Reset()
+    {
+        FieldCreeperChangeEvent = new Dictionary<string, List<ActionContainer>>();
+        ObjectToActionContainer = new Dictionary<int, ActionContainer>();
+    }
     public void CreeperTrigger(string creeperId, float amount, Action<Creeper> triggeredAction, object gObject, params Field[] fields)
     {
         int objectID = gObject.GetHashCode();

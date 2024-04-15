@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using UnityEngine;
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
+using System;
+using UnityEngine;
 
 public class TerrainBehaviour : MonoBehaviour
 {
@@ -90,7 +88,7 @@ public class TerrainBehaviour : MonoBehaviour
             FieldCountX = (maxX - minX) + 1;
             FieldCountY = (maxY - minY) + 1;
 
-            zFactor = maxHeight / (maxZ - minZ);
+            zFactor = maxHeight / (maxZ - minZ + 1);
             XOffset = minX;
             YOffset = minY;
             zOffset = minZ;
