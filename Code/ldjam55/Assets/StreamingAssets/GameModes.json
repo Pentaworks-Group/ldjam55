@@ -57,7 +57,7 @@
                     {
                         "Name": "WinTouch",
                         "IsWin": true,
-                        "WinCount": 3
+                        "WinCount": 1
                     },
                     {
                         "Name": "LooseTouch",
@@ -68,7 +68,7 @@
             },
             
             {
-                "Name" : "level1",
+                "Name" : "level2",
                 "Description" : "des",
                 "Actions": [
                     {

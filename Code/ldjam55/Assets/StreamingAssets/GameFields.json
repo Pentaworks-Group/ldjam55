@@ -2,35 +2,74 @@
   {
     "Fields": [
       {
-        "ID": "0-0-0",
+        "ID": "5-0-0",
         "Coords": {
-          "X": 0.0,
+          "X": 5.0,
           "Y": 0.0
         },
         "Height": 0
       },
       {
-        "ID": "1-1-0",
+        "ID": "5-1-0",
         "Coords": {
-          "X": 1.0,
+          "X": 5.0,
           "Y": 1.0
+        },
+        "Height": 0
+      },
+      {
+        "ID": "5-2-0",
+        "Coords": {
+          "X": 5.0,
+          "Y": 2.0
+        },
+        "Height": 0
+      },
+      {
+        "ID": "5-3-0",
+        "Coords": {
+          "X": 5.0,
+          "Y": 3.0
+        },
+        "Height": 0
+      },
+      {
+        "ID": "5-4-0",
+        "Coords": {
+          "X": 5.0,
+          "Y": 4.0
         },
         "Height": 0
       }
     ],
     "FieldObjects": [
       {
-        "Name": "Fire Spawner",
+        "Name": "Water Spawner",
         "Model": "Spawner_1",
-        "Material": "Creeper_Red_Stage_1",
+        "Material": "Creeper_Yellow_Stage_1",
         "Hidden": false,
-        "FieldReference": "1-1-0",
+        "FieldReference": "5-0-0",
         "Methods": [
           {
             "Method": "SpawnCreep",
-            "ArumentsJson": "{\"Amount\": 25,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"Intervall\": 5}"
+            "ArumentsJson": "{\"Amount\": 25,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 20}"
           }
         ]
+      },
+      {
+        "Name": "HitToWin",
+        "Model": "GraleTree_",
+        "Material": "Creeper_Red_Stage_1",
+        "Hidden": false,
+        "FieldReference": "5-4-0",
+        "Methods": [
+          {
+            "Method": "CountDown",
+            "Trigger": "CreepTrigger",
+            "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeper\" : \"CreeperWater\"}"
+          }
+        ],
+        "IsReferenced": false
       }
     ],
     "Reference": "World1",
