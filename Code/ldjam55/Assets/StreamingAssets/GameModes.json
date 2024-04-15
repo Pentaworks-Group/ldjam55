@@ -84,7 +84,8 @@
                     },
                     {
                         "Name": "CreateWall",
-                        "UsesRemaining": 1
+                        "UsesRemaining": 1,
+                        "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     }
                 ],
                 "GameField": {

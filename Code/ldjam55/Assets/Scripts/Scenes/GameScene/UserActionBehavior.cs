@@ -13,21 +13,27 @@ public class UserActionBehavior : MonoBehaviour
 
     private UserAction userAction;
     private Action<UserAction> selectAction;
+    private Func<UserAction> getSelectedAction;
 
     public void SelectThisAction()
     {
         selectAction.Invoke(userAction);
     }
 
-    public void Init(UserAction userAction, Action<UserAction> selectAction)
+    public void Init(UserAction userAction, Action<UserAction> selectAction, Func<UserAction> getSelectedAction)
     {
         this.userAction = userAction;
         this.selectAction = selectAction;
+        this.getSelectedAction = getSelectedAction;
     }
 
     public void UpdateUI()
     {
         Name.text = userAction.Name;
         Remaining.text = userAction.UsesRemaining.ToString();
+        if (getSelectedAction.Invoke() == userAction)
+        {
+            //HiglightTHIngs
+        }
     }
 }
