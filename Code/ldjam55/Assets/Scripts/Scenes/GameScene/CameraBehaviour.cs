@@ -14,17 +14,13 @@ public class CameraBehaviour : MonoBehaviour
     private Terrain mainTerrain;
 
     // Start is called before the first frame update
-    void Start()
+    public void UpdatePosition()
     {
         Debug.Log("Update Camera");
         float xPos = mainTerrain.transform.position.x + mainTerrain.terrainData.size.x / 2f ;
         float zPos = -11;
         cam.transform.position = new Vector3(xPos, cam.transform.position.y, zPos);
-        cam.transform.rotation = Quaternion.Euler(new Vector3(45,0,0));   }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        cam.transform.rotation = Quaternion.Euler(new Vector3(45,0,0));   
     }
+
 }
