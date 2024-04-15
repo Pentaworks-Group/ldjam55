@@ -23,6 +23,9 @@ public class GameSceneBehaviour : MonoBehaviour
     private TerrainBehaviour terrainBehaviour;
 
     [SerializeField]
+    private GameStartScreenBehaviour gameStartScreenBehaviour;
+
+    [SerializeField]
     private GameEndScreenBehaviour gameEndScreenBehaviour;
 
     [SerializeField]
@@ -42,7 +45,7 @@ public class GameSceneBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        creepBehaviour.StartGame();
+//        creepBehaviour.StartGame();
 
         foreach (var fieldObject in Core.Game.State.CurrentLevel.GameField.FieldObjects)
         {
@@ -73,6 +76,15 @@ public class GameSceneBehaviour : MonoBehaviour
             };
 
         GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
+
+        gameStartScreenBehaviour.ShowStartScreen();
+    }
+
+    public void StartLevel()
+    {
+        gameStartScreenBehaviour.HideStartScreen();
+
+        creepBehaviour.StartGame();
     }
 
     private void SpawnBorder(Border border)
@@ -90,10 +102,10 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private void Update()
     {
-        Core.Game.State.TimeElapsed += Time.deltaTime;
+//        Core.Game.State.TimeElapsed += Time.deltaTime;
         if (timeUpdate < 0)
         {
-            timeElapsedDisplay.text = Core.Game.State.TimeElapsed.ToString("F1");
+            timeElapsedDisplay.text = Time.time.ToString("F1");// Core.Game.State.TimeElapsed.ToString("F1");
             timeUpdate = 0.2f;
         }
         else
