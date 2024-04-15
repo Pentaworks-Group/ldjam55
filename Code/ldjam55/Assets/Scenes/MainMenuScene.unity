@@ -545,8 +545,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4280942792
-  m_fontColor: {r: 0.7830189, g: 0, b: 0.1634875, a: 1}
+    rgba: 4281272778
+  m_fontColor: {r: 0.7924528, g: 0.03364185, b: 0.18358643, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -563,10 +563,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29.3
+  m_fontSize: 83.4
   m_fontSizeBase: 29.3
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 5000
   m_fontStyle: 1
@@ -1899,6 +1899,14 @@ PrefabInstance:
       objectReference: {fileID: 759156979}
     - target: {fileID: 3051268920918618841, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
       propertyPath: _labels.Array.data[14]
+      value: 
+      objectReference: {fileID: 468830936}
+    - target: {fileID: 3051268920918618841, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
+      propertyPath: elementsToIgnore.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3051268920918618841, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
+      propertyPath: elementsToIgnore.Array.data[0]
       value: 
       objectReference: {fileID: 468830936}
     - target: {fileID: 4110042594290172172, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
