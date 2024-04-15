@@ -1790,6 +1790,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3107360378223631097, guid: 4b5008d320e00994c915dfd5855a2913, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 78f2337be8e682c41a2749c505fb2496, type: 3}
     - target: {fileID: 3368952967117720421, guid: 4b5008d320e00994c915dfd5855a2913, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -1802,6 +1806,10 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 72
       objectReference: {fileID: 0}
+    - target: {fileID: 5803713391584084155, guid: 4b5008d320e00994c915dfd5855a2913, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a0c384dfb0e5a2d449d14607832b1725, type: 3}
     - target: {fileID: 6119827521836177329, guid: 4b5008d320e00994c915dfd5855a2913, type: 3}
       propertyPath: m_fontSize
       value: 29.65
@@ -1898,6 +1906,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8368089564196942137, guid: 4b5008d320e00994c915dfd5855a2913, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b0058970a42a1f047a7a567d8ad3effb, type: 3}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}
