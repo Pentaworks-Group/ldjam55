@@ -537,7 +537,7 @@ GameObject:
   m_Component:
   - component: {fileID: 196478712}
   - component: {fileID: 196478714}
-  - component: {fileID: 196478713}
+  - component: {fileID: 196478715}
   m_Layer: 5
   m_Name: GameStartScreen
   m_TagString: Untagged
@@ -563,26 +563,11 @@ RectTransform:
   - {fileID: 721877640}
   m_Father: {fileID: 1058817928}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.25, y: 0.25}
-  m_AnchorMax: {x: 0.75, y: 0.75}
+  m_AnchorMin: {x: 0.2, y: 0.1}
+  m_AnchorMax: {x: 0.8, y: 0.8}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &196478713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196478711}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d033d9f1173a64541b3d449b681e8874, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Title: {fileID: 749013407}
-  Message: {fileID: 1039579557}
-  nextLevelButton: {fileID: 721877641}
 --- !u!222 &196478714
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -591,6 +576,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 196478711}
   m_CullTransparentMesh: 1
+--- !u!114 &196478715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196478711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48760301580334646be0bb23a82f4270, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameStartScreen: {fileID: 196478711}
+  nameField: {fileID: 749013407}
+  descriptionField: {fileID: 1039579557}
+  ObjectsToHide: []
 --- !u!1 &216590420
 GameObject:
   m_ObjectHideFlags: 0
@@ -2205,7 +2206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452424541030572497, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5865278983240936799, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
       propertyPath: m_Pivot.x
@@ -2297,7 +2298,7 @@ PrefabInstance:
       objectReference: {fileID: 1201049503}
     - target: {fileID: 8849340443900071137, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartNextLevel
+      value: StartLevel
       objectReference: {fileID: 0}
     - target: {fileID: 8849340443900071137, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -2315,11 +2316,6 @@ PrefabInstance:
 --- !u!224 &721877640 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5865278983240936799, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
-  m_PrefabInstance: {fileID: 721877639}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &721877641 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5452424541030572497, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
   m_PrefabInstance: {fileID: 721877639}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &726220896 stripped
@@ -3042,7 +3038,7 @@ MonoBehaviour:
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
+  m_fontSizeMin: 11
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
@@ -3252,6 +3248,7 @@ MonoBehaviour:
   creepBehaviour: {fileID: 1201049504}
   mainTerrain: {fileID: 261588236}
   terrainBehaviour: {fileID: 261588234}
+  gameStartScreenBehaviour: {fileID: 196478715}
   gameEndScreenBehaviour: {fileID: 219737000}
   timeElapsedDisplay: {fileID: 1876062047}
 --- !u!114 &1201049504

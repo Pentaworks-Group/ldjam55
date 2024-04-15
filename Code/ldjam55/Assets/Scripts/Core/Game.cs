@@ -17,6 +17,8 @@ namespace Assets.Scripts.Core
 
         public List<AudioClip> EffectsClipList { get; set; }
 
+        public float GameTime { get; private set; }
+
         public IList<Definitions.GameMode> AvailableGameModes
         {
             get

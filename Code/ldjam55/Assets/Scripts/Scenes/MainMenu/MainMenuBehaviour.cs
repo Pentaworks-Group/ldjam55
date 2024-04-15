@@ -18,6 +18,16 @@ namespace Assets.Scripts.Scenes.MainMenu
         [SerializeField]
         private GameObject Menu;
 
+        private void Start()
+        {
+            var backgroundAudioClips = new List<AudioClip>()
+            {
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_1")
+            };
+
+            GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
+        }
+
 
         public void PlayGame()
         {
