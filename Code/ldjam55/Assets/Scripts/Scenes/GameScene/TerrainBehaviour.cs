@@ -127,7 +127,7 @@ public class TerrainBehaviour : MonoBehaviour
 
         if (isInsideField || isCorner || isBorder)
         {
-            return getFieldHeight(field);
+            return GetFieldHeight(field);
         }
         //Interpolate
         else if (Math.Abs(distX) > fieldMarginX && Math.Abs(distY) > fieldMarginY && 
@@ -137,19 +137,19 @@ public class TerrainBehaviour : MonoBehaviour
             float paramX = (Math.Abs(distX) - fieldMarginX) / (fieldDistX);
             float paramY = (Math.Abs(distY) - fieldMarginY) / (fieldDistY);
 
-            float heightTopLeft = getFieldHeight(field);
-            float heightTopRight = getFieldHeight(field);
-            float heightBottomLeft = getFieldHeight(field);
-            float heightBottomRight = getFieldHeight(field);
+            float heightTopLeft = GetFieldHeight(field);
+            float heightTopRight = GetFieldHeight(field);
+            float heightBottomLeft = GetFieldHeight(field);
+            float heightBottomRight = GetFieldHeight(field);
 
             Field topRightField = getField(mapPos.x + Math.Sign(distX), mapPos.y);
-            heightTopRight = getFieldHeight(topRightField);
+            heightTopRight = GetFieldHeight(topRightField);
 
             Field bottomLeftField = getField(mapPos.x, mapPos.y + Math.Sign(distY));
-            heightBottomLeft = getFieldHeight(bottomLeftField);
+            heightBottomLeft = GetFieldHeight(bottomLeftField);
 
             Field bottomRightField = getField(mapPos.x + Math.Sign(distX), mapPos.y + Math.Sign(distY));
-            heightBottomRight = getFieldHeight(bottomRightField);
+            heightBottomRight = GetFieldHeight(bottomRightField);
 
             float interpolateX1 = getSinInterpolation(heightTopLeft, heightTopRight, paramX);
             float interpolateX2 = getSinInterpolation(heightBottomLeft, heightBottomRight, paramX);
@@ -160,20 +160,20 @@ public class TerrainBehaviour : MonoBehaviour
         {
             //Case 1: y is outside the field
             float param = (Math.Abs(distY) - fieldMarginY) / (fieldDistY);
-            float height = getFieldHeight(field);
-            float nextHeight = getFieldHeight(field);
+            float height = GetFieldHeight(field);
+            float nextHeight = GetFieldHeight(field);
             Field nextField = getField(mapPos.x, mapPos.y + Math.Sign(distY));
-            nextHeight = getFieldHeight(nextField);
+            nextHeight = GetFieldHeight(nextField);
             return getSinInterpolation(height, nextHeight, param);
         }
         else if( Math.Abs(distX) > fieldMarginX)
         {
             //Case 2: x is outside the field
             float param = (Math.Abs(distX) - fieldMarginX) / (fieldDistX);
-            float height = getFieldHeight(field);
-            float nextHeight = getFieldHeight(field);
+            float height = GetFieldHeight(field);
+            float nextHeight = GetFieldHeight(field);
             Field nextField = getField(mapPos.x + Math.Sign(distX), mapPos.y);
-            nextHeight = getFieldHeight(nextField);
+            nextHeight = GetFieldHeight(nextField);
             return getSinInterpolation(height, nextHeight, param);
         }
         return 0;
@@ -218,7 +218,7 @@ public class TerrainBehaviour : MonoBehaviour
         return f;
     }
 
-    private float getFieldHeight(Field f) 
+    public float GetFieldHeight(Field f) 
     { 
         if(f==null)
         {

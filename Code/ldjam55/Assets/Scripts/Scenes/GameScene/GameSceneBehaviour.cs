@@ -118,7 +118,7 @@ public class GameSceneBehaviour : MonoBehaviour
         }
         newFieldGO.name = GetFieldObjectName(fieldObject.Field.ID);
 
-        Vector3 mapPos = new Vector3(fieldObject.Field.Coords.X, 0, fieldObject.Field.Coords.Y);
+        Vector3 mapPos = new Vector3(fieldObject.Field.Coords.X, terrainBehaviour.GetFieldHeight(fieldObject.Field), fieldObject.Field.Coords.Y);
         newFieldGO.transform.position = getTerrainCoordinates(mapPos);
         newFieldGO.SetActive(true);
     }
