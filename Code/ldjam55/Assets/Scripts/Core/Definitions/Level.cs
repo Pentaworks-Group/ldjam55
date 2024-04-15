@@ -8,6 +8,7 @@ namespace Assets.Scripts.Core.Definitions
 
         public string Name { get; set; }
         public string Description { get; set; }
+        public string NextLevel { get; set; }
 
         public List<GameEndCondition> EndConditions { get; set; }
         public GameField GameField { get; set; }
