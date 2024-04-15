@@ -13,6 +13,7 @@ public class CreepBehaviour : MonoBehaviour
     public List<Action<Field, Creeper>> OnCreeperChanged = new List<Action<Field, Creeper>>();
     public List<Action<FieldObject>> DestroyFieldObjectEvent = new();
     public List<Action<FieldObject>> CreateFieldObjectEvent = new();
+    public List<Action<Border>> CreateBorderEvent = new();
     public List<Action<Creeper>> OnCreeperEliminated = new();
 
     [SerializeField]
@@ -231,13 +232,22 @@ public class CreepBehaviour : MonoBehaviour
         return borders;
     }
 
+    public void SpawnBorder(Border border)
+    {
+        var nBorder = CreateNewDefaultBorder(border.Field1, border.Field2, borders);
+        foreach (var listener in CreateBorderEvent)
+        {
+            listener.Invoke(nBorder);
+        }
+    }
+
     private Border CreateNewDefaultBorder(Field field1, Field field2, List<Border> borders)
     {
         //var heightDiff = field.Height - neighbour.Height;
         //var flowRate = Core.Game.State.Mode.NothingFlowRate * heightDiff * creeper.Parameters.HightTraverseRate; 
         var flowRate = Core.Game.State.Mode.NothingFlowRate;
         var borderStatus = new BorderStatus() { FlowValue = flowRate };
-        var borderType = new BorderType() { Name = "Nothing" };
+        var borderType = new BorderType() { Name = "Nothing", Model = "Wall" };
         var newBorder = new Border { Field1 = field1, Field2 = field2, BorderStatus = borderStatus, BorderType = borderType };
         borders.Add(newBorder);
         return newBorder;

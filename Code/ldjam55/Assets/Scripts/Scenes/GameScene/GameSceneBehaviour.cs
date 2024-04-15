@@ -54,20 +54,13 @@ public class GameSceneBehaviour : MonoBehaviour
         {
             if (border.BorderType.Name == "BorderWall")
             {
-                var wallTemplate = Templates[border.BorderType.Model];
-                var newFieldGO = Instantiate(wallTemplate, World.transform);
-                newFieldGO.name = "Wall";
-                var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
-                container.ContainedObject = border;
-                container.ObjectType = "Wall";
-                SetBorderPositionAndRotation(border, newFieldGO);
-                newFieldGO.SetActive(true);
-                Borders.Add(GetBorderKey(border), newFieldGO);
+                SpawnBorder(border);
             }
         }
 
         creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
         creepBehaviour.CreateFieldObjectEvent.Add(SpawnFieldObject);
+        creepBehaviour.CreateBorderEvent.Add(SpawnBorder);
 
         GameEndConditionHandler.Instance.RegisterListener(GameEnded);
 
@@ -80,6 +73,19 @@ public class GameSceneBehaviour : MonoBehaviour
             };
 
         GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
+    }
+
+    private void SpawnBorder(Border border)
+    {
+        var wallTemplate = Templates[border.BorderType.Model];
+        var newFieldGO = Instantiate(wallTemplate, World.transform);
+        newFieldGO.name = "Wall";
+        var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
+        container.ContainedObject = border;
+        container.ObjectType = "Wall";
+        SetBorderPositionAndRotation(border, newFieldGO);
+        newFieldGO.SetActive(true);
+        Borders.Add(GetBorderKey(border), newFieldGO);
     }
 
     private void Update()

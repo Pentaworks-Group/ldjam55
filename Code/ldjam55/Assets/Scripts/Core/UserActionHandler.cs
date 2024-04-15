@@ -61,7 +61,25 @@ public class UserActionHandler
             buildActions.Add(action, builtAction);
             return builtAction;
         }
+        else if (action.Name == "CreateWall")
+        {
+            Action<object> builtAction = CreateBorder;
+            buildActions.Add(action, builtAction);
+            return builtAction;
+        }
         return null;
+    }
+
+    private void CreateBorder(object target)
+    {
+        if (target is Border)
+        {
+            Border border = (Border) target;
+            if (border.Field2 != null && border.Field1 != null)
+            {
+                creepBehaviour.SpawnBorder((Border)target);
+            }
+        }
     }
 
     private void DestroyBorder(object target)
