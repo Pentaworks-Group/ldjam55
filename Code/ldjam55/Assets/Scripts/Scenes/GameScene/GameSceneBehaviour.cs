@@ -5,7 +5,9 @@ using Assets.Scripts.Scenes.GameScene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class GameSceneBehaviour : MonoBehaviour
 {
@@ -27,9 +29,14 @@ public class GameSceneBehaviour : MonoBehaviour
     [SerializeField]
     private GameEndScreenBehaviour gameEndScreenBehaviour;
 
+    [SerializeField]
+    private TextMeshProUGUI timeElapsedDisplay;
+
     private Dictionary<string, GameObject> Templates;
 
     private Dictionary<string, GameObject> Borders;
+
+    private float timeUpdate = 0;
 
     private void Awake()
     {
@@ -77,6 +84,20 @@ public class GameSceneBehaviour : MonoBehaviour
             };
 
         GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
+    }
+
+    private void Update()
+    {
+        Core.Game.State.TimeElapsed += Time.deltaTime;
+        if (timeUpdate < 0)
+        {
+            timeElapsedDisplay.text = Core.Game.State.TimeElapsed.ToString("F1");
+            timeUpdate = 0.2f;
+        }
+        else
+        {
+            timeUpdate -= Time.deltaTime;
+        }
     }
 
     private void GameEnded(GameEndCondition conditon)
