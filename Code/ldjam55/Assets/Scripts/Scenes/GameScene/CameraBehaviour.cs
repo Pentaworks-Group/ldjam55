@@ -20,6 +20,7 @@ public class CameraBehaviour : MonoBehaviour
         float zPos = -11;
         cam.transform.position = new Vector3(xPos, cam.transform.position.y, zPos);
         cam.transform.rotation = Quaternion.Euler(new Vector3(45,0,0));
+
     }
 
     // Update is called once per frame
