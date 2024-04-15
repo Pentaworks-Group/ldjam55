@@ -36,7 +36,7 @@ namespace Assets.Scripts.Prefabs.Menus
             menuToggle = transform.Find("ToggleArea").gameObject;
             pauseArea = transform.Find("ToggleArea/Background/Background/ContentArea/PauseArea").gameObject;
             optionsArea = transform.Find("ToggleArea/Background/Background/ContentArea/OptionsArea").gameObject;
-            savedGameArea = transform.Find("ToggleArea/Background/Background/ContentArea/SaveGameArea").gameObject;
+//            savedGameArea = transform.Find("ToggleArea/Background/Background/ContentArea/SaveGameArea").gameObject;
 
             backButton = transform.Find("ToggleArea/Background/Background/Header/Back").GetComponent<Button>();
             continueButton = transform.Find("ToggleArea/Background/Background/Header/Continue").GetComponent<Button>();
