@@ -5,6 +5,7 @@ using Assets.Scripts.Core.Model;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using static UnityEngine.GraphicsBuffer;
 
 public class UserActionHandler
 {
@@ -56,11 +57,19 @@ public class UserActionHandler
         }
         else if (action.Name == "DestroyWall")
         {
-            Action<object> builtAction = (target) => creepBehaviour.DestroyBorder((Border)target);
+            Action<object> builtAction = DestroyBorder;
             buildActions.Add(action, builtAction);
             return builtAction;
         }
         return null;
+    }
+
+    private void DestroyBorder(object target)
+    {
+        if (target is Border)
+        {
+            creepBehaviour.DestroyBorder((Border)target);
+        }
     }
 
     private Action<object> BuildSpawnerAction(UserAction action)
