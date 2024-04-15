@@ -121,8 +121,8 @@ public class CreepBehaviour : MonoBehaviour
                 cnt ++;
             }
         }
-        Debug.Log("CreepCount Total by field: " + cnt);
-        Debug.Log("CreepCount Total: " + creepCount);
+        //Debug.Log("CreepCount Total by field: " + cnt);
+        //Debug.Log("CreepCount Total: " + creepCount);
     }
 
     private void Loose(GameEndCondition condition)

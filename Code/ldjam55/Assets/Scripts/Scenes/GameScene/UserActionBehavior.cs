@@ -1,5 +1,6 @@
 using Assets.Scripts.Core.Model;
 using Assets.Scripts.Scene.GameScene;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,17 +15,17 @@ public class UserActionBehavior : MonoBehaviour
 
 
     private UserAction userAction;
-    private GameFieldTestingClickBehaviour gameFieldTestingClickBehaviour;
+    private Action<UserAction> selectAction;
 
     public void SelectThisAction()
     {
-        gameFieldTestingClickBehaviour.SelectUserAction(userAction);
+        selectAction.Invoke(userAction);
     }
 
-    public void Init(UserAction userAction, GameFieldTestingClickBehaviour gameFieldTestingClickBehaviour)
+    public void Init(UserAction userAction, Action<UserAction> selectAction)
     {
         this.userAction = userAction;
-        this.gameFieldTestingClickBehaviour = gameFieldTestingClickBehaviour;
+        this.selectAction = selectAction;
     }
 
     public void UpdateUI()

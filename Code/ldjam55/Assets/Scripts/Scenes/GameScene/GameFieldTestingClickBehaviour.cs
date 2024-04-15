@@ -33,7 +33,7 @@ namespace Assets.Scripts.Scene.GameScene
                 var rect = actionBehaviour.GetComponent<RectTransform>();
                 rect.anchorMin = new Vector2(rect.anchorMin.x + current, rect.anchorMin.y);
                 rect.anchorMax = new Vector2(rect.anchorMax.x + current, rect.anchorMax.y);
-                actionBehaviour.Init(action, this);   
+                actionBehaviour.Init(action, SelectUserAction);   
                 actionBehaviour.gameObject.SetActive(true);
                 actionBehaviors.Add(actionBehaviour);
                 current += increment;
