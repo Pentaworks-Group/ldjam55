@@ -11,8 +11,13 @@ public class GameEndScreenBehaviour : MonoBehaviour
     [SerializeField]
     private TMP_Text Message;
 
+
     [SerializeField]
     private GameObject nextLevelButton;
+
+    [SerializeField]
+    private GameObject restartLevelButton;
+
 
     private Dictionary<string, string> standardEndConditionDescriptions;
 
@@ -32,9 +37,12 @@ public class GameEndScreenBehaviour : MonoBehaviour
         {
             Title.text = "You have won";
             nextLevelButton.SetActive(true);
+            restartLevelButton.SetActive(false);
         } else
         {
             Title.text = "You have lost";
+            nextLevelButton.SetActive(false);
+            restartLevelButton.SetActive(true);
         }
 
         if (standardEndConditionDescriptions.TryGetValue(condition.Name, out var message))
@@ -47,5 +55,7 @@ public class GameEndScreenBehaviour : MonoBehaviour
         }
 
         Time.timeScale = 0.0f;
+
+//        gameObject.SetActive(true);
     }
 }

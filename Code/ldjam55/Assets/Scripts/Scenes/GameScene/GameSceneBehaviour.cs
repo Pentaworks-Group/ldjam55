@@ -106,7 +106,7 @@ public class GameSceneBehaviour : MonoBehaviour
 //        Core.Game.State.TimeElapsed += Time.deltaTime;
         if (timeUpdate < 0)
         {
-            timeElapsedDisplay.text = Time.time.ToString("F1");// Core.Game.State.TimeElapsed.ToString("F1");
+            timeElapsedDisplay.text = Time.time.ToString("F0");// Core.Game.State.TimeElapsed.ToString("F1");
             timeUpdate = 0.2f;
         }
         else
@@ -134,6 +134,11 @@ public class GameSceneBehaviour : MonoBehaviour
     public void StartNextLevel()
     {        
         Core.Game.StartNextLevel();
+    }
+
+    public void RestartLevel()
+    {
+        Core.Game.RestartLevel();
     }
 
     private string GetBorderKey(Assets.Scripts.Core.Model.Border border)

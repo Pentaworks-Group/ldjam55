@@ -17,6 +17,7 @@ namespace Assets.Scripts
     public class TextAutoSizeController : MonoBehaviour
     {
         [SerializeField] private List<TMP_Text> _labels = new List<TMP_Text>();
+        [SerializeField] private List<TMP_Text> elementsToIgnore = new List<TMP_Text>();
         [SerializeField] private TextResizePattern _pattern;
         [SerializeField] private bool _executeOnUpdate;
         [SerializeField] private bool _searchChildren = false;
@@ -28,6 +29,12 @@ namespace Assets.Scripts
             {
                 var tt = transform.GetComponentsInChildren<TMP_Text>(true);
                 _labels = new List<TMP_Text>(tt);
+                
+                foreach (var element in elementsToIgnore)
+                {
+                    _labels.Remove(element);
+                }
+
                 Execute();
             }
         }
