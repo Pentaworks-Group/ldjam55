@@ -59,6 +59,16 @@ public class GameSceneBehaviour : MonoBehaviour
         }
 
         creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
+
+        var backgroundAudioClips = new List<AudioClip>()
+            {
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_2"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_3"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_4"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_5")
+            };
+
+        GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
     }
 
     // Update is called once per frame
