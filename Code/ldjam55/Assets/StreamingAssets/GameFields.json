@@ -99,30 +99,144 @@
           "X": 0.0,
           "Y": 0.0
         },
-        "Height": 0
+        "Height": 0,
+        "FieldObjects":[]
       },
       {
-        "ID": "1-1-0",
+        "ID": "0-1-1",
         "Coords": {
-          "X": 1.0,
+          "X": 0.0,
           "Y": 1.0
         },
-        "Height": 0
+        "Height": 1,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-2-2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 2.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-3-3",
+        "Coords": {
+          "X": 0.0,
+          "Y": 3.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-4-4",
+        "Coords": {
+          "X": 0.0,
+          "Y": 4.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },{
+        "ID": "2-0-0",
+        "Coords": {
+          "X": 2.0,
+          "Y": 0.0
+        },
+        "Height": 0,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-1-1",
+        "Coords": {
+          "X": 2.0,
+          "Y": 1.0
+        },
+        "Height": 1,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-2-2",
+        "Coords": {
+          "X": 2.0,
+          "Y": 2.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-3-3",
+        "Coords": {
+          "X": 2.0,
+          "Y": 3.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-4-4",
+        "Coords": {
+          "X": 2.0,
+          "Y": 4.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
       }
     ],
-    "FieldObjects": [
+   "FieldObjects": [
+      {
+        "Name": "Water Spawner",
+        "Model": "Spawner_1",
+        "Material": "Creeper_Yellow_Stage_1",
+        "Hidden": false,
+        "FieldReference": "0-0-0",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 20}"
+          }
+        ]
+      },
       {
         "Name": "Fire Spawner",
         "Model": "Spawner_1",
         "Material": "Creeper_Red_Stage_1",
         "Hidden": false,
-        "FieldReference": "1-1-0",
+        "FieldReference": "0-4-4",
         "Methods": [
           {
             "Method": "SpawnCreep",
-            "ArumentsJson": "{\"Amount\": 25,\"Time\": 5,\"Creeper\": \"CreeperFire\", \"Intervall\": 5}"
+            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 20}"
+          }
+        ],
+        "IsReferenced": false
+      },
+      {
+        "Name": "Water Spawner",
+        "Model": "Spawner_1",
+        "Material": "Creeper_Yellow_Stage_1",
+        "Hidden": false,
+        "FieldReference": "2-4-4",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 20}"
           }
         ]
+      },
+      {
+        "Name": "Fire Spawner",
+        "Model": "Spawner_1",
+        "Material": "Creeper_Red_Stage_1",
+        "Hidden": false,
+        "FieldReference": "2-0-0",
+        "Methods": [
+          {
+            "Method": "SpawnCreep",
+            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 20}"
+          }
+        ],
+        "IsReferenced": false
       }
     ],
     "Reference": "World2",

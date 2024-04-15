@@ -6,7 +6,7 @@
         "NothingFlowRate": 1,
         "FlowSpeed": 0.1,
         "MinFlow": 0.00001,
-        "StartLevel": "level2",
+        "StartLevel": "level1",
         "Creepers": [
             {
                 "ID": "CreeperWater",
@@ -71,10 +71,15 @@
             {
                 "Name": "level2",
                 "Description": "des",
-                "UserActions": [
+                "Actions": [
                     {
-                        "Name": "DestroyWall",
-                        "UsesRemaining": 1
+                        "Name": "SpawnCreep",
+                        "ActionCount": 5
+                    },
+                    {
+                        "Name": "CreateSpawner",
+                        "UsesRemaining": 1,
+                        "ActionParamers": "{\"Amount\": 25, \"Intervall\": 20,\"Creeper\": \"CreeperFire\", \"Name\": \"Fire Spawner\", \"Model\": \"Spawner_1\",\"Material\": \"Creeper_Yellow_Stage_1\"}"
                     }
                 ],
                 "GameField": {
