@@ -83,8 +83,8 @@ namespace Assets.Scripts.Core
             return new PlayerOptions()
             {
                 EffectsVolume = 0.7f,
-                AmbienceVolume = 0.10f,
-                BackgroundVolume = 0.05f,
+                AmbienceVolume = 0.70f,
+                BackgroundVolume = 0.70f,
             };
         }
 
@@ -100,7 +100,7 @@ namespace Assets.Scripts.Core
         {
             new ResourceLoader<Definitions.GameField>(this.availableGameFields).LoadDefinition("GameFields.json");
             //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
-            new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
+            //new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
         }
 
         private void InitializeAudioClips()
@@ -112,10 +112,22 @@ namespace Assets.Scripts.Core
         {
             var backgroundAudioClips = new List<AudioClip>()
             {
-
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_1"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_2"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_3"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_4"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_5")
             };
 
             GameFrame.Base.Audio.Background.Play(backgroundAudioClips);
+
+            var ambienceAudioClips = new List<AudioClip>()
+            {
+                GameFrame.Base.Resources.Manager.Audio.Get("Forest_Sounds"),
+            };
+
+            GameFrame.Base.Audio.Ambience.Play(ambienceAudioClips);
+
         }
 
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
@@ -191,7 +203,7 @@ namespace Assets.Scripts.Core
                 FlowSpeed = selectedGameMode.FlowSpeed,
                 MinFlow = selectedGameMode.MinFlow,
                 NothingFlowRate = selectedGameMode.NothingFlowRate,
-                EndConditions = selectedGameMode.EndConditions,
+                //EndConditions = selectedGameMode.EndConditions,
                 //JunkSpawnInterval = selectedGameMode.JunkSpawnInterval.GetValueOrDefault(-1),
                 //JunkSpawnInitialDistance = selectedGameMode.JunkSpawnInitialDistance.GetValueOrDefault(),
                 //JunkSpawnPosition = selectedGameMode.JunkSpawnPosition?.Copy(),
