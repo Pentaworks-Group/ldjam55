@@ -27,17 +27,17 @@
         ],
         "Levels": [
             {
-                "Name" : "level1",
-                "Description" : "des",
+                "Name": "level1",
+                "Description": "des",
                 "UserActions": [
                     {
-                        "Name" : "SpawnCreep",
-                        "UsesRemaining" : 5,
-                        "ActionParamers" : "{\"Amount\": 25,\"Creeper\": \"CreeperFire\"}"
-                    },                    
+                        "Name": "SpawnCreep",
+                        "UsesRemaining": 5,
+                        "ActionParamers": "{\"Amount\": 25,\"Creeper\": \"CreeperFire\"}"
+                    },
                     {
-                        "Name" : "DestroyWall",
-                        "UsesRemaining" : 3
+                        "Name": "DestroyWall",
+                        "UsesRemaining": 3
                     }
                 ],
                 "GameField": {
@@ -67,14 +67,18 @@
                     }
                 ]
             },
-            
             {
-                "Name" : "level2",
-                "Description" : "des",
+                "Name": "level2",
+                "Description": "des",
                 "Actions": [
                     {
-                        "Name" : "SpawnCreep",
-                        "ActionCount" : 5
+                        "Name": "SpawnCreep",
+                        "ActionCount": 5
+                    },
+                    {
+                        "Name": "CreateSpawner",
+                        "UsesRemaining": 1,
+                        "ActionParamers": "{\"Amount\": 25, \"Intervall\": 20,\"Creeper\": \"CreeperFire\", \"Name\": \"Fire Spawner\", \"Model\": \"Spawner_1\",\"Material\": \"Creeper_Yellow_Stage_1\"}"
                     }
                 ],
                 "GameField": {

@@ -72,15 +72,29 @@ public class UserActionHandler
         float intervall = float.Parse(paramsObject["Intervall"].ToString());
         string creeperId = paramsObject["Creeper"].ToString();
         FieldObject spawner = new();
-        spawner.Name = "SomeHotSauceStuff";
-        spawner.Description = "Blablabla";
-        spawner.Material = "Creeper_Yellow_Stage_3";
-        spawner.Model = "Spawner_3";
+        spawner.Name = GetStr(paramsObject, "Name", "");
+        spawner.Description = GetStr(paramsObject, "Description", "");
+        spawner.Material = GetStr(paramsObject, "Material", "Creeper_Yellow_Stage_3");
+        spawner.Model = GetStr(paramsObject, "Model", "Spawner_3");
         spawner.Hidden = false;
         var method = new MethodBundle();
         method.Method = "SpawnCreep";
         method.ArumentsJson = $"{{\"Amount\": {amount},\"Time\": {intervall},\"Creeper\": \"{creeperId}\", \"Intervall\": {intervall}}}";
+        spawner.Methods = new List<MethodBundle>
+                {
+                    method
+                };
         return (target) => creepBehaviour.CreateSpawner((Field)target, spawner);
+    }
+
+    private string GetStr(JObject paramsObject, string key, string def)
+    {
+        var msgProperty = paramsObject.Property(key);
+        if (msgProperty != null)
+        {
+            return msgProperty.Value.ToString();
+        }
+        return def;
     }
 
     private Action<object> BuildSpawnCreepAction(UserAction action)

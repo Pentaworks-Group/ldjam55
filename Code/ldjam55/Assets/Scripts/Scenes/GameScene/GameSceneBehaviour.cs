@@ -59,6 +59,7 @@ public class GameSceneBehaviour : MonoBehaviour
         }
 
         creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
+        creepBehaviour.CreateFieldObjectEvent.Add(SpawnFieldObject);
     }
 
     // Update is called once per frame
