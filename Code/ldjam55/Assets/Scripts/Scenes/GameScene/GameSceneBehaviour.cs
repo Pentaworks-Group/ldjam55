@@ -42,11 +42,11 @@ public class GameSceneBehaviour : MonoBehaviour
         }
 
         Borders = new Dictionary<string, GameObject>();
-        var wallTemplate = Templates["Wall"];
         foreach (var border in Core.Game.State.CurrentLevel.GameField.Borders)
         {
             if (border.BorderType.Name == "BorderWall")
             {
+                var wallTemplate = Templates[border.BorderType.Model];
                 var newFieldGO = Instantiate(wallTemplate, World.transform);
                 newFieldGO.name = "Wall";
                 var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
