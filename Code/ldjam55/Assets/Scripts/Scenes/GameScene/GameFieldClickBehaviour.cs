@@ -17,6 +17,8 @@ namespace Assets.Scripts.Scene.GameScene
 
         [SerializeField]
         private UserActionBehavior actionTemplate;
+        [SerializeField]
+        private float increment;
 
         private List<UserActionBehavior> actionBehaviors = new List<UserActionBehavior>();
 
@@ -32,7 +34,6 @@ namespace Assets.Scripts.Scene.GameScene
 
         private void Start()
         {
-            float increment = .22f;
             float current = 0;
             var s = Base.Core.Game.State.CurrentLevel.UserActions;
             foreach (var action in actions)

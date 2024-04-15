@@ -8,6 +8,7 @@ public class GameStartScreenBehaviour : MonoBehaviour
     [SerializeField]
     private GameObject gameStartScreen;
 
+
     [SerializeField]
     private TextMeshProUGUI nameField;
 
@@ -44,6 +45,5 @@ public class GameStartScreenBehaviour : MonoBehaviour
         {
             gameObject.SetActive(true);
         }
-
     }
 }
