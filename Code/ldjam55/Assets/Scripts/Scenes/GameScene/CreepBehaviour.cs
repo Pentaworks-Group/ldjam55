@@ -11,9 +11,10 @@ using UnityEngine;
 public class CreepBehaviour : MonoBehaviour
 {
     public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
-    public List<Action<Field>> OnCreeperChanged = new List<Action<Field>>();
+    public List<Action<Field, Creeper>> OnCreeperChanged = new List<Action<Field, Creeper>>();
     public List<Action<FieldObject>> DestroyFieldObjectEvent = new();
     public List<Action<FieldObject>> CreateFieldObjectEvent = new();
+    public List<Action<Creeper>> OnCreeperEliminated = new();
 
     [SerializeField]
     private TimeManagerBehaviour timeManagerBehaviour;
@@ -24,10 +25,11 @@ public class CreepBehaviour : MonoBehaviour
     private bool isRunning = false;
 
     private Dictionary<string, Creeper> creepers;
+    private Dictionary<Creeper, HashSet<Creep>> creepsByCreeper;
 
 
     private TriggerHandler triggerHandler = new();
-    public GameEndConditionHandler gameEndConditionHandler {  get; private set; }
+    public GameEndConditionHandler gameEndConditionHandler { get; private set; }
 
 
     private void Start()
@@ -46,10 +48,80 @@ public class CreepBehaviour : MonoBehaviour
 
     public void StartGame()
     {
+        CheckUniqueFields();
         ConvertBorders();
         ConvertFieldObjectMethodsForAllFlieldObjects();
         creepers = Core.Game.State.Mode.Creepers.ToDictionary(creep => creep.ID);
+        GatherCreep();
         isRunning = true;
+    }
+
+    private void CheckUniqueFields()
+    {
+        var fieldDict = new Dictionary<string, Field>();
+        foreach (var field in Core.Game.State.GameField.Fields)
+        {
+            fieldDict.Add(field.ID, field);
+        }
+    }
+
+    private void GatherCreep()
+    {
+        creepsByCreeper = new Dictionary<Creeper, HashSet<Creep>>();
+        foreach (var creeper in Core.Game.State.Mode.Creepers)
+        {
+            creepsByCreeper.Add(creeper, new HashSet<Creep>());
+        }
+        foreach (var field in Core.Game.State.GameField.Fields)
+        {
+            Creep creep = field.Creep;
+            if (creep != null)
+            {
+                if (creep.Creeper == null)
+                {
+                    Debug.Log("Creep without Creeper: " + field.ID);
+                    continue;
+                }
+                creepsByCreeper[creep.Creeper].Add(creep);
+            }
+        }
+        OnCreeperChanged.Add(UpdateCreepsByCreeper);
+    }
+
+    private void UpdateCreepsByCreeper(Field field, Creeper oldCreeper)
+    {
+        var creep = field.Creep;
+        HashSet<Creep> creeps = creepsByCreeper[field.Creep.Creeper];
+        creeps.Add(creep);
+        //Debug.Log("CreepCount "+ creep.Creeper.ID + ": " + creeps.Count);
+        var creepCount = creeps.Count;
+        if (oldCreeper != null)
+        {
+            var oldCreeps = creepsByCreeper[oldCreeper];
+            //Debug.Log("CreepCount " + oldCreeper.ID + ": " + oldCreeps.Count);
+            creepCount += oldCreeps.Count;
+            if (!oldCreeps.Remove(creep))
+            {
+                Debug.Log("Creep to remove not in list");
+            }
+            if (oldCreeps.Count <= 0)
+            {
+                foreach (var action in OnCreeperEliminated)
+                {
+                    action.Invoke(oldCreeper);
+                }
+            }
+        }
+        var cnt = 0;
+        foreach (var fieldi in Core.Game.State.GameField.Fields)
+        {
+            if (fieldi.Creep != null && fieldi.Creep.Creeper != null)
+            {
+                cnt ++;
+            }
+        }
+        Debug.Log("CreepCount Total by field: " + cnt);
+        Debug.Log("CreepCount Total: " + creepCount);
     }
 
     private void Loose(GameEndCondition condition)
@@ -107,16 +179,17 @@ public class CreepBehaviour : MonoBehaviour
                     {
                         JObject paramsObject = JObject.Parse(method.ArumentsJson);
                         float time = float.Parse(paramsObject["Time"].ToString());
-                        Action lam = () => DestroyBorder(border);
                         if (method.Trigger == null)
                         {
+                            Action lam = () => DestroyBorder(border);
                             timeManagerBehaviour.RegisterEvent(time, lam, method.Method + GetBorderKey(border), border.GetHashCode());
                         }
                         else if (method.Trigger == "CreepTrigger")
                         {
-                            string creeperId = paramsObject["TriggerCreeperId"].ToString();
-                            //float amount = paramsObject["triggercreeperId"].ToString();
+                            string creeperId = paramsObject["TriggerCreeper"].ToString();
+                            //float amount = paramsObject["TriggerCreeper"].ToString();
 
+                            Action<Creeper> lam = (Creeper oldCreeper) => DestroyBorder(border);
                             triggerHandler.CreeperTrigger(creeperId, 0, lam, border, border.Field1, border.Field2);
                         }
                     }
@@ -220,14 +293,15 @@ public class CreepBehaviour : MonoBehaviour
             {
                 JObject paramsObject = JObject.Parse(method.ArumentsJson);
                 float time = float.Parse(paramsObject["Time"].ToString());
-                Action lam = () => DestroyFieldObject(fieldObject);
                 if (method.Trigger != null && method.Trigger == "CreepTrigger")
                 {
-                    string creeperId = paramsObject["TriggerCreeperId"].ToString();
+                    string creeperId = paramsObject["TriggerCreeper"].ToString();
+                    Action<Creeper> lam = (tt) => DestroyFieldObject(fieldObject);
                     triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
                 }
                 else
                 {
+                    Action lam = () => DestroyFieldObject(fieldObject);
                     timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
                 }
             }
@@ -236,14 +310,21 @@ public class CreepBehaviour : MonoBehaviour
                 JObject paramsObject = JObject.Parse(method.ArumentsJson);
                 float time = float.Parse(paramsObject["Time"].ToString());
                 string conditionName = paramsObject["ConditionName"].ToString();
-                Action lam = () => gameEndConditionHandler.IncreaseCount(conditionName);
                 if (method.Trigger != null && method.Trigger == "CreepTrigger")
                 {
-                    string creeperId = paramsObject["TriggerCreeperId"].ToString();
+                    string creeperId = paramsObject["TriggerCreeper"].ToString();
+                    Action<Creeper> lam = (tt) => gameEndConditionHandler.IncreaseCount(conditionName);
                     triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
+                }
+                else if (method.Trigger != null && method.Trigger == "CreeperEliminated")
+                {
+                    Action<Creeper> lam = (tt) => gameEndConditionHandler.IncreaseCount(conditionName);
+                    OnCreeperEliminated.Add(lam);
+
                 }
                 else
                 {
+                    Action lam = () => gameEndConditionHandler.IncreaseCount(conditionName);
                     timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
                 }
             }
@@ -252,14 +333,15 @@ public class CreepBehaviour : MonoBehaviour
                 JObject paramsObject = JObject.Parse(method.ArumentsJson);
                 float time = float.Parse(paramsObject["Time"].ToString());
                 string conditionName = paramsObject["ConditionName"].ToString();
-                Action lam = () => gameEndConditionHandler.IncreaseCount(conditionName);
                 if (method.Trigger != null && method.Trigger == "CreepTrigger")
                 {
-                    string creeperId = paramsObject["TriggerCreeperId"].ToString();
+                    string creeperId = paramsObject["TriggerCreeper"].ToString();
+                    Action<Creeper> lam = (tt) => gameEndConditionHandler.IncreaseCount(conditionName);
                     triggerHandler.CreeperTrigger(creeperId, 0, lam, fieldObject, fieldObject.Field);
                 }
                 else
                 {
+                    Action lam = () => gameEndConditionHandler.IncreaseCount(conditionName);
                     timeManagerBehaviour.RegisterEvent(time, lam, method.Method + fieldObject.Field.ID + fieldObject.Name, fieldObject.GetHashCode());
                 }
             }
@@ -298,7 +380,7 @@ public class CreepBehaviour : MonoBehaviour
                 {
                     field.Creep.Value -= div;
                     field.Creep.Creeper = creepers[creeperId];
-                    CreeperChanged(field);
+                    CreeperChanged(field, null);
                 }
             }
             else
@@ -308,9 +390,14 @@ public class CreepBehaviour : MonoBehaviour
         }
         else
         {
-            var newCreep = new Creep() { Value = amount, Creeper = creepers[creeperId] };
-            field.Creep = newCreep;
-            CreeperChanged(field);
+            if (field.Creep == null)
+            {
+                field.Creep = new Creep();
+            }
+            Debug.Log("NewCreep");
+            field.Creep.Value = amount;
+            field.Creep.Creeper = creepers[creeperId];
+            CreeperChanged(field, null);
         }
     }
 
@@ -347,12 +434,12 @@ public class CreepBehaviour : MonoBehaviour
     }
 
 
-    private void CreeperChanged(Field field)
+    private void CreeperChanged(Field field, Creeper oldCreeper)
     {
-        triggerHandler.InvokeTriggered(field);
+        triggerHandler.InvokeTriggered(field, oldCreeper);
         foreach (var action in OnCreeperChanged)
         {
-            action(field);
+            action(field, oldCreeper);
         }
     }
 
@@ -422,19 +509,23 @@ public class CreepBehaviour : MonoBehaviour
         {
             if (field2.Creep.Creeper != field1.Creep.Creeper)
             {
+                Creeper oldCreeper = field2.Creep.Creeper;
                 field2.Creep.Creeper = field1.Creep.Creeper;
-                CreeperChanged(field2);
+                CreeperChanged(field2, oldCreeper);
             }
         }
         else if (flow < 0)
         {
             if (field1.Creep.Creeper != field2.Creep.Creeper)
             {
+                Creeper oldCreeper = field1.Creep.Creeper;
                 field1.Creep.Creeper = field2.Creep.Creeper;
-                CreeperChanged(field1);
+                CreeperChanged(field1, oldCreeper);
             }
         }
     }
+
+
 
     private float getFlow(Field field1, Field field2, float borderState)
     {

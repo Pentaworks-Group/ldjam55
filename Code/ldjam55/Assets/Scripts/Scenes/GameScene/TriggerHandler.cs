@@ -9,10 +9,10 @@ public class TriggerHandler
     public Dictionary<int, ActionContainer> ObjectToActionContainer = new Dictionary<int, ActionContainer>();
     public class ActionContainer
     {
-        public Field[] fields; public string creeperId; public float amount; public int objectID; public Action triggeredAction;
+        public Field[] fields; public string creeperId; public float amount; public int objectID; public Action<Creeper> triggeredAction;
     }
 
-    public void CreeperTrigger(string creeperId, float amount, Action triggeredAction, object gObject, params Field[] fields)
+    public void CreeperTrigger(string creeperId, float amount, Action<Creeper> triggeredAction, object gObject, params Field[] fields)
     {
         int objectID = gObject.GetHashCode();
         var actionContainer = new ActionContainer() { triggeredAction = triggeredAction, amount = amount, creeperId = creeperId, fields = fields, objectID = objectID };
@@ -28,7 +28,7 @@ public class TriggerHandler
         }
     }
 
-    public void InvokeTriggered(Field field)
+    public void InvokeTriggered(Field field, Creeper oldCreeper)
     {
         if (FieldCreeperChangeEvent.TryGetValue(field.ID, out List<ActionContainer> actionContainers))
         {
@@ -37,7 +37,7 @@ public class TriggerHandler
                 var container = actionContainers[i];
                 if (container.creeperId != null && field.Creep.Creeper.ID == container.creeperId)
                 {
-                    container.triggeredAction.Invoke();
+                    container.triggeredAction.Invoke(oldCreeper);
                     UnRegisterTrigger(container);
                 }
             }

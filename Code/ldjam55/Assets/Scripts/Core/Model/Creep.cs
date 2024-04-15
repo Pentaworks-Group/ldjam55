@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Assets.Scripts.Core.Model
 {
     public class Creep 
