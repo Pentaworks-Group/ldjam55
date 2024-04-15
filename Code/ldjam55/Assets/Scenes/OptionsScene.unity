@@ -347,22 +347,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2805739620119545456, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
-      propertyPath: m_Color.a
-      value: 0.15686275
-      objectReference: {fileID: 0}
-    - target: {fileID: 2805739620119545456, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2805739620119545456, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2805739620119545456, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2979413932566528116, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -512,45 +496,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8070856182903766831, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1326964815}
-    - targetCorrespondingSourceObject: {fileID: 8070856182903766831, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1326964814}
   m_SourcePrefab: {fileID: 100100000, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
 --- !u!1 &1326964813 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8070856182903766831, guid: 5af1972d0fa96a846b46ab227f52e02c, type: 3}
   m_PrefabInstance: {fileID: 1326964812}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1326964814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1326964813}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f0b400e81a6ae494a962bcc4c8ceaa94, type: 3}
-  m_Type: 2
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &1326964815
 CanvasRenderer:
   m_ObjectHideFlags: 0
