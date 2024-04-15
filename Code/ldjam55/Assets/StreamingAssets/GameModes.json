@@ -6,7 +6,7 @@
         "NothingFlowRate": 1,
         "FlowSpeed": 0.1,
         "MinFlow": 0.00001,
-        "StartLevel": "Level 4",
+        "StartLevel": "Level 1",
         "Creepers": [
             {
                 "ID": "CreeperWater",
@@ -119,8 +119,8 @@
                 "NextLevel" : "Level 4",
                 "UserActions": [
                     {
-                        "Name": "CreateWall",
-                        "UsesRemaining": 2
+                        "Name": "DestroyWall",
+                        "UsesRemaining": 1
                     }
                 ],
                 "GameField": {
@@ -156,12 +156,12 @@
             },
             {
                 "Name": "Level 4",
-                "Description": "No Task.",
+                "Description": "Build exactly one wall. Yellow must reach the Grail before red.",
                 "NextLevel" : "Level 1",
                 "UserActions": [
                     {
-                        "Name": "DestroyWall",
-                        "UsesRemaining": 0
+                        "Name": "CreateWall",
+                        "UsesRemaining": 1
                     }
                 ],
                 "GameField": {

@@ -808,7 +808,7 @@
          "Methods": [
            {
              "Method": "SpawnCreep",
-             "ArumentsJson": "{\"Amount\": 1.5,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 20}"
+             "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 20}"
            }
          ]
        },
@@ -817,11 +817,43 @@
          "Model": "Spawner_1",
          "Material": "Creeper_Red_Stage_1",
          "Hidden": false,
-         "FieldReference": "8-0-4",
+         "FieldReference": "8-1-3",
          "Methods": [
            {
              "Method": "SpawnCreep",
-             "ArumentsJson": "{\"Amount\": 2,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 20}"
+             "ArumentsJson": "{\"Amount\": 5,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 20}"
+           }
+         ],
+         "IsReferenced": false
+       },
+       {
+         "Name": "HitToWin",
+         "Model": "GraleTree",
+         "Material": "",
+         "Hidden": false,
+         "FieldReference": "4-4-4",
+         "Methods": [
+           
+                     {
+             "Method": "CountDown",
+             "Trigger": "CreepTrigger",
+             "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeper\" : \"CreeperWater\"}"
+           }
+         ],
+         "IsReferenced": false
+       },
+       {
+         "Name": "HitToLoose",
+         "Model": "GraleTree",
+         "Material": "",
+         "Hidden": false,
+         "FieldReference": "4-4-4",
+         "Methods": [
+           
+                     {
+             "Method": "CountDown",
+             "Trigger": "CreepTrigger",
+             "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"LooseTouch\", \"TriggerCreeper\" : \"CreeperFire\"}"
            }
          ],
          "IsReferenced": false
