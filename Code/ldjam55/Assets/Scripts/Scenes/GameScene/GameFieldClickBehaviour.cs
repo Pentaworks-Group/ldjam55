@@ -30,6 +30,7 @@ namespace Assets.Scripts.Scene.GameScene
         public void SelectUserAction(UserAction action)
         {
             SelectedUserAction = action;
+            UpdateUI();
         }
 
         private void Start()

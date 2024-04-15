@@ -11,7 +11,7 @@ public class UserActionBehavior : MonoBehaviour
     [SerializeField]
     private TMP_Text Remaining;
     [SerializeField]
-    private Image backgroundImage;
+    private Image overlayImage;
 
 
     private UserAction userAction;
@@ -38,11 +38,11 @@ public class UserActionBehavior : MonoBehaviour
 
         if(getSelectedAction.Invoke() == userAction)
         {
-            backgroundImage.color = new Color { r = 255, g = 160, b = 194, a = 255 };
+            overlayImage.gameObject.SetActive(true);
         }
         else
         {
-            backgroundImage.color = new Color { r = 255, g = 0, b = 91, a = 255 };
+            overlayImage.gameObject.SetActive(true);
         }
     }
 }
