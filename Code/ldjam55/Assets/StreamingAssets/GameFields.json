@@ -656,7 +656,7 @@
       {
         "ID": "5-0-3",
         "Coords": {
-          "X": 4.0,
+          "X": 5.0,
           "Y": 0.0
         },
         "Height": 3,
@@ -798,6 +798,36 @@
         "FieldObjects":[]
       }
     ],
+    "FieldObjects": [
+       {
+         "Name": "Water Spawner",
+         "Model": "Spawner_1",
+         "Material": "Creeper_Yellow_Stage_1",
+         "Hidden": false,
+         "FieldReference": "0-8-4",
+         "Methods": [
+           {
+             "Method": "SpawnCreep",
+             "ArumentsJson": "{\"Amount\": 1.5,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 20}"
+           }
+         ]
+       },
+       {
+         "Name": "Fire Spawner",
+         "Model": "Spawner_1",
+         "Material": "Creeper_Red_Stage_1",
+         "Hidden": false,
+         "FieldReference": "8-0-4",
+         "Methods": [
+           {
+             "Method": "SpawnCreep",
+             "ArumentsJson": "{\"Amount\": 2,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 20}"
+           }
+         ],
+         "IsReferenced": false
+       }
+ 
+     ],
     "Reference": "World3",
     "IsReferenced": false
   }
