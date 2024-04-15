@@ -232,14 +232,32 @@ public class CreepBehaviour : MonoBehaviour
         return borders;
     }
 
-    public void SpawnBorder(Border border)
+    public bool SpawnBorder(Border border)
     {
+        if (DoesSuchABorderExist(border))
+        {
+            return false;
+        }
         var nBorder = CreateNewDefaultBorder(border.Field1, border.Field2, borders);
         foreach (var listener in CreateBorderEvent)
         {
             listener.Invoke(nBorder);
         }
+        return true;
     }
+
+    private bool DoesSuchABorderExist(Border border)
+    {
+        foreach (var eBorder in borders)
+        {
+            if (eBorder.Field1 == border.Field1 && eBorder.Field2 == border.Field2)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private Border CreateNewDefaultBorder(Field field1, Field field2, List<Border> borders)
     {

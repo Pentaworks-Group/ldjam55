@@ -1,6 +1,5 @@
 using Assets.Scripts.Core.Definitions.Loaders;
 using Assets.Scripts.Core.Model;
-using GameFrame.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

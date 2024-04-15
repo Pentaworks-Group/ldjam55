@@ -10,7 +10,7 @@ using System.Diagnostics;
 public class UserActionHandler
 {
     public List<UserAction> UserActions => Core.Game.State.CurrentLevel.UserActions;
-    private Dictionary<UserAction, Action<object>> buildActions = new();
+    private Dictionary<UserAction, Func<object, bool>> buildActions = new();
     private CreepBehaviour creepBehaviour;
 
 
@@ -25,72 +25,77 @@ public class UserActionHandler
     {
         if (action != null && action.UsesRemaining > 0)
         {
-            InvokeAction(action, target);
-            action.UsesRemaining--;
+            if (InvokeAction(action, target))
+            {
+                action.UsesRemaining--;
+            }
             return true;
         }
         return false;
     }
 
-    private void InvokeAction(UserAction action, object target)
+    private bool InvokeAction(UserAction action, object target)
     {
-        if (!buildActions.TryGetValue(action, out Action<object> builtAction))
+        if (!buildActions.TryGetValue(action, out Func<object, bool> builtAction))
         {
             builtAction = BuildAction(action);
         }
-        builtAction.Invoke(target);
+        return builtAction.Invoke(target);
     }
 
-    private Action<object> BuildAction(UserAction action)
+    private Func<object, bool> BuildAction(UserAction action)
     {
         if (action.Name == "CreateSpawner")
         {
-            Action<object> builtAction = BuildSpawnerAction(action);
+            Func<object, bool> builtAction = BuildSpawnerAction(action);
             buildActions.Add(action, builtAction);
             return builtAction;
         }
         else if (action.Name == "SpawnCreep")
         {
-            Action<object> builtAction = BuildSpawnCreepAction(action);
+            Func<object, bool> builtAction = BuildSpawnCreepAction(action);
             buildActions.Add(action, builtAction);
             return builtAction;
         }
         else if (action.Name == "DestroyWall")
         {
-            Action<object> builtAction = DestroyBorder;
+            Func<object, bool>  builtAction = DestroyBorder;
             buildActions.Add(action, builtAction);
             return builtAction;
         }
         else if (action.Name == "CreateWall")
         {
-            Action<object> builtAction = CreateBorder;
+            Func<object, bool>  builtAction = CreateBorder;
             buildActions.Add(action, builtAction);
             return builtAction;
         }
         return null;
     }
 
-    private void CreateBorder(object target)
+    private bool CreateBorder(object target)
     {
         if (target is Border)
         {
             Border border = (Border) target;
             if (border.Field2 != null && border.Field1 != null)
             {
-                creepBehaviour.SpawnBorder((Border)target);
+                return creepBehaviour.SpawnBorder((Border)target);
             }
         }
+        return false;
     }
 
-    private void DestroyBorder(object target)
+    private bool DestroyBorder(object target)
     {
         if (target is Border)
         {
             creepBehaviour.DestroyBorder((Border)target);
+            return true;
         }
+        return false;
     }
 
-    private Action<object> BuildSpawnerAction(UserAction action)
+    private Func<object, bool> BuildSpawnerAction(UserAction action)
     {
         JObject paramsObject = JObject.Parse(action.ActionParamers);
         float amount = float.Parse(paramsObject["Amount"].ToString());
@@ -109,7 +114,13 @@ public class UserActionHandler
                 {
                     method
                 };
-        return (target) => creepBehaviour.CreateSpawner(((Border)target).Field1, spawner);
+        return (target) => CreateSpawner(target, spawner);
+    }
+
+    private bool CreateSpawner(object target, FieldObject spawner)
+    {
+        creepBehaviour.CreateSpawner(((Border)target).Field1, spawner);
+        return true;
     }
 
     private string GetStr(JObject paramsObject, string key, string def)
@@ -122,19 +133,22 @@ public class UserActionHandler
         return def;
     }
 
-    private void SpawnTargetSave(object target, float amount, string creeperId)
+    private bool SpawnTargetSave(object target, float amount, string creeperId)
     {
-        if (target is Border)
+        if (target != null && target is Border)
         {
+            var b = (Border)target;
+            if (b.Field1 == null)
+            {
+                return false;
+            }
             creepBehaviour.SpawnCreepAt(((Border)target).Field1, amount, creeperId);
+            return true;
         }
-        else
-        {
-            Debug.Print("Wrong target type for SpawnTargetSave");
-        }
+        return false;
     }
 
-    private Action<object> BuildSpawnCreepAction(UserAction action)
+    private Func<object, bool>  BuildSpawnCreepAction(UserAction action)
     {
         {
             JObject paramsObject = JObject.Parse(action.ActionParamers);

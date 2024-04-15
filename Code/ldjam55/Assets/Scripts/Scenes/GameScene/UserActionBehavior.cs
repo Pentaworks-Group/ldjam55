@@ -1,8 +1,5 @@
 using Assets.Scripts.Core.Model;
-using Assets.Scripts.Scene.GameScene;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
