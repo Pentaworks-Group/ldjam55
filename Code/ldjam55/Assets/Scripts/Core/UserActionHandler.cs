@@ -57,13 +57,13 @@ public class UserActionHandler
         }
         else if (action.Name == "DestroyWall")
         {
-            Func<object, bool>  builtAction = DestroyBorder;
+            Func<object, bool> builtAction = DestroyBorder;
             buildActions.Add(action, builtAction);
             return builtAction;
         }
         else if (action.Name == "CreateWall")
         {
-            Func<object, bool>  builtAction = CreateBorder;
+            Func<object, bool> builtAction = CreateBorder;
             buildActions.Add(action, builtAction);
             return builtAction;
         }
@@ -74,7 +74,7 @@ public class UserActionHandler
     {
         if (target is Border)
         {
-            Border border = (Border) target;
+            Border border = (Border)target;
             if (border.Field2 != null && border.Field1 != null)
             {
                 return creepBehaviour.SpawnBorder((Border)target);
@@ -87,8 +87,13 @@ public class UserActionHandler
     {
         if (target is Border)
         {
-            creepBehaviour.DestroyBorder((Border)target);
-            return true;
+            Border border = (Border)target;
+            if (border.Field2 != null && border.Field1 != null && border.BorderType != null)
+            {
+                creepBehaviour.DestroyBorder((Border)target);
+                return true;
+
+            }
         }
         return false;
     }
@@ -146,7 +151,7 @@ public class UserActionHandler
         return false;
     }
 
-    private Func<object, bool>  BuildSpawnCreepAction(UserAction action)
+    private Func<object, bool> BuildSpawnCreepAction(UserAction action)
     {
         {
             JObject paramsObject = JObject.Parse(action.ActionParamers);
