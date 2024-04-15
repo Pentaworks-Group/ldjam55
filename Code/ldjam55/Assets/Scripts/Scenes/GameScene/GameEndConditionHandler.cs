@@ -14,37 +14,41 @@ namespace Assets.Scripts.Scenes.GameScene
 
         private List<Action<GameEndCondition>> actions = new();
 
-        private static GameEndConditionHandler _Instance;
-        public static GameEndConditionHandler Instance
-        {
-            get
-            {
-                if (_Instance == null)
-                {
-                    _Instance = new GameEndConditionHandler();
-                }
-                return _Instance;
-            }
-        }
+        //private static GameEndConditionHandler _Instance;
+        //public static GameEndConditionHandler Instance
+        //{
+        //    get
+        //    {
+        //        if (_Instance == null)
+        //        {
+        //            _Instance = new GameEndConditionHandler();
+        //        }
+        //        return _Instance;
+        //    }
+        //}
 
         private bool isInitied = false;
 
+        public GameEndConditionHandler()
+        {
+            Init();
+        }
 
         public void RegisterListener(Action<GameEndCondition> listener)
         {
-            Init();
+            //Init();
             actions.Add(listener);
         }
 
         public void Init()
         {
-            if (isInitied)
-            {
-                return;
-            }
-            conditions = Base.Core.Game.State.CurrentLevel.EndConditions.ToDictionary(con => con.Name); 
+            //if (isInitied)
+            //{
+            //    return;
+            //}
+            conditions = Base.Core.Game.State.CurrentLevel.EndConditions.ToDictionary(con => con.Name);
             actions = new();
-            isInitied = true;
+            //isInitied = true;
         }
 
 

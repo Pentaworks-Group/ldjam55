@@ -46,8 +46,8 @@ public class GameSceneBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-//        creepBehaviour.StartGame();
-
+        //        creepBehaviour.StartGame();
+        
         foreach (var fieldObject in Core.Game.State.CurrentLevel.GameField.FieldObjects)
         {
             SpawnFieldObject(fieldObject);
@@ -66,7 +66,7 @@ public class GameSceneBehaviour : MonoBehaviour
         creepBehaviour.CreateFieldObjectEvent.Add(SpawnFieldObject);
         creepBehaviour.CreateBorderEvent.Add(SpawnBorder);
 
-        GameEndConditionHandler.Instance.RegisterListener(GameEnded);
+        creepBehaviour.gameEndConditionHandler.RegisterListener(GameEnded);
 
         var backgroundAudioClips = new List<AudioClip>()
             {
@@ -106,7 +106,7 @@ public class GameSceneBehaviour : MonoBehaviour
 //        Core.Game.State.TimeElapsed += Time.deltaTime;
         if (timeUpdate < 0)
         {
-            timeElapsedDisplay.text = Time.time.ToString("F1");// Core.Game.State.TimeElapsed.ToString("F1");
+            timeElapsedDisplay.text = Time.time.ToString("F0");// Core.Game.State.TimeElapsed.ToString("F1");
             timeUpdate = 0.2f;
         }
         else
@@ -117,6 +117,7 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private void GameEnded(GameEndCondition conditon)
     {
+        var t = transform.Find("GameEndScreen");
         gameEndScreenBehaviour.UpdateUI(conditon, conditon.Description);
         gameEndScreenBehaviour.gameObject.SetActive(true);
     }

@@ -56,6 +56,6 @@ public class GameEndScreenBehaviour : MonoBehaviour
 
         Time.timeScale = 0.0f;
 
-        gameObject.SetActive(true);
+//        gameObject.SetActive(true);
     }
 }

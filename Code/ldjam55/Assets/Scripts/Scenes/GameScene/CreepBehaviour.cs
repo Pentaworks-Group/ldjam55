@@ -29,8 +29,18 @@ public class CreepBehaviour : MonoBehaviour
 
 
     private TriggerHandler triggerHandler = new();
-    public GameEndConditionHandler gameEndConditionHandler { get; private set; }
-
+    private GameEndConditionHandler _gameEndConditionHandler;
+    public GameEndConditionHandler gameEndConditionHandler
+    {
+        get
+        {
+            if (_gameEndConditionHandler == null)
+            {
+                _gameEndConditionHandler = new GameEndConditionHandler();
+            }
+            return _gameEndConditionHandler;
+        }
+    }
 
     private void Awake()
     {
@@ -39,8 +49,8 @@ public class CreepBehaviour : MonoBehaviour
 
     private void Start()
     {
-        gameEndConditionHandler = GameEndConditionHandler.Instance;
-        gameEndConditionHandler.Init();
+        //gameEndConditionHandler = GameEndConditionHandler.Instance;
+        //gameEndConditionHandler.Init();
         gameEndConditionHandler.RegisterListener(Stop);
     }
 
@@ -525,7 +535,7 @@ public class CreepBehaviour : MonoBehaviour
         float tickFlowFactor = Time.deltaTime * Core.Game.State.Mode.FlowSpeed;
         foreach (var border in borders)
         {
-            UpdateCreepAtBorder(border, tickFlowFactor);
+            UpdateCreepAtBorder(border, tickFlowFactor);    
         }
     }
 
@@ -535,8 +545,15 @@ public class CreepBehaviour : MonoBehaviour
         {
             return;
         }
-        var creep1 = border.Field1.Creep;
-        var creep2 = border.Field2.Creep;
+        Creep creep1 = null, creep2 = null;
+        if (border.Field1 != null)
+        {
+            creep1 = border.Field1.Creep;
+        }
+        if (border.Field2 != null)
+        {
+            creep2 = border.Field2.Creep;
+        }
         if (creep1 == null && creep2 == null)
         {
             return;
