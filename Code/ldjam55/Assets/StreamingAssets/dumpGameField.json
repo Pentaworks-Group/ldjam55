@@ -109,6 +109,24 @@
       "FieldObjects": []
     },
     {
+      "ID": "1-1-0",
+      "Coords": {
+        "X": 1.0,
+        "Y": 1.0
+      },
+      "Height": 0,
+      "FieldObjects": []
+    },
+    {
+      "ID": "1-1-1",
+      "Coords": {
+        "X": 1.0,
+        "Y": 1.0
+      },
+      "Height": 1,
+      "FieldObjects": []
+    },
+    {
       "ID": "3-0--2",
       "Coords": {
         "X": 3.0,
@@ -523,6 +541,87 @@
       "FieldObjects": []
     },
     {
+      "ID": "3-3--2",
+      "Coords": {
+        "X": 3.0,
+        "Y": 3.0
+      },
+      "Height": -2,
+      "FieldObjects": []
+    },
+    {
+      "ID": "3-4--2",
+      "Coords": {
+        "X": 3.0,
+        "Y": 4.0
+      },
+      "Height": -2,
+      "FieldObjects": []
+    },
+    {
+      "ID": "3-5--2",
+      "Coords": {
+        "X": 3.0,
+        "Y": 5.0
+      },
+      "Height": -2,
+      "FieldObjects": []
+    },
+    {
+      "ID": "4-5--2",
+      "Coords": {
+        "X": 4.0,
+        "Y": 5.0
+      },
+      "Height": -2,
+      "FieldObjects": []
+    },
+    {
+      "ID": "5-5--2",
+      "Coords": {
+        "X": 5.0,
+        "Y": 5.0
+      },
+      "Height": -2,
+      "FieldObjects": []
+    },
+    {
+      "ID": "4-4--2",
+      "Coords": {
+        "X": 4.0,
+        "Y": 4.0
+      },
+      "Height": -2,
+      "FieldObjects": []
+    },
+    {
+      "ID": "5-4--2",
+      "Coords": {
+        "X": 5.0,
+        "Y": 4.0
+      },
+      "Height": -2,
+      "FieldObjects": []
+    },
+    {
+      "ID": "4-3--2",
+      "Coords": {
+        "X": 4.0,
+        "Y": 3.0
+      },
+      "Height": -2,
+      "FieldObjects": []
+    },
+    {
+      "ID": "5-3--2",
+      "Coords": {
+        "X": 5.0,
+        "Y": 3.0
+      },
+      "Height": -2,
+      "FieldObjects": []
+    },
+    {
       "ID": "4-1--1",
       "Coords": {
         "X": 4.0,
@@ -547,7 +646,7 @@
     },
     {
       "Field1Ref": "0-1--2",
-      "Field2Ref": "1-1--1",
+      "Field2Ref": "1-1-1",
       "BorderType": {
         "Name": "BorderWall",
         "Model": "Wall",
@@ -607,7 +706,7 @@
         {
           "Method": "CountDown",
           "Trigger": "CreepTrigger",
-          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeper\" : \"CreeperWater\"}"
         }
       ],
       "IsReferenced": false
@@ -622,7 +721,7 @@
         {
           "Method": "CountDown",
           "Trigger": "CreepTrigger",
-          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"LooseTouch\", \"TriggerCreeperId\" : \"CreeperFire\"}"
+          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"LooseTouch\", \"TriggerCreeper\" : \"CreeperFire\"}"
         }
       ],
       "IsReferenced": false
@@ -637,7 +736,7 @@
         {
           "Method": "CountDown",
           "Trigger": "CreepTrigger",
-          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeper\" : \"CreeperWater\"}"
         }
       ],
       "IsReferenced": false
@@ -652,7 +751,7 @@
         {
           "Method": "CountDown",
           "Trigger": "CreepTrigger",
-          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeper\" : \"CreeperWater\"}"
         }
       ],
       "IsReferenced": false
@@ -667,7 +766,7 @@
         {
           "Method": "CountDown",
           "Trigger": "CreepTrigger",
-          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeperId\" : \"CreeperWater\"}"
+          "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeper\" : \"CreeperWater\"}"
         }
       ],
       "IsReferenced": false
@@ -695,7 +794,17 @@
       "Methods": [
         {
           "Method": "CountDown",
-          "ArumentsJson": "{\"Time\": 50,\"ConditionName\": \"WinTimer\"}"
+          "ArumentsJson": "{\"Time\": 50,\"ConditionName\": \"InstantWin\"}"
+        },
+        {
+          "Method": "CountDown",
+          "Trigger": "CreeperEliminated",
+          "ArumentsJson": "{\"Time\": 0,\"ConditionName\": \"InstantWin\", \"TriggerCreeper\" : \"CreeperFire\"}"
+        },
+        {
+          "Method": "CountDown",
+          "Trigger": "CreeperEliminated",
+          "ArumentsJson": "{\"Time\": 0,\"ConditionName\": \"InstantLoose\", \"TriggerCreeper\" : \"CreeperWater\"}"
         }
       ],
       "IsReferenced": false

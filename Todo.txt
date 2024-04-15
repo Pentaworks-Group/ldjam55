@@ -38,7 +38,11 @@ WIP:
 
 Nice to have:
 ----------------------------------
- - 
+ - Serializable Commands
+ - Unregister OnCreeperEliminated for Commands
+ - Nice Command Module
+ - Check for spawners before firing OnCreeperEliminated
+ - Implement Creeper eliminated
  
 Ideas:
 ----------------------------------

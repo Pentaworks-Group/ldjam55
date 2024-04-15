@@ -5,11 +5,8 @@
         "Description": "Default Default Default",
         "NothingFlowRate": 1,
         "FlowSpeed": 0.5,
-        "MinFlow" : 0.00001,
-        "GameField": {
-            "IsReferenced": true,
-            "Reference": "default"
-        },
+        "MinFlow": 0.00001,
+        "StartLevel": "l1",
         "Creepers": [
             {
                 "ID": "CreeperWater",
@@ -28,23 +25,84 @@
                 }
             }
         ],
-        "EndConditions": [
+        "Levels": [
             {
-                "Name": "WinTimer",
-                "IsWin": true,
-                "WinCount": 1
+                "Name" : "level1",
+                "Description" : "des",
+                "Actions": [
+                    {
+                        "Name" : "SpawnCreep",
+                        "ActionCount" : 5
+                    },                    
+                    {
+                        "Name" : "DestroyWall",
+                        "ActionCount" : 3
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "World1"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "InstantWin",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "InstantLoose",
+                        "IsWin": false,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "WinTouch",
+                        "IsWin": true,
+                        "WinCount": 3
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
             },
+            
             {
-                "Name": "WinTouch",
-                "IsWin": true,
-                "WinCount": 3
-            },
-            {
-                "Name": "LooseTouch",
-                "IsWin": false,
-                "WinCount": 1
+                "Name" : "level1",
+                "Description" : "des",
+                "Actions": [
+                    {
+                        "Name" : "SpawnCreep",
+                        "ActionCount" : 5
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "World2"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "InstantWin",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "InstantLoose",
+                        "IsWin": false,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "WinTouch",
+                        "IsWin": true,
+                        "WinCount": 3
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
             }
-
         ]
     }
 ]
