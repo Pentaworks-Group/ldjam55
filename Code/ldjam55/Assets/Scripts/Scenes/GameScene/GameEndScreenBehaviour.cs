@@ -1,4 +1,6 @@
+using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
+using GameFrame.Core.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -33,6 +35,8 @@ public class GameEndScreenBehaviour : MonoBehaviour
 
     public void UpdateUI(GameEndCondition condition, string customMessage)
     {
+        GameFrame.Base.Audio.Effects.Play("Win");
+
         if (condition.IsWin)
         {
             Title.text = "You have won";
