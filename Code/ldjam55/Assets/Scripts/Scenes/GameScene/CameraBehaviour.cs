@@ -16,6 +16,7 @@ public class CameraBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Update Camera");
         float xPos = mainTerrain.transform.position.x + mainTerrain.terrainData.size.x / 2f ;
         float zPos = -11;
         cam.transform.position = new Vector3(xPos, cam.transform.position.y, zPos);
