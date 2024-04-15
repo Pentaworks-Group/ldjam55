@@ -2,41 +2,41 @@
   {
     "Fields": [
       {
-        "ID": "5-0-0",
+        "ID": "0-0-0",
         "Coords": {
-          "X": 5.0,
+          "X": 0.0,
           "Y": 0.0
         },
         "Height": 0
       },
       {
-        "ID": "5-1-0",
+        "ID": "0-1-0",
         "Coords": {
-          "X": 5.0,
+          "X": 0.0,
           "Y": 1.0
         },
         "Height": 0
       },
       {
-        "ID": "5-2-0",
+        "ID": "0-2-0",
         "Coords": {
-          "X": 5.0,
+          "X": 0.0,
           "Y": 2.0
         },
         "Height": 0
       },
       {
-        "ID": "5-3-0",
+        "ID": "0-3-0",
         "Coords": {
-          "X": 5.0,
+          "X": 0.0,
           "Y": 3.0
         },
         "Height": 0
       },
       {
-        "ID": "5-4-0",
+        "ID": "0-4-0",
         "Coords": {
-          "X": 5.0,
+          "X": 0.0,
           "Y": 4.0
         },
         "Height": 0
@@ -44,8 +44,8 @@
     ],
     "Borders": [
       {
-        "Field1Ref": "5-3-0",
-        "Field2Ref": "5-4-0",
+        "Field1Ref": "0-1-0",
+        "Field2Ref": "0-2-0",
         "BorderType": {
           "Name": "BorderWall",
           "Model": "Wall",
@@ -63,7 +63,7 @@
         "Model": "Spawner_1",
         "Material": "Creeper_Yellow_Stage_1",
         "Hidden": false,
-        "FieldReference": "5-0-0",
+        "FieldReference": "0-0-0",
         "Methods": [
           {
             "Method": "SpawnCreep",
@@ -76,9 +76,10 @@
         "Model": "GraleTree",
         "Material": "",
         "Hidden": false,
-        "FieldReference": "5-4-0",
+        "FieldReference": "0-4-0",
         "Methods": [
-          {
+          
+                    {
             "Method": "CountDown",
             "Trigger": "CreepTrigger",
             "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"WinTouch\", \"TriggerCreeper\" : \"CreeperWater\"}"
