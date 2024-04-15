@@ -140,8 +140,8 @@ namespace Assets.Scripts.Core
             };
 
             GameFrame.Base.Audio.Ambience.Play(ambienceAudioClips);
-
         }
+
 
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
