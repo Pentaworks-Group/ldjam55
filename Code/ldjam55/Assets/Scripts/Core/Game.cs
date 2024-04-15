@@ -228,7 +228,8 @@ namespace Assets.Scripts.Core
                 Name = level.Name,
                 Description = level.Description,
                 EndConditions = level.EndConditions,
-                UserActions = level.UserActions
+                UserActions = level.UserActions,
+                NextLevel = level.NextLevel
             };
             modelLevel.GameField = ConvertGameField(level.GameField);
             return modelLevel;

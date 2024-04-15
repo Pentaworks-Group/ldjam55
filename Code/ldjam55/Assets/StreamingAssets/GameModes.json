@@ -29,6 +29,7 @@
             {
                 "Name": "level1",
                 "Description": "des",
+                "NextLevel" : "level2",
                 "UserActions": [
                     {
                         "Name": "SpawnCreep",
