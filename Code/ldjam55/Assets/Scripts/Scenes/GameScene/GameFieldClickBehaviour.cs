@@ -1,4 +1,7 @@
+using Assets.Scripts.Core.Model;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,54 +9,60 @@ namespace Assets.Scripts.Scene.GameScene
 {
     public class GameFieldClickBehaviour : MonoBehaviour
     {
-        private Action<GameFieldContainerBehaviour> SelectedAction;
-
-        [SerializeField]
-        private CreepBehaviour CreepBehaviour;
-
         [SerializeField]
         private Terrain mainTerrain;
 
-        [SerializeField] 
+        [SerializeField]
         private TerrainBehaviour terrainBehaviour;
 
-
         [SerializeField]
-        private TMP_Text SelectedActionText;
-        [SerializeField]
-        private TMP_InputField InputAmount;
-        [SerializeField]
-        private TMP_InputField InputCreeper;
+        private UserActionBehavior actionTemplate;
+
+        private List<UserActionBehavior> actionBehaviors = new List<UserActionBehavior>();
+
+        public List<UserAction> actions => Base.Core.Game.UserActionHandler.UserActions;
+
+        public UserAction SelectedUserAction { get; set; }
 
 
-
-        public void SetDestroyBorderAction()
+        public void SelectUserAction(UserAction action)
         {
-            SelectedAction = DestroyBorderAction;
-            SelectedActionText.text = "DestroyBorder";
+            SelectedUserAction = action;
         }
 
-        private void DestroyBorderAction(GameFieldContainerBehaviour container)
+        private void Start()
         {
-            if (container.ObjectType == "Wall")
+            float increment = .22f;
+            float current = 0;
+            foreach (var action in actions)
             {
-                CreepBehaviour.DestroyBorder((Core.Model.Border)container.ContainedObject);
+                var actionBehaviour = Instantiate<UserActionBehavior>(actionTemplate, actionTemplate.transform.parent);
+                var rect = actionBehaviour.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(rect.anchorMin.x + current, rect.anchorMin.y);
+                rect.anchorMax = new Vector2(rect.anchorMax.x + current, rect.anchorMax.y);
+                actionBehaviour.Init(action, SelectUserAction);
+                actionBehaviour.gameObject.SetActive(true);
+                actionBehaviors.Add(actionBehaviour);
+                current += increment;
+            }
+            UpdateUI();
+        }
+
+
+        public void CastSelectedAction(object target)
+        {
+            if (SelectedUserAction != null)
+            {
+                Base.Core.Game.UserActionHandler.UseAction(SelectedUserAction, target);
+                UpdateUI();
             }
         }
 
-        public void SetSpawnAction()
+        public void UpdateUI()
         {
-            float amount = float.Parse(InputAmount.text);
-            string creeperId = InputCreeper.text;
-            SelectedAction = (GameFieldContainerBehaviour container) => SpawnAtField(container, amount, creeperId);
-            SelectedActionText.text = "Spawn";
-        }
-
-        private void SpawnAtField(GameFieldContainerBehaviour container, float amount, string creeperId)
-        {
-            if (container.ObjectType == "Field" || container.ObjectType == "Creep")
+            foreach (var action in actionBehaviors)
             {
-                CreepBehaviour.SpawnCreepAt((Core.Model.Field)container.ContainedObject, amount, creeperId);
+                action.UpdateUI();
             }
         }
 
@@ -70,26 +79,23 @@ namespace Assets.Scripts.Scene.GameScene
 
                     if (Physics.Raycast(ray, out var raycastHit, 100.0f))
                     {
-                        if (raycastHit.transform.gameObject != null)
+                        GameObject targetGO = raycastHit.transform.gameObject;
+                        if (targetGO != null)
                         {
                             if (raycastHit.transform.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var container))
                             {
-                                if (SelectedAction != null)
-                                {
-                                    SelectedAction(container);
-                                }
+                                CastSelectedAction(container.ContainedObject);
                             }
                             else if (raycastHit.transform.parent && raycastHit.transform.parent.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var parentContainer))
                             {
-                                if (SelectedAction != null)
-                                {
-                                    SelectedAction(parentContainer);
-                                }
+                                CastSelectedAction(container.ContainedObject);
                             }
                             else if (raycastHit.transform.gameObject.Equals(mainTerrain.gameObject))
                             {
-                                Vector2Int mapPoint = terrainBehaviour.TransformTerrainCoordToMap(new Vector2Int((int) raycastHit.point.x, (int) raycastHit.point.z));
-                                Debug.Log("Hit Terrain: "+raycastHit.ToString()+", "+mapPoint.ToString());
+                                Vector2Int mapPoint = terrainBehaviour.TransformTerrainCoordToMap(new Vector2Int((int)raycastHit.point.x, (int)raycastHit.point.z));
+                                var field = terrainBehaviour.getField(mapPoint.x, mapPoint.y);
+                                CastSelectedAction(field);
+                                Debug.Log("Hit Terrain: " + raycastHit.ToString() + ", " + mapPoint.ToString());
                             }
                             else
                             {

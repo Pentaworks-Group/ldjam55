@@ -229,7 +229,7 @@ public class TerrainBehaviour : MonoBehaviour
         return pos;
         //        return (int) Math.Floor(x * mapSize / heightMapSize);
     }
-    private Field getField(int x, int y)
+    public Field getField(int x, int y)
     {
         //Shift negative to 0
         Field f = Core.Game.State.CurrentLevel.GameField.Fields.Find(field => field.Coords.X==x+XOffset && field.Coords.Y==y+YOffset);
