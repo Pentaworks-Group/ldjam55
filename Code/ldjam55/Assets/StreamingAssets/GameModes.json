@@ -29,14 +29,15 @@
             {
                 "Name" : "level1",
                 "Description" : "des",
-                "Actions": [
+                "UserActions": [
                     {
                         "Name" : "SpawnCreep",
-                        "ActionCount" : 5
+                        "UsesRemaining" : 5,
+                        "ActionParamers" : "{\"Amount\": 25,\"Creeper\": \"CreeperFire\"}"
                     },                    
                     {
                         "Name" : "DestroyWall",
-                        "ActionCount" : 3
+                        "UsesRemaining" : 3
                     }
                 ],
                 "GameField": {

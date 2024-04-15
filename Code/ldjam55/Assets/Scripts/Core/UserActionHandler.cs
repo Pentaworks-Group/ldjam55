@@ -6,13 +6,22 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Xml.Linq;
 
 public class UserActionHandler
 {
     public List<UserAction> UserActions => Core.Game.State.CurrentLevel.UserActions;
-    private Dictionary<UserAction, Action<object>> buildActions;
+    private Dictionary<UserAction, Action<object>> buildActions = new();
     private CreepBehaviour creepBehaviour;
 
+
+    public void Init(CreepBehaviour creepBehaviour)
+    {
+        if (this.creepBehaviour == null)
+        {
+            this.creepBehaviour = creepBehaviour;
+        }
+    }
     public bool UseAction(UserAction action, object target)
     {
         if (action != null && action.UsesRemaining > 0)
@@ -47,9 +56,9 @@ public class UserActionHandler
             buildActions.Add(action, builtAction);
             return builtAction;
         }
-        else if (action.Name == "DestroyBorder")
+        else if (action.Name == "DestroyWall")
         {
-            Action<object> builtAction = BuildSpawnCreepAction(action);
+            Action<object> builtAction = (target) => creepBehaviour.DestroyBorder((Border)target);
             buildActions.Add(action, builtAction);
             return builtAction;
         }
