@@ -17,8 +17,6 @@ namespace Assets.Scripts.Core
 
         public List<AudioClip> EffectsClipList { get; set; }
 
-        public float GameTime { get; private set; }
-
         public IList<Definitions.GameMode> AvailableGameModes
         {
             get
@@ -177,7 +175,6 @@ namespace Assets.Scripts.Core
 
             GameFrame.Base.Audio.Ambience.Play(ambienceAudioClips);
         }
-
 
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
