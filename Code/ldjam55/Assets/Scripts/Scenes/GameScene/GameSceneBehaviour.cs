@@ -135,6 +135,11 @@ public class GameSceneBehaviour : MonoBehaviour
         Core.Game.StartNextLevel();
     }
 
+    public void RestartLevel()
+    {
+        Core.Game.RestartLevel();
+    }
+
     private string GetBorderKey(Assets.Scripts.Core.Model.Border border)
     {
         return border.BorderType.Name + border.Field1.ID + border.Field2.ID;

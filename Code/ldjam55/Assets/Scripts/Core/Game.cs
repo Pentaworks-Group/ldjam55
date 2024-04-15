@@ -93,6 +93,15 @@ namespace Assets.Scripts.Core
             State.CurrentLevel = GetLevel(nL);
             ChangeScene(State.CurrentScene);
         }
+
+        public void RestartLevel()
+        {
+            var nL = State.CurrentLevel.Name;
+            State.CurrentLevel = GetLevel(nL);
+            ChangeScene(State.CurrentScene);
+        }
+
+
         public Level GetNextLevel()
         {
             var nL = State.CurrentLevel.NextLevel;
