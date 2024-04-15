@@ -48,21 +48,25 @@
                 "EndConditions": [
                     {
                         "Name": "InstantWin",
+                        "Description": "You reached the target field.",
                         "IsWin": true,
                         "WinCount": 1
                     },
                     {
                         "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
                         "IsWin": false,
                         "WinCount": 1
                     },
                     {
                         "Name": "WinTouch",
+                        "Description": "You reached the target field.",
                         "IsWin": true,
                         "WinCount": 1
                     },
                     {
                         "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
                         "IsWin": false,
                         "WinCount": 1
                     }
@@ -90,21 +94,25 @@
                 "EndConditions": [
                     {
                         "Name": "InstantWin",
+                        "Description": "You reached the target field.",
                         "IsWin": true,
                         "WinCount": 1
                     },
                     {
                         "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
                         "IsWin": false,
                         "WinCount": 1
                     },
                     {
                         "Name": "WinTouch",
+                        "Description": "You reached the target field.",
                         "IsWin": true,
                         "WinCount": 1
                     },
                     {
                         "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
                         "IsWin": false,
                         "WinCount": 1
                     }
@@ -127,21 +135,25 @@
                 "EndConditions": [
                     {
                         "Name": "InstantWin",
+                        "Description": "You reached the target field.",
                         "IsWin": true,
                         "WinCount": 1
                     },
                     {
                         "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
                         "IsWin": false,
                         "WinCount": 1
                     },
                     {
                         "Name": "WinTouch",
+                        "Description": "You reached the target field.",
                         "IsWin": true,
                         "WinCount": 1
                     },
                     {
                         "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
                         "IsWin": false,
                         "WinCount": 1
                     }

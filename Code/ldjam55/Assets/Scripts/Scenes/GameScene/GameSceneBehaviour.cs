@@ -117,7 +117,7 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private void GameEnded(GameEndCondition conditon)
     {
-        gameEndScreenBehaviour.UpdateUI(conditon, "");
+        gameEndScreenBehaviour.UpdateUI(conditon, conditon.Description);
         gameEndScreenBehaviour.gameObject.SetActive(true);
     }
 
