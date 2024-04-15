@@ -862,5 +862,449 @@
      ],
     "Reference": "World3",
     "IsReferenced": false
+  },
+  {
+    "Fields": [
+      {
+        "ID": "0-8-4",
+        "Coords": {
+          "X": 0.0,
+          "Y": 8.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-7-3",
+        "Coords": {
+          "X": 0.0,
+          "Y": 7.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-6-2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 6.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-5-3",
+        "Coords": {
+          "X": 0.0,
+          "Y": 5.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-4-2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 4.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-3-1",
+        "Coords": {
+          "X": 0.0,
+          "Y": 3.0
+        },
+        "Height": 1,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-2-2",
+        "Coords": {
+          "X": 0.0,
+          "Y": 2.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-1-1",
+        "Coords": {
+          "X": 0.0,
+          "Y": 1.0
+        },
+        "Height": 1,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "0-0-0",
+        "Coords": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Height": 0,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "1-8-3",
+        "Coords": {
+          "X": 1.0,
+          "Y": 8.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "1-4-3",
+        "Coords": {
+          "X": 1.0,
+          "Y": 4.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "1-0-1",
+        "Coords": {
+          "X": 1.0,
+          "Y": 0.0
+        },
+        "Height": 1,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-8-4",
+        "Coords": {
+          "X": 2.0,
+          "Y": 8.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-4-2",
+        "Coords": {
+          "X": 2.0,
+          "Y": 4.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "2-0-2",
+        "Coords": {
+          "X": 2.0,
+          "Y": 0.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "3-8-5",
+        "Coords": {
+          "X": 3.0,
+          "Y": 8.0
+        },
+        "Height": 5,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "3-4-3",
+        "Coords": {
+          "X": 3.0,
+          "Y": 4.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "3-0-1",
+        "Coords": {
+          "X": 3.0,
+          "Y": 0.0
+        },
+        "Height": 1,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "4-8-4",
+        "Coords": {
+          "X": 4.0,
+          "Y": 8.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "4-7-5",
+        "Coords": {
+          "X": 4.0,
+          "Y": 7.0
+        },
+        "Height": 5,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "4-6-4",
+        "Coords": {
+          "X": 4.0,
+          "Y": 6.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "4-5-3",
+        "Coords": {
+          "X": 4.0,
+          "Y": 5.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "4-4-4",
+        "Coords": {
+          "X": 4.0,
+          "Y": 4.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "4-3-3",
+        "Coords": {
+          "X": 4.0,
+          "Y": 3.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "4-2-2",
+        "Coords": {
+          "X": 4.0,
+          "Y": 2.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "4-1-3",
+        "Coords": {
+          "X": 4.0,
+          "Y": 1.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "4-0-2",
+        "Coords": {
+          "X": 4.0,
+          "Y": 0.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "5-8-5",
+        "Coords": {
+          "X": 5.0,
+          "Y": 8.0
+        },
+        "Height": 5,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "5-4-3",
+        "Coords": {
+          "X": 5.0,
+          "Y": 4.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "5-0-3",
+        "Coords": {
+          "X": 5.0,
+          "Y": 0.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "6-8-6",
+        "Coords": {
+          "X": 6.0,
+          "Y": 8.0
+        },
+        "Height": 6,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "6-4-4",
+        "Coords": {
+          "X": 6.0,
+          "Y": 4.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "6-0-2",
+        "Coords": {
+          "X": 6.0,
+          "Y": 0.0
+        },
+        "Height": 2,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "7-8-5",
+        "Coords": {
+          "X": 7.0,
+          "Y": 8.0
+        },
+        "Height": 5,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "7-4-5",
+        "Coords": {
+          "X": 7.0,
+          "Y": 4.0
+        },
+        "Height": 5,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "7-0-3",
+        "Coords": {
+          "X": 7.0,
+          "Y": 0.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "8-8-6",
+        "Coords": {
+          "X": 8.0,
+          "Y": 8.0
+        },
+        "Height": 6,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "8-7-5",
+        "Coords": {
+          "X": 8.0,
+          "Y": 7.0
+        },
+        "Height": 5,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "8-6-6",
+        "Coords": {
+          "X": 8.0,
+          "Y": 6.0
+        },
+        "Height": 6,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "8-5-5",
+        "Coords": {
+          "X": 8.0,
+          "Y": 5.0
+        },
+        "Height": 5,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "8-4-4",
+        "Coords": {
+          "X": 8.0,
+          "Y": 4.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "8-3-5",
+        "Coords": {
+          "X": 8.0,
+          "Y": 3.0
+        },
+        "Height": 5,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "8-2-4",
+        "Coords": {
+          "X": 8.0,
+          "Y": 2.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "8-1-3",
+        "Coords": {
+          "X": 8.0,
+          "Y": 1.0
+        },
+        "Height": 3,
+        "FieldObjects":[]
+      },
+      {
+        "ID": "8-0-4",
+        "Coords": {
+          "X": 8.0,
+          "Y": 0.0
+        },
+        "Height": 4,
+        "FieldObjects":[]
+      }
+    ],
+    "FieldObjects": [
+              {
+         "Name": "Fire Spawner",
+         "Model": "Spawner_1",
+         "Material": "Creeper_Red_Stage_1",
+         "Hidden": false,
+         "FieldReference": "8-0-4",
+         "Methods": [
+           {
+             "Method": "SpawnCreep",
+             "ArumentsJson": "{\"Amount\": 1000,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 1000}"
+           }
+         ],
+         "IsReferenced": false
+       },
+       {
+         "Name": "HitToLoose",
+         "Model": "LoseTree",
+         "Material": "",
+         "Hidden": false,
+         "FieldReference": "0-8-4",
+         "Methods": [
+           
+                     {
+             "Method": "CountDown",
+             "Trigger": "CreepTrigger",
+             "ArumentsJson": "{\"Time\": 500,\"ConditionName\": \"LooseTouch\", \"TriggerCreeper\" : \"CreeperFire\"}"
+           }
+         ],
+         "IsReferenced": false
+       }
+ 
+     ],
+    "Reference": "World4",
+    "IsReferenced": false
   }
 ]
