@@ -215,7 +215,8 @@ namespace Assets.Scripts.Scenes.GameScene
 
             List<Core.Definitions.FieldObject> fieldObjects = GenerateFieldObjects(fields, rawFieldObjects);
 
-            var gameField = new Core.Definitions.GameField() { FieldObjects = fieldObjects, Borders = borders, Fields = fields.Values.ToList() };
+
+            var gameField = new Core.Definitions.GameField() { FieldObjects = fieldObjects, Borders = borders, Fields = fields.Values.ToList(),  Reference = Base.Core.Game.State.GameField.Reference, IsReferenced = Base.Core.Game.State.GameField.IsReferenced};
 
             var json = GameFrame.Core.Json.Handler.SerializePrettyIgnoreNull(gameField);
             var filePath = Application.streamingAssetsPath + "/dumpGameField.json";

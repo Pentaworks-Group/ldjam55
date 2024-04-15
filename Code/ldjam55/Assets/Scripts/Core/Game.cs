@@ -120,7 +120,7 @@ namespace Assets.Scripts.Core
 
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
-            var gameField = new Model.GameField() { Fields = gameFieldDefinition.Fields };
+            var gameField = new Model.GameField() { Fields = gameFieldDefinition.Fields, IsReferenced = gameFieldDefinition.IsReferenced, Reference = gameFieldDefinition.Reference };
             var fields = gameField.Fields.ToDictionary(field => field.ID, field => field);
             gameField.Borders = ConvertBordersForGameField(gameFieldDefinition.Borders, fields);
             gameField.FieldObjects = ConvertFieldObjects(gameFieldDefinition.FieldObjects, fields);

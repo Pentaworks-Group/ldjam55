@@ -654,7 +654,7 @@
         "IsReferenced": false
       },
       {
-        "Name": "HitToWin",
+        "Name": "HitToLoose",
         "Model": "LoseTree",
         "Material": "Creeper_Yellow_Stage_1",
         "Hidden": false,
