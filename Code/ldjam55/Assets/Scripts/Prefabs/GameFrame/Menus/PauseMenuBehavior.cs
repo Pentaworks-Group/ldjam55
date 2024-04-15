@@ -19,7 +19,7 @@ namespace Assets.Scripts.Prefabs.Menus
         private GameObject menuToggle;
         private GameObject pauseArea;
         private GameObject optionsArea;
-        private GameObject savedGameArea;
+//        private GameObject savedGameArea;
         private Button backButton;
         private Button continueButton;
 
@@ -89,7 +89,7 @@ namespace Assets.Scripts.Prefabs.Menus
         {
             if (menuToggle.activeSelf == true)
             {
-                if (this.optionsArea.activeSelf || this.savedGameArea.activeSelf)
+                if (this.optionsArea.activeSelf/* || this.savedGameArea.activeSelf*/)
                 {
                     OnBackButtonClicked();
                 }
@@ -148,10 +148,10 @@ namespace Assets.Scripts.Prefabs.Menus
 
         public void OnBackButtonClicked()
         {
-            if (this.savedGameArea.activeSelf)
+/*            if (this.savedGameArea.activeSelf)
             {
                 Base.Core.Game.SaveOptions();
-            }
+            }*/
 
             Base.Core.Game.PlayButtonSound();
             SetVisible(pauseMenu: true);
@@ -190,7 +190,7 @@ namespace Assets.Scripts.Prefabs.Menus
 
             this.pauseArea.SetActive(pauseMenu);
             this.optionsArea.SetActive(options);
-            this.savedGameArea.SetActive(savedGame);
+//            this.savedGameArea.SetActive(savedGame);
 
             this.continueButton.gameObject.SetActive(pauseMenu);
             this.backButton.gameObject.SetActive(!pauseMenu);
