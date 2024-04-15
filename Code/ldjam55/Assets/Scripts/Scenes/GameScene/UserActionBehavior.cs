@@ -43,7 +43,6 @@ public class UserActionBehavior : MonoBehaviour
         else
         {
             backgroundImage.color = new Color { r = 255, g = 0, b = 91, a = 255 };
-
         }
     }
 }
