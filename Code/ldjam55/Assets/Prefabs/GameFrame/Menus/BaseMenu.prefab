@@ -81,7 +81,8 @@ GameObject:
   - component: {fileID: 6227158666060716144}
   - component: {fileID: 4303887046645179540}
   - component: {fileID: 4911518019368370096}
-  - component: {fileID: 7972374029148758443}
+  - component: {fileID: 5484138708551600245}
+  - component: {fileID: 8922467443741617116}
   m_Layer: 5
   m_Name: BaseMenu
   m_TagString: Untagged
@@ -172,7 +173,15 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &7972374029148758443
+--- !u!222 &5484138708551600245
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4110042594290172172}
+  m_CullTransparentMesh: 1
+--- !u!114 &8922467443741617116
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -181,9 +190,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 4110042594290172172}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d15b603781875a948ae99505e93ec559, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: f0b400e81a6ae494a962bcc4c8ceaa94, type: 3}
+  m_Type: 2
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1001 &4098453611425763440
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -278,7 +305,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7608950044036777821, guid: b7f9d449c77d45a40b641cec4a687136, type: 3}
       propertyPath: m_fontSize
-      value: 31.15
+      value: 29.1
       objectReference: {fileID: 0}
     - target: {fileID: 8162179507841840468, guid: b7f9d449c77d45a40b641cec4a687136, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
