@@ -6,7 +6,7 @@
         "NothingFlowRate": 1,
         "FlowSpeed": 0.1,
         "MinFlow": 0.00001,
-        "StartLevel": "Level 5",
+        "StartLevel": "Level 1",
         "Creepers": [
             {
                 "ID": "CreeperWater",
@@ -76,11 +76,6 @@
                         "Name": "SpawnCreep",
                         "UsesRemaining": 1,
                         "ActionParamers": "{\"Amount\": 25,\"Creeper\": \"CreeperWater\"}"
-                    },
-                    {
-                        "Name": "CreateWall",
-                        "UsesRemaining": 1,
-                        "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     }
                 ],
                 "GameField": {
@@ -162,7 +157,8 @@
                 "UserActions": [
                     {
                         "Name": "CreateWall",
-                        "UsesRemaining": 1
+                        "UsesRemaining": 1,
+                        "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     }
                 ],
                 "GameField": {
