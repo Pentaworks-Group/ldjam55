@@ -6,14 +6,14 @@
         "NothingFlowRate": 1,
         "FlowSpeed": 0.1,
         "MinFlow": 0.00001,
-        "StartLevel": "Level 1",
+        "StartLevel": "Level 4",
         "Creepers": [
             {
                 "ID": "CreeperWater",
                 "Name": "Holy Water",
                 "Parameters": {
                     "Material": "Water",
-                    "HightTraverseRate": 1
+                    "HightTraverseRate": 1.2
                 }
             },
             {
@@ -21,7 +21,7 @@
                 "Name": "Hell! Fire",
                 "Parameters": {
                     "Material": "Fire",
-                    "HightTraverseRate": -1
+                    "HightTraverseRate": -1.2
                 }
             }
         ],
