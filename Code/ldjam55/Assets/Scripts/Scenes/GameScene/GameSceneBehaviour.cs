@@ -96,11 +96,14 @@ public class GameSceneBehaviour : MonoBehaviour
         var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
         container.ContainedObject = fieldObject;
         container.ObjectType = "FieldObject";
-        var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
-        newFieldGO.GetComponent<Renderer>().material = material;
-        foreach (Transform child in newFieldGO.transform)
+        if(fieldObject.Material.Length > 0 )
         {
-            child.GetComponent<Renderer>().material = material;
+            var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
+            newFieldGO.GetComponent<Renderer>().material = material;
+            foreach (Transform child in newFieldGO.transform)
+            {
+                child.GetComponent<Renderer>().material = material;
+            }
         }
         newFieldGO.name = GetFieldObjectName(fieldObject.Field.ID);
 
