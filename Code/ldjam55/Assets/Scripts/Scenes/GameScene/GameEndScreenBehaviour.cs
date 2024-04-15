@@ -25,5 +25,7 @@ public class GameEndScreenBehaviour : MonoBehaviour
             Title.text = "You have lost";
         }
         Message.text = "Because: " + conditon.Name + customMessage;
+
+        Time.timeScale = 0.0f;
     }
 }
