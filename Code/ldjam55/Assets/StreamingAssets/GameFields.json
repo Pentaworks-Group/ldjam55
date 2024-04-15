@@ -48,7 +48,7 @@
         "Field2Ref": "5-4-0",
         "BorderType": {
           "Name": "BorderWall",
-          "Model": "Wall",
+          "Model": "Red_Wall",
           "IsReferenced": false
         },
         "BorderStatus": {

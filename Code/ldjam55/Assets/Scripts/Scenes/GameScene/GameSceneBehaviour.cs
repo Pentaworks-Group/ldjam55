@@ -42,11 +42,11 @@ public class GameSceneBehaviour : MonoBehaviour
         }
 
         Borders = new Dictionary<string, GameObject>();
-        var wallTemplate = Templates["Wall"];
         foreach (var border in Core.Game.State.CurrentLevel.GameField.Borders)
         {
             if (border.BorderType.Name == "BorderWall")
             {
+                var wallTemplate = Templates[border.BorderType.Model];
                 var newFieldGO = Instantiate(wallTemplate, World.transform);
                 newFieldGO.name = "Wall";
                 var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
@@ -60,6 +60,16 @@ public class GameSceneBehaviour : MonoBehaviour
 
         creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
         creepBehaviour.CreateFieldObjectEvent.Add(SpawnFieldObject);
+
+        var backgroundAudioClips = new List<AudioClip>()
+            {
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_2"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_3"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_4"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Music_5")
+            };
+
+        GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
     }
 
     // Update is called once per frame
