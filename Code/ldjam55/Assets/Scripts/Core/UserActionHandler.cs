@@ -5,6 +5,7 @@ using Assets.Scripts.Core.Model;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class UserActionHandler
 {
@@ -90,7 +91,7 @@ public class UserActionHandler
                 {
                     method
                 };
-        return (target) => creepBehaviour.CreateSpawner((Field)target, spawner);
+        return (target) => creepBehaviour.CreateSpawner(((Border)target).Field1, spawner);
     }
 
     private string GetStr(JObject paramsObject, string key, string def)
@@ -105,9 +106,13 @@ public class UserActionHandler
 
     private void SpawnTargetSave(object target, float amount, string creeperId)
     {
-        if (target is Field)
+        if (target is Border)
         {
-            creepBehaviour.SpawnCreepAt((Field)target, amount, creeperId);
+            creepBehaviour.SpawnCreepAt(((Border)target).Field1, amount, creeperId);
+        }
+        else
+        {
+            Debug.Print("Wrong target type for SpawnTargetSave");
         }
     }
 
