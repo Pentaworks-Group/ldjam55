@@ -32,11 +32,16 @@ public class CreepBehaviour : MonoBehaviour
     public GameEndConditionHandler gameEndConditionHandler { get; private set; }
 
 
+    private void Awake()
+    {
+        Core.Game.UserActionHandler.Init(this);
+    }
+
     private void Start()
     {
         gameEndConditionHandler = GameEndConditionHandler.Instance;
-        gameEndConditionHandler.Init(Win, Loose);
-        Core.Game.UserActionHandler.Init(this);
+        gameEndConditionHandler.Init();
+        gameEndConditionHandler.RegisterListener(Stop);
     }
 
     void Update()
@@ -55,6 +60,11 @@ public class CreepBehaviour : MonoBehaviour
         creepers = Core.Game.State.Mode.Creepers.ToDictionary(creep => creep.ID);
         GatherCreep();
         isRunning = true;
+    }
+
+    public void Stop(GameEndCondition condition)
+    {
+        isRunning = false;
     }
 
     private void CheckUniqueFields()
@@ -123,18 +133,6 @@ public class CreepBehaviour : MonoBehaviour
         }
         //Debug.Log("CreepCount Total by field: " + cnt);
         //Debug.Log("CreepCount Total: " + creepCount);
-    }
-
-    private void Loose(GameEndCondition condition)
-    {
-        Debug.Log("You have lost");
-        Core.Game.ChangeScene(SceneNames.GameOver);
-    }
-
-    private void Win(GameEndCondition condition)
-    {
-        Debug.Log("You have won");
-        Core.Game.ChangeScene(SceneNames.GameOver);
     }
 
     private void ConvertBorders()

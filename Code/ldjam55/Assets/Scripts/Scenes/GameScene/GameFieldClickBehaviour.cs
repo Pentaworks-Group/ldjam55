@@ -34,6 +34,7 @@ namespace Assets.Scripts.Scene.GameScene
         {
             float increment = .22f;
             float current = 0;
+            var s = Base.Core.Game.State.CurrentLevel.UserActions;
             foreach (var action in actions)
             {
                 var actionBehaviour = Instantiate<UserActionBehavior>(actionTemplate, actionTemplate.transform.parent);
@@ -68,10 +69,7 @@ namespace Assets.Scripts.Scene.GameScene
 
         private void LateUpdate()
         {
-            //if (!CameraBehaviour.IsPanning())
-            //if (Input.touchCount < 1 || panTimeout < 1)
-            //{
-            if (Input.GetMouseButtonUp(0)) //!Base.Core.Game.LockCameraMovement && 
+            if (Input.GetMouseButtonUp(0)) 
             {
                 if (!EventSystem.current.IsPointerOverGameObject())    // is the touch on the GUI
                 {
