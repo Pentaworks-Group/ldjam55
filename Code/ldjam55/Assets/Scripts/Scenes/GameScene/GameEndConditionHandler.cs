@@ -2,8 +2,6 @@ using Assets.Scripts.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEngine;
 
 namespace Assets.Scripts.Scenes.GameScene
 {
@@ -29,15 +27,24 @@ namespace Assets.Scripts.Scenes.GameScene
             }
         }
 
+        private bool isInitied = false;
+
+
         public void RegisterListener(Action<GameEndCondition> listener)
         {
+            Init();
             actions.Add(listener);
         }
 
         public void Init()
         {
+            if (isInitied)
+            {
+                return;
+            }
             conditions = Base.Core.Game.State.CurrentLevel.EndConditions.ToDictionary(con => con.Name); 
             actions = new();
+            isInitied = true;
         }
 
 

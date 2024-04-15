@@ -37,6 +37,12 @@ public class CreepBehaviour : MonoBehaviour
         Core.Game.UserActionHandler.Init(this);
     }
 
+    private void Start()
+    {
+        gameEndConditionHandler = GameEndConditionHandler.Instance;
+        gameEndConditionHandler.Init();
+        gameEndConditionHandler.RegisterListener(Stop);
+    }
 
     void Update()
     {
@@ -47,6 +53,7 @@ public class CreepBehaviour : MonoBehaviour
         }
     }
 
+
     public void StartGame()
     {
         foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
@@ -56,9 +63,6 @@ public class CreepBehaviour : MonoBehaviour
                 Debug.Log("asdf");
             }
         }
-        gameEndConditionHandler = GameEndConditionHandler.Instance;
-        gameEndConditionHandler.Init();
-        gameEndConditionHandler.RegisterListener(Stop);
         timeManagerBehaviour.Reset();
         triggerHandler.Reset();
         CheckUniqueFields();
