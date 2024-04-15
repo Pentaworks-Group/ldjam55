@@ -92,6 +92,8 @@ public class GameSceneBehaviour : MonoBehaviour
 
     public void StartLevel()
     {
+        Core.Game.PlayButtonSound();
+
         gameStartScreenBehaviour.HideStartScreen();
 
         creepBehaviour.StartGame();
