@@ -6,7 +6,7 @@
         "NothingFlowRate": 1,
         "FlowSpeed": 0.1,
         "MinFlow": 0.00001,
-        "StartLevel": "Level 4",
+        "StartLevel": "Level 5",
         "Creepers": [
             {
                 "ID": "CreeperWater",
@@ -193,7 +193,7 @@
                 ]
             },
             {
-                "Name": "Level 5",
+                "Name": "Level 6",
                 "Description": "Protect the red grail from the red slime. You can only place two yellow slimes. You'll loose anyway",
                 "NextLevel" : "Level 1",
                 "UserActions": [
@@ -206,6 +206,47 @@
                 "GameField": {
                     "IsReferenced": true,
                     "Reference": "World4"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "InstantWin",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "WinTouch",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
+            },
+            {
+                "Name": "Level 5",
+                "Description": "Ohh, how beautiful! Isn't it? Isn't it! Destroy one single wall to reach the holy grail.",
+                "NextLevel" : "Level 6",
+                "UserActions": [
+                    {
+                        "Name": "DestroyWall",
+                        "UsesRemaining": 1
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "World5"
                 },
                 "EndConditions": [
                     {
