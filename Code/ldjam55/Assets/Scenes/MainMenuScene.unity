@@ -642,6 +642,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 468830934}
   m_CullTransparentMesh: 1
+--- !u!1 &491270955 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 570fca7f370681145a9140a1b725a5e6, type: 3}
+  m_PrefabInstance: {fileID: 379066967}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &698906505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1764,6 +1769,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Tutorial: {fileID: 0}
   Menu: {fileID: 0}
+  MovingCreep: {fileID: 491270955}
 --- !u!222 &1178008597
 CanvasRenderer:
   m_ObjectHideFlags: 0
