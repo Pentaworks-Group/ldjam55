@@ -246,6 +246,10 @@ public class CreepBehaviour : MonoBehaviour
     {
         if (TryGetBorderWithSameFields(border, out var existingBorder))
         {
+            if (existingBorder.BorderType.Name != "Nothing")
+            {
+                return false;
+            }
             DestroyBorder(existingBorder, false);
         }
         borders.Add(border);

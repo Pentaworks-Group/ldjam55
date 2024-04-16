@@ -90,10 +90,10 @@ public class UserActionHandler
         if (target is Border)
         {
             Border border = (Border)target;
-            if (border.Field2 != null && border.Field1 != null)
+            if (border.Field2 != null && border.Field1 != null && border.Field1 != border.Field2)
             {
-                rawBorder.Field1 = border.Field2;
-                rawBorder.Field2 = border.Field1;   
+                rawBorder.Field1 = border.Field1;
+                rawBorder.Field2 = border.Field2;   
                 return creepBehaviour.SpawnBorder(rawBorder);
             }
         }
