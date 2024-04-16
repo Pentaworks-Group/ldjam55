@@ -416,6 +416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _labels: []
+  elementsToIgnore: []
   _pattern: 0
   _executeOnUpdate: 1
   _searchChildren: 0
@@ -432,6 +433,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _labels: []
+  elementsToIgnore: []
   _pattern: 0
   _executeOnUpdate: 1
   _searchChildren: 0

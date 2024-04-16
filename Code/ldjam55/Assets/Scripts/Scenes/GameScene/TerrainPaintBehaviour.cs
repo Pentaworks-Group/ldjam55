@@ -47,7 +47,8 @@ public class TerrainPaintBehaviour : MonoBehaviour
                 float frac = getSteepnessFactor(x, y);
                 Vector2Int mapPos = getMapCoordFromTextureCoord(new Vector2Int(y, x));
                 Field field = getField(mapPos.x, mapPos.y);
-                for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++) {
+                for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++)
+                {
                     int layerID = rottenGroundLayerID;
                     if (field == null)
                     {
@@ -67,13 +68,17 @@ public class TerrainPaintBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
+        if (Core.Game.isRunning)
         {
-            if(field.Creep != null)
+            foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
             {
-                paintCreep(field);
+                if (field.Creep != null)
+                {
+                    paintCreep(field);
+                }
             }
         }
+
     }
 
     private void paintCreep(Field field, bool forceUpdate = false)
@@ -81,7 +86,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
         //TODO: add Creep def
         int sizeX = (int)(mainTerrain.terrainData.size.x / terrainBehaviour.FieldCountX);
         int radius = (int)Math.Ceiling(Mathf.Min(field.Creep.Value, 1f) * 2f * sizeX);
-        if(radius != field.Creep.PaintRadiusOld || forceUpdate)
+        if (radius != field.Creep.PaintRadiusOld || forceUpdate)
         {
             field.Creep.PaintRadiusOld = radius;
 
@@ -90,14 +95,14 @@ public class TerrainPaintBehaviour : MonoBehaviour
             int layerID = getSlimeLayerID(field.Creep.Creeper);
             int sizeY = (int)(mainTerrain.terrainData.size.z / terrainBehaviour.FieldCountY);
 
-            paintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, radius/2);
+            paintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, radius / 2);
         }
     }
 
     private int getSlimeLayerID(Creeper creeper)
     {
         //TODO: change
-        if(creeper != null && creeper.Parameters!= null && creeper.Parameters.Material != null && creeper.Parameters.Material=="Water")
+        if (creeper != null && creeper.Parameters != null && creeper.Parameters.Material != null && creeper.Parameters.Material == "Water")
         {
             return slimeYellowLayerID;
         }
@@ -114,13 +119,13 @@ public class TerrainPaintBehaviour : MonoBehaviour
         x = (int)(x * scaleFactorX);
         y = (int)(y * scaleFactorY);
 
-//        width = Mathf.Min(width, mainTerrain.terrainData.alphamapWidth - x - 1);
-//        height = Mathf.Min(height, mainTerrain.terrainData.alphamapHeight - y - 1);
+        //        width = Mathf.Min(width, mainTerrain.terrainData.alphamapWidth - x - 1);
+        //        height = Mathf.Min(height, mainTerrain.terrainData.alphamapHeight - y - 1);
 
-//        Debug.Log("Paint Slime: " + x + ", " + y + ", " + width + ", " + height + ", " + radius);
+        //        Debug.Log("Paint Slime: " + x + ", " + y + ", " + width + ", " + height + ", " + radius);
 
-//        width = 80;
-//        height = 30;
+        //        width = 80;
+        //        height = 30;
 
         float[,,] map = new float[width, height, mainTerrain.terrainData.alphamapLayers];
 
@@ -174,7 +179,8 @@ public class TerrainPaintBehaviour : MonoBehaviour
         return pos;
     }
 
-    private Vector2Int getMapCoordFromTextureCoord(Vector2Int pos) {
+    private Vector2Int getMapCoordFromTextureCoord(Vector2Int pos)
+    {
         pos.x = (int)Mathf.Floor(pos.x * terrainBehaviour.FieldCountX / mainTerrain.terrainData.alphamapWidth);
         pos.y = (int)Mathf.Floor(pos.y * terrainBehaviour.FieldCountY / mainTerrain.terrainData.alphamapHeight);
         return pos;
@@ -182,10 +188,11 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
     private float getSteepnessAlpha(int layerID, float frac, int grassLayerID)
     {
-        if(layerID == grassLayerID)
+        if (layerID == grassLayerID)
         {
             return (float)(1 - frac);
-        } else if(layerID == stone2LayerID) 
+        }
+        else if (layerID == stone2LayerID)
         {
             return frac;
         }

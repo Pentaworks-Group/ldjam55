@@ -13,7 +13,10 @@ public class RandomSoundBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayRandomEffectSound();        
+        if (Core.Game.isRunning)
+        {
+            PlayRandomEffectSound();
+        }
     }
 
     private void PlayRandomEffectSound()

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CreepBehaviour : MonoBehaviour
 {
@@ -22,7 +23,6 @@ public class CreepBehaviour : MonoBehaviour
 
     //private Dictionary<Creeper, List<Border>> bordersByCreep = new Dictionary<Creeper, List<Border>>();
     private List<Border> borders = new List<Border>();
-    private bool isRunning = false;
 
     private Dictionary<string, Creeper> creepers;
     private Dictionary<Creeper, HashSet<Creep>> creepsByCreeper;
@@ -51,17 +51,18 @@ public class CreepBehaviour : MonoBehaviour
     {
         //gameEndConditionHandler = GameEndConditionHandler.Instance;
         //gameEndConditionHandler.Init();
-        gameEndConditionHandler.RegisterListener(Stop);
+        //gameEndConditionHandler.RegisterListener(Stop);
     }
 
     void Update()
     {
-        if (isRunning)
+        if (Core.Game.isRunning)
         {
             //distributeCreep();
             UpdateCreep();
         }
     }
+
 
 
     public void StartGame()
@@ -80,13 +81,8 @@ public class CreepBehaviour : MonoBehaviour
         ConvertFieldObjectMethodsForAllFlieldObjects();
         creepers = Core.Game.State.Mode.Creepers.ToDictionary(creep => creep.ID);
         GatherCreep();
-        isRunning = true;
     }
 
-    public void Stop(GameEndCondition condition)
-    {
-        isRunning = false;
-    }
 
     private void CheckUniqueFields()
     {
@@ -290,7 +286,7 @@ public class CreepBehaviour : MonoBehaviour
 
     public void ToggleCreeperActivity()
     {
-        isRunning = !isRunning;
+        Core.Game.isRunning = !Core.Game.isRunning;
     }
 
     private static string GetBorderKey(Border border)
