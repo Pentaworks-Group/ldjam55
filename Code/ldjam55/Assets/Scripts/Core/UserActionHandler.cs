@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 
 public class UserActionHandler
@@ -79,7 +80,7 @@ public class UserActionHandler
         var model = GetStr(paramsObject, "Model", "Wall");
         var borderStatus = new BorderStatus() { FlowValue = flowRate };
         var borderType = new BorderType() { Name = borderTypeName, Model = model };
-        var newBorder = new Border {BorderStatus = borderStatus, BorderType = borderType };
+        var newBorder = new Border { BorderStatus = borderStatus, BorderType = borderType };
 
         return (target) => CreateBorder(target, newBorder);
 
@@ -89,15 +90,26 @@ public class UserActionHandler
     {
         if (target is Border)
         {
-            Border border = (Border)target;
-            if (border.Field2 != null && border.Field1 != null && border.Field1 != border.Field2)
+            Border targetBorder = (Border)target;
+            if (targetBorder.Field2 != null && targetBorder.Field1 != null && targetBorder.Field1 != targetBorder.Field2)
             {
-                rawBorder.Field1 = border.Field1;
-                rawBorder.Field2 = border.Field2;   
-                return creepBehaviour.SpawnBorder(rawBorder);
+                var finalBorder = CreateNewBorder(rawBorder, targetBorder);
+                finalBorder.Field1 = targetBorder.Field1;
+                finalBorder.Field2 = targetBorder.Field2;
+                return creepBehaviour.SpawnBorder(finalBorder);
             }
         }
         return false;
+    }
+
+    private Border CreateNewBorder(Border border, Border targetBorder)
+    {
+        return new Border()
+        {
+            Methods = border.Methods,
+            BorderStatus = new BorderStatus() { FlowValue = border.BorderStatus.FlowValue },
+            BorderType = new BorderType() { Model = border.BorderType.Model, Name = border.BorderType.Name }
+        };
     }
 
     private bool DestroyBorder(object target)

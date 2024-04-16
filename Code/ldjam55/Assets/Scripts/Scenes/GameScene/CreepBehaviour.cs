@@ -252,6 +252,8 @@ public class CreepBehaviour : MonoBehaviour
             }
             DestroyBorder(existingBorder, false);
         }
+        Debug.Log("CreatingBorder: " + border.Field1.ID + " <=> " + border.Field2.ID);
+        Debug.Log("CreatingBorderHash: " + border.Field1.GetHashCode() + " <=> " + border.Field2.GetHashCode());
         borders.Add(border);
         Core.Game.State.CurrentLevel.GameField.Borders.Add(border);
         foreach (var listener in CreateBorderEvent)
@@ -266,6 +268,11 @@ public class CreepBehaviour : MonoBehaviour
         foreach (var eBorder in borders)
         {
             if (eBorder.Field1 == border.Field1 && eBorder.Field2 == border.Field2)
+            {
+                similarBorder = eBorder;
+                return true;
+            }
+            if (eBorder.Field1 == border.Field2 && eBorder.Field2 == border.Field1)
             {
                 similarBorder = eBorder;
                 return true;
