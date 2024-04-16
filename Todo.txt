@@ -43,6 +43,7 @@ Nice to have:
  - Nice Command Module
  - Check for spawners before firing OnCreeperEliminated
  - Implement Creeper eliminated
+ - Use button prefab for UserActionButtons
  
 Ideas:
 ----------------------------------
