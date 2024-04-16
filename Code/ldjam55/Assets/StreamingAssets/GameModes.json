@@ -6,7 +6,7 @@
         "NothingFlowRate": 1,
         "FlowSpeed": 0.1,
         "MinFlow": 0.00001,
-        "StartLevel": "Level 4",
+        "StartLevel": "Level 1",
         "Creepers": [
             {
                 "ID": "CreeperWater",
