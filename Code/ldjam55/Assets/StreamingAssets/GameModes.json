@@ -29,35 +29,223 @@
             {
                 "Name": "Level 1",
                 "Description": "Can you see the yellow slime mold? That's you. Do you see the Grail? That's where you want to go. If you reach this grail, then you win. Destroy the wall. It is in the way.",
-                "NextLevel": "Level 2",
+                "NextLevel" : "Level 2",
                 "UserActions": [
-                    {
+                                       {
                         "Name": "DestroyWall",
-                        "UsesRemaining": 1000
-                    },
-                    {
-                        "Name": "CreateWall",
-                        "UsesRemaining": 1000,
-                        "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
-                    },
-                    {
-                        "Name": "SpawnCreep",
-                        "UsesRemaining": 1000,
-                        "ActionParamers": "{\"Amount\": 25,\"Creeper\": \"CreeperWater\"}"
-                    },
-                    {
-                        "Name": "CreateSpawner",
-                        "UsesRemaining": 1000,
-                        "ActionParamers": "{\"Amount\": 25,\"Creeper\": \"CreeperWater\", \"Intervall\": 4}"
-                    },
-                    {
-                        "Name": "CreateField",
-                        "UsesRemaining": 1000
+                        "UsesRemaining": 1
                     }
                 ],
                 "GameField": {
                     "IsReferenced": true,
                     "Reference": "World1"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "InstantWin",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "WinTouch",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
+            },
+            {
+                "Name": "Level 2",
+                "Description": "Can you see the yellow slime mold and the red slime mold? They behave differently when it goes up or down. Watch and learn. To finish the level, click SpawnCreep and then reach the goal.",
+                "NextLevel" : "Level 3",
+                "UserActions": [
+                    {
+                        "Name": "SpawnCreep",
+                        "UsesRemaining": 1,
+                        "ActionParamers": "{\"Amount\": 25,\"Creeper\": \"CreeperWater\"}"
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "World2"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "InstantWin",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "WinTouch",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
+            },
+            {
+                "Name": "Level 3",
+                "Description": "Same world as before. You can tear down a wall. Make the right choice.",
+                "NextLevel" : "Level 4",
+                "UserActions": [
+                    {
+                        "Name": "DestroyWall",
+                        "UsesRemaining": 1
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "World2"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "InstantWin",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "WinTouch",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
+            },
+            {
+                "Name": "Level 4",
+                "Description": "Build exactly one wall. Yellow must reach the Grail before red.",
+                "NextLevel" : "Level 5",
+                "UserActions": [
+                    {
+                        "Name": "CreateWall",
+                        "UsesRemaining": 1,
+                        "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "World3"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "InstantWin",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "WinTouch",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
+            },
+            {
+                "Name": "Level 6",
+                "Description": "Protect the red grail from the red slime. You can only place two yellow slimes. You'll loose anyway",
+                "UserActions": [
+                    {
+                        "Name": "SpawnCreep",
+                        "UsesRemaining": 2,
+                        "ActionParamers": "{\"Amount\": 0.1,\"Creeper\": \"CreeperWater\"}"
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "World4"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "InstantWin",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "InstantLoose",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "WinTouch",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
+            },
+            {
+                "Name": "Level 5",
+                "Description": "Ohh, how beautiful! Isn't it? Isn't it! Destroy one single wall to reach the holy grail.",
+                "NextLevel" : "Level 6",
+                "UserActions": [
+                    {
+                        "Name": "DestroyWall",
+                        "UsesRemaining": 1
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "World5"
                 },
                 "EndConditions": [
                     {
