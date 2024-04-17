@@ -1,8 +1,9 @@
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public class TerrainPaintBehaviour : MonoBehaviour
@@ -30,13 +31,14 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private void Awake()
     {
         creepBehaviour.OnCreeperChanged.Add((field, oldCreeper) => paintCreep(field, true));
-        creepBehaviour.OnFieldCreatedEvent.Add((action) => UpdateTerrain());
+        //creepBehaviour.OnFieldCreatedEvent.Add((field) => UpdateTerrainTest());
+        creepBehaviour.OnFieldCreatedEvent.Add(UpdateTerrainAroundField);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        UpdateTerrain();
+        UpdateTerrainTest();
 
 
         //        Field f = new Field { Coords = new GameFrame.Core.Math.Vector2(0, 0) };
@@ -44,23 +46,15 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
     }
 
-    private void UpdateTerrainAtField(Field field)
+    private void UpdateTerrainTest()
     {
-
-        //mainTerrain.terrainData.GetAlphamaps(0, 0,);
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        UpdateTerrain();
+        watch.Stop();
+        Debug.Log("TimeToUpdate: " + watch.ElapsedMilliseconds);
     }
 
-    private Dictionary<string, Field> GetFieldMap()
-    {
-        return Core.Game.State.CurrentLevel.GameField.Fields.ToDictionary(field => field.Coords.X + "," + field.Coords.Y);
-    }
-
-    private string GetFieldKey(int x, int y)
-    {
-        return (x + terrainBehaviour.XOffset) + "," + (y + terrainBehaviour.YOffset);
-    }
-
-    private void UpdateTerrain()
+    private void UpdateTerrainOrig()
     {
         scaleFactorX = mainTerrain.terrainData.alphamapWidth / mainTerrain.terrainData.size.x;
         scaleFactorY = mainTerrain.terrainData.alphamapHeight / mainTerrain.terrainData.size.z;
@@ -68,39 +62,230 @@ public class TerrainPaintBehaviour : MonoBehaviour
         //Texture test
         float[,,] map = new float[mainTerrain.terrainData.alphamapWidth, mainTerrain.terrainData.alphamapHeight, mainTerrain.terrainData.alphamapLayers];
 
-        var fieldMap = GetFieldMap();
-
         //For each point on the alphamap
         for (int y = 0; y < mainTerrain.terrainData.alphamapHeight; y++)
         {
             for (int x = 0; x < mainTerrain.terrainData.alphamapWidth; x++)
             {
-                UpdateTerrainAtPoint(map, y, x, fieldMap);
-                Debug.Log("Stuff: " + x);
+                float frac = getSteepnessFactor(x, y);
+                Vector2Int mapPos = getMapCoordFromTextureCoord(new Vector2Int(y, x));
+                Field field = getField(mapPos.x, mapPos.y);
+                for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++)
+                {
+                    int layerID = rottenGroundLayerID;
+                    if (field == null)
+                    {
+                        layerID = grassLayerID;
+                    }
+                    map[x, y, z] = getSteepnessAlpha(z, frac, layerID);
+                }
             }
         }
         mainTerrain.terrainData.SetAlphamaps(0, 0, map);
     }
 
-    private void UpdateTerrainAtPoint(float[,,] map, int y, int x, Dictionary<string, Field> fieldMap)
+
+
+    private void LogSeArray(float[,,] map)
     {
-        float frac = getSteepnessFactor(x, y);
-        Vector2Int mapPos = getMapCoordFromTextureCoord(new Vector2Int(y, x));
-        if (fieldMap.TryGetValue(GetFieldKey(mapPos.x, mapPos.y), out Field field))
+        int z = 5;
+        StringBuilder sb = new StringBuilder();
+        for (int x = 0; x < map.GetLength(0); x++)
         {
-            for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++)
+            for (int y = 0; y < map.GetLength(1); y++)
             {
-                int layerID = grassLayerID;
-                map[x, y, z] = getSteepnessAlpha(z, frac, layerID);
+                sb.Append(map[x, y, z]);
+                sb.Append(" ");
+            }
+            sb.Append(Environment.NewLine);
+        }
+        Debug.Log(sb.ToString());
+    }
+
+
+    private void UpdateTerrainAroundField(Field field)
+    {
+
+        //scaleFactorX = mainTerrain.terrainData.alphamapWidth / mainTerrain.terrainData.size.x;
+        //scaleFactorY = mainTerrain.terrainData.alphamapHeight / mainTerrain.terrainData.size.z;
+        int x = (int)field.Coords.X;
+        int y = (int)field.Coords.Y;
+        //var topRightCenterM = new Vector2Int(y + 1, x + 1);
+        var topRightCenterM = new Vector2Int(x + 1, y + 1);
+        Vector2Int topRightCenter = getTextureMapCoord(topRightCenterM);
+        var bottomLeftCenterM = new Vector2Int(x - 1, y - 1);
+        //var bottomLeftCenterM = new Vector2Int(y - 1, x - 1);
+        Vector2Int bottomLeftCenter = getTextureMapCoord(bottomLeftCenterM);
+
+
+        int xRT = (int)(topRightCenter.x * scaleFactorX);
+        int xBL = (int)(bottomLeftCenter.x * scaleFactorX);
+        int sizeX = xRT - xBL;
+        int yTR = (int)(topRightCenter.y * scaleFactorY);
+        int yBL = (int)(bottomLeftCenter.y * scaleFactorY);
+        int sizeY = yTR - yBL;
+
+
+        //var textureMapCut = mainTerrain.terrainData.GetAlphamaps(bottomLeftCenter.x, bottomLeftCenter.y, sizeX, sizeY);
+        var textureMapCut = new float[sizeX, sizeY, mainTerrain.terrainData.alphamapLayers];
+        LogSeArray(textureMapCut);
+        Dictionary<int, Dictionary<int, Field>> fieldMap = CreateFieldCache();
+
+        int sizeX4 = sizeX / 4;
+        int sizeY4 = sizeY / 4;
+        int sizeX2 = sizeX / 2;
+        int sizeY2 = sizeY / 2;
+        int sizeX34 = 3 * sizeX4;
+        int sizeY34 = 3 * sizeY4;
+
+        var fBL = GetFieldFieldFromCacheRoooti(x - 1, y - 1, fieldMap);
+        UpdateTerrainInField(fBL, textureMapCut, 0, 0, sizeX4, sizeY4, xBL, yBL);
+
+        var fML = GetFieldFieldFromCacheRoooti(x - 1, y, fieldMap);
+        UpdateTerrainInField(fML, textureMapCut, 0, sizeY4, sizeX4, sizeY2, xBL, yBL);
+
+        var fTL = GetFieldFieldFromCacheRoooti(x - 1, y + 1, fieldMap);
+        UpdateTerrainInField(fTL, textureMapCut, 0, sizeY34, sizeX4, sizeY4, xBL, yBL);
+
+        var fBM = GetFieldFieldFromCacheRoooti(x, y - 1, fieldMap);
+        UpdateTerrainInField(fBM, textureMapCut, sizeX4, 0, sizeX2, sizeY4, xBL, yBL);
+
+        var fMM = GetFieldFieldFromCacheRoooti(x, y, fieldMap);
+        UpdateTerrainInField(fMM, textureMapCut, sizeX4, sizeY4, sizeX2, sizeY2, xBL, yBL);
+
+        var fTM = GetFieldFieldFromCacheRoooti(x, y + 1, fieldMap);
+        UpdateTerrainInField(fTM, textureMapCut, sizeX4, sizeY34, sizeX2, sizeY4, xBL, yBL);
+
+        var fBR = GetFieldFieldFromCacheRoooti(x + 1, y - 1, fieldMap);
+        UpdateTerrainInField(fBR, textureMapCut, sizeX34, 0, sizeX4, sizeY4, xBL, yBL);
+
+        var fMR = GetFieldFieldFromCacheRoooti(x + 1, y, fieldMap);
+        UpdateTerrainInField(fMR, textureMapCut, sizeX34, sizeY4, sizeX4, sizeY2, xBL, yBL);
+
+        var fTR = GetFieldFieldFromCacheRoooti(x + 1, y + 1, fieldMap);
+        UpdateTerrainInField(fTR, textureMapCut, sizeX34, sizeY34, sizeX4, sizeY4, xBL, yBL);
+
+
+        int layerID = slimeYellowLayerID;
+        //int sizeY = (int)(mainTerrain.terrainData.size.z / terrainBehaviour.FieldCountY);
+
+        //paintSlimeArea(layerID, bottomLeftCenter.x - sizeX / 2, bottomLeftCenter.y - sizeY / 2, sizeX, sizeY, 2, 1);
+
+        mainTerrain.terrainData.SetAlphamaps(xBL, yBL, textureMapCut);
+        //mainTerrain.terrainData.SetAlphamaps(0, 0, textureMapCut);
+
+
+
+        LogSeArray(textureMapCut);
+        //terrainBehaviour.GenerateTerrain();
+
+        //foreach (var f in Core.Game.State.CurrentLevel.GameField.Fields)
+        //{
+        //    if (f.Creep != null)
+        //    {
+        //        paintCreep(f);
+        //    }
+        //}
+
+        //UpdateTerrain();
+    }
+
+    private void UpdateTerrainInField(Field field, float[,,] map, int startX, int startY, int sizeX, int sizeY, int offsetX = 0, int offsetY = 0)
+    {
+
+        int layerID = rottenGroundLayerID;
+        if (field == null)
+        {
+            layerID = grassLayerID;
+        }
+        startX = Math.Max(startX, 0);
+        startY = Math.Max(startY, 0);
+        int endX = startX + sizeX;
+        int endY = startY + sizeY;
+        endX = Math.Min(endX, mainTerrain.terrainData.alphamapWidth);
+        endX = Math.Min(endX, mainTerrain.terrainData.alphamapHeight);
+
+        //Debug.Log("Stuff: x " + startX + "->" + endX + " y: " + startY + "->" + endY);
+        for (int y = startY; y < endY; y++)
+        {
+            for (int x = startX; x < endX; x++)
+            {
+                UpdateTerrainAtPoint(map, x, y, layerID, offsetY, offsetX);
             }
         }
-        else
+    }
+
+    private void UpdateTerrain()
+    {
+        if (Core.Game.State.CurrentLevel.GameField.Fields.Count == 0)
         {
-            for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++)
+            return;
+        }
+
+        scaleFactorX = mainTerrain.terrainData.alphamapWidth / mainTerrain.terrainData.size.x;
+        scaleFactorY = mainTerrain.terrainData.alphamapHeight / mainTerrain.terrainData.size.z;
+
+        //Texture test
+        float[,,] map = new float[mainTerrain.terrainData.alphamapWidth, mainTerrain.terrainData.alphamapHeight, mainTerrain.terrainData.alphamapLayers];
+
+        Dictionary<int, Dictionary<int, Field>> fieldMap = CreateFieldCache();
+        //For each point on the alphamap
+        for (int y = 0; y < mainTerrain.terrainData.alphamapHeight; y++)
+        {
+            for (int x = 0; x < mainTerrain.terrainData.alphamapWidth; x++)
             {
+                Vector2Int mapPos = getMapCoordFromTextureCoord(new Vector2Int(y, x));
+                Field field = GetFieldFieldFromCache(mapPos.x, mapPos.y, fieldMap);
                 int layerID = rottenGroundLayerID;
-                map[x, y, z] = getSteepnessAlpha(z, frac, layerID);
+                if (field == null)
+                {
+                    layerID = grassLayerID;
+                }
+                UpdateTerrainAtPoint(map, x, y, layerID);
             }
+        }
+        mainTerrain.terrainData.SetAlphamaps(0, 0, map);
+    }
+
+    private static Dictionary<int, Dictionary<int, Field>> CreateFieldCache()
+    {
+        Dictionary<int, Dictionary<int, Field>> fieldMap = new Dictionary<int, Dictionary<int, Field>>();
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
+        {
+            int x = (int)field.Coords.X;
+            int y = (int)field.Coords.Y;
+            if (!fieldMap.TryGetValue(x, out Dictionary<int, Field> subMap))
+            {
+                subMap = new Dictionary<int, Field>();
+                fieldMap.Add(x, subMap);
+            }
+            subMap.Add(y, field);
+        }
+
+        return fieldMap;
+    }
+
+    private Field GetFieldFieldFromCacheRoooti(int x, int y, Dictionary<int, Dictionary<int, Field>> fieldMap)
+    {
+        return GetFieldFieldFromCache(y, x, fieldMap);
+    }
+
+    private Field GetFieldFieldFromCache(int x, int y, Dictionary<int, Dictionary<int, Field>> fieldMap)
+    {
+        Field field = null;
+        if (fieldMap.TryGetValue(x + (int)terrainBehaviour.XOffset, out var subMap))
+        {
+            subMap.TryGetValue(y + (int)terrainBehaviour.YOffset, out field);
+        }
+        return field;
+    }
+
+    private void UpdateTerrainAtPoint(float[,,] map, int x, int y, int layerID, int offsetX = 0, int offsetY = 0)
+    {
+        float frac = getSteepnessFactor(x + offsetX, y + offsetY);
+        for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++)
+        {
+            map[x, y, z] = getSteepnessAlpha(z, frac, layerID);
         }
     }
 

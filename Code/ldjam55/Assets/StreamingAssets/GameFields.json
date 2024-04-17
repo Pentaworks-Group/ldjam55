@@ -132,15 +132,6 @@
         "FieldObjects":[]
       },
       {
-        "ID": "0-0-0",
-        "Coords": {
-          "X": 0.0,
-          "Y": 0.0
-        },
-        "Height": 0,
-        "FieldObjects":[]
-      },
-      {
         "ID": "1-0-0",
         "Coords": {
           "X": 1.0,
@@ -204,60 +195,6 @@
       }
     ],
    "FieldObjects": [
-      {
-        "Name": "Water Spawner",
-        "Model": "Spawner_1",
-        "Material": "Creeper_Yellow_Stage_1",
-        "Hidden": false,
-        "FieldReference": "0-6-8",
-        "Methods": [
-          {
-            "Method": "SpawnCreep",
-            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 20}"
-          }
-        ]
-      },
-      {
-        "Name": "Fire Spawner",
-        "Model": "Spawner_1",
-        "Material": "Creeper_Red_Stage_1",
-        "Hidden": false,
-        "FieldReference": "4-6-8",
-        "Methods": [
-          {
-            "Method": "SpawnCreep",
-            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 20}"
-          }
-        ],
-        "IsReferenced": false
-      },
-      {
-        "Name": "Water Spawner",
-        "Model": "Spawner_1",
-        "Material": "Creeper_Yellow_Stage_1",
-        "Hidden": false,
-        "FieldReference": "0-2-0",
-        "Methods": [
-          {
-            "Method": "SpawnCreep",
-            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 20}"
-          }
-        ]
-      },
-      {
-        "Name": "Fire Spawner",
-        "Model": "Spawner_1",
-        "Material": "Creeper_Red_Stage_1",
-        "Hidden": false,
-        "FieldReference": "4-2-0",
-        "Methods": [
-          {
-            "Method": "SpawnCreep",
-            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 20}"
-          }
-        ],
-        "IsReferenced": false
-      },
       {
         "Name": "HitToWin",
         "Model": "GraleTree",

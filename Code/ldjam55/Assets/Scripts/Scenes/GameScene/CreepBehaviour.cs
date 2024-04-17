@@ -627,7 +627,7 @@ public class CreepBehaviour : MonoBehaviour
             {
                 field.Creep = new Creep();
             }
-            Debug.Log("NewCreep: " + field.ID);
+            //Debug.Log("NewCreep: " + field.ID);
             field.Creep.Value = amount;
             field.Creep.Creeper = creepers[creeperId];
             CreeperChanged(field, null);
