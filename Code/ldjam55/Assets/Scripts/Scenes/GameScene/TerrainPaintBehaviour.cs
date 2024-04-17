@@ -1,6 +1,8 @@
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TerrainPaintBehaviour : MonoBehaviour
@@ -28,7 +30,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private void Awake()
     {
         creepBehaviour.OnCreeperChanged.Add((field, oldCreeper) => paintCreep(field, true));
-        creepBehaviour.OnFieldCreatedEvent.Add((field) => UpdateTerrain());
+        creepBehaviour.OnFieldCreatedEvent.Add((action) => UpdateTerrain());
     }
 
     // Start is called before the first frame update
@@ -42,6 +44,22 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
     }
 
+    private void UpdateTerrainAtField(Field field)
+    {
+
+        //mainTerrain.terrainData.GetAlphamaps(0, 0,);
+    }
+
+    private Dictionary<string, Field> GetFieldMap()
+    {
+        return Core.Game.State.CurrentLevel.GameField.Fields.ToDictionary(field => field.Coords.X + "," + field.Coords.Y);
+    }
+
+    private string GetFieldKey(int x, int y)
+    {
+        return (x + terrainBehaviour.XOffset) + "," + (y + terrainBehaviour.YOffset);
+    }
+
     private void UpdateTerrain()
     {
         scaleFactorX = mainTerrain.terrainData.alphamapWidth / mainTerrain.terrainData.size.x;
@@ -50,26 +68,40 @@ public class TerrainPaintBehaviour : MonoBehaviour
         //Texture test
         float[,,] map = new float[mainTerrain.terrainData.alphamapWidth, mainTerrain.terrainData.alphamapHeight, mainTerrain.terrainData.alphamapLayers];
 
+        var fieldMap = GetFieldMap();
+
         //For each point on the alphamap
         for (int y = 0; y < mainTerrain.terrainData.alphamapHeight; y++)
         {
             for (int x = 0; x < mainTerrain.terrainData.alphamapWidth; x++)
             {
-                float frac = getSteepnessFactor(x, y);
-                Vector2Int mapPos = getMapCoordFromTextureCoord(new Vector2Int(y, x));
-                Field field = getField(mapPos.x, mapPos.y);
-                for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++)
-                {
-                    int layerID = rottenGroundLayerID;
-                    if (field == null)
-                    {
-                        layerID = grassLayerID;
-                    }
-                    map[x, y, z] = getSteepnessAlpha(z, frac, layerID);
-                }
+                UpdateTerrainAtPoint(map, y, x, fieldMap);
+                Debug.Log("Stuff: " + x);
             }
         }
         mainTerrain.terrainData.SetAlphamaps(0, 0, map);
+    }
+
+    private void UpdateTerrainAtPoint(float[,,] map, int y, int x, Dictionary<string, Field> fieldMap)
+    {
+        float frac = getSteepnessFactor(x, y);
+        Vector2Int mapPos = getMapCoordFromTextureCoord(new Vector2Int(y, x));
+        if (fieldMap.TryGetValue(GetFieldKey(mapPos.x, mapPos.y), out Field field))
+        {
+            for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++)
+            {
+                int layerID = grassLayerID;
+                map[x, y, z] = getSteepnessAlpha(z, frac, layerID);
+            }
+        }
+        else
+        {
+            for (int z = 0; z < mainTerrain.terrainData.alphamapLayers; z++)
+            {
+                int layerID = rottenGroundLayerID;
+                map[x, y, z] = getSteepnessAlpha(z, frac, layerID);
+            }
+        }
     }
 
     // Update is called once per frame
