@@ -37,9 +37,9 @@ namespace Assets.Scripts.Scenes.GameScene
 
         private void Start()
         {
-            creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
-            creepBehaviour.DestroyFieldObjectEvent.Add(DestroyFieldObject);
-            creepBehaviour.CreateFieldObjectEvent.Add(SpawnFieldObject);
+            creepBehaviour.OnBorderDestroyedEvent.Add(DestroyBorder);
+            creepBehaviour.OnFieldObjectDestroyedEvent.Add(DestroyFieldObject);
+            creepBehaviour.OnFieldObjectCreatedEvent.Add(SpawnFieldObject);
         }
 
 

@@ -46,6 +46,8 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private float levelStartTime = 0;
 
+    private Dictionary<FieldObject,  GameObject> fieldObjectsCache = new();
+
     private void Awake()
     {
         FetchTemplates();
@@ -70,9 +72,10 @@ public class GameSceneBehaviour : MonoBehaviour
             }
         }
 
-        creepBehaviour.DestroyBorderEvent.Add(DestroyBorder);
-        creepBehaviour.CreateFieldObjectEvent.Add(SpawnFieldObject);
-        creepBehaviour.CreateBorderEvent.Add(SpawnBorder);
+        creepBehaviour.OnBorderCreatedEvent.Add(SpawnBorder);
+        creepBehaviour.OnBorderDestroyedEvent.Add(DestroyBorder);
+        creepBehaviour.OnFieldObjectCreatedEvent.Add(SpawnFieldObject);
+        creepBehaviour.OnFieldObjectDestroyedEvent.Add(DestroyFieldObject);
 
         creepBehaviour.gameEndConditionHandler.RegisterListener(GameEnded);
 
@@ -103,6 +106,8 @@ public class GameSceneBehaviour : MonoBehaviour
         creepBehaviour.StartGame();
 
         Core.Game.isRunning = true;
+
+        creepBehaviour.OnFieldCreatedEvent.Add(UpdateField);
     }
 
     private void SpawnBorder(Border border)
@@ -180,6 +185,18 @@ public class GameSceneBehaviour : MonoBehaviour
     }
 
 
+    private void UpdateField(Field field)
+    {
+        if (field.FieldObjects.Count > 0)
+        {
+            foreach (var fieldObject in field.FieldObjects)
+            {
+                UpdateFieldObject(fieldObject);
+            }
+        }
+    }
+
+
     private void SpawnFieldObject(Assets.Scripts.Core.Model.FieldObject fieldObject)
     {
         var fieldTemplate = Templates[fieldObject.Model];
@@ -202,6 +219,26 @@ public class GameSceneBehaviour : MonoBehaviour
         Vector3 mapPos = new Vector3(fieldObject.Field.Coords.X, height, fieldObject.Field.Coords.Y);
         newFieldGO.transform.position = getTerrainCoordinates(mapPos);
         newFieldGO.SetActive(true);
+        fieldObjectsCache.Add(fieldObject, newFieldGO);
+    }
+
+    private void DestroyFieldObject(FieldObject fieldObject)
+    {
+        if (fieldObjectsCache.TryGetValue(fieldObject, out var gameO))
+        {
+            fieldObjectsCache.Remove(fieldObject);
+            Destroy(gameO);
+        }
+    }
+
+    private void UpdateFieldObject(FieldObject fieldObject)
+    {
+        if (fieldObjectsCache.TryGetValue(fieldObject, out var gameO))
+        {
+            float height = terrainBehaviour.GetFieldHeight(fieldObject.Field) * mainTerrain.terrainData.size.y;
+            Vector3 mapPos = new Vector3(fieldObject.Field.Coords.X, height, fieldObject.Field.Coords.Y);
+            gameO.transform.position = getTerrainCoordinates(mapPos);
+        }
     }
 
     private static string GetFieldObjectName(string fieldName)

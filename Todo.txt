@@ -11,7 +11,8 @@ Todo:
 ---------------------------------- 
   
  Bugs: 
- - 
+ - Crash with Safari
+ - Level 1 sometimes not loaded
  
  Exceptions: 
  - 
@@ -44,6 +45,7 @@ Nice to have:
  - Check for spawners before firing OnCreeperEliminated
  - Implement Creeper eliminated
  - Use button prefab for UserActionButtons
+ - CountDown for timers
  
 Ideas:
 ----------------------------------

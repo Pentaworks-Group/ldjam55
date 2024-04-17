@@ -5,17 +5,20 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class CreepBehaviour : MonoBehaviour
 {
-    public List<Action<Border>> DestroyBorderEvent = new List<Action<Border>>();
-    public List<Action<Field, Creeper>> OnCreeperChanged = new List<Action<Field, Creeper>>();
-    public List<Action<FieldObject>> DestroyFieldObjectEvent = new();
-    public List<Action<FieldObject>> CreateFieldObjectEvent = new();
-    public List<Action<Border>> CreateBorderEvent = new();
+    public List<Action<FieldObject>> OnFieldObjectCreatedEvent = new();
+    public List<Action<FieldObject>> OnFieldObjectDestroyedEvent = new();
+    public List<Action<Field>> OnFieldCreatedEvent = new();
+    public List<Action<Field>> OnFieldDestroyedEvent = new();
+    public List<Action<Border>> OnBorderCreatedEvent = new();
+    public List<Action<Border>> OnBorderDestroyedEvent = new();
     public List<Action<Creeper>> OnCreeperEliminated = new();
+    public List<Action<Field, Creeper>> OnCreeperChanged = new();
 
     [SerializeField]
     private TimeManagerBehaviour timeManagerBehaviour;
@@ -171,22 +174,7 @@ public class CreepBehaviour : MonoBehaviour
     {
         var bordersAdded = new HashSet<string>();
         var borders = new List<Border>();
-        var topFields = new Dictionary<string, Field>();
-        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
-        {
-            string fieldKey = GetFieldKey(field);
-            if (topFields.TryGetValue(fieldKey, out Field cField))
-            {
-                if (cField.Height < field.Height)
-                {
-                    topFields[fieldKey] = field;
-                }
-            }
-            else
-            {
-                topFields[fieldKey] = field;
-            }
-        }
+        Dictionary<string, Field> topFields = GetTopFields();
 
         var allFields = Core.Game.State.CurrentLevel.GameField.Fields.ToDictionary(field => field.ID);
         foreach (var border in Core.Game.State.CurrentLevel.GameField.Borders)
@@ -242,6 +230,165 @@ public class CreepBehaviour : MonoBehaviour
         return borders;
     }
 
+    private Dictionary<string, Field> GetTopFields()
+    {
+        var topFields = new Dictionary<string, Field>();
+        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
+        {
+            string fieldKey = GetFieldKey(field);
+            if (topFields.TryGetValue(fieldKey, out Field cField))
+            {
+                if (cField.Height < field.Height)
+                {
+                    topFields[fieldKey] = field;
+                }
+                Debug.Log("Multiple Fields at coord: " + fieldKey);
+            }
+            else
+            {
+                topFields[fieldKey] = field;
+            }
+        }
+
+        return topFields;
+    }
+
+
+
+
+    private bool TryGetSameFields(Field field, out Field existingField)
+    {
+        foreach (var eField in Core.Game.State.CurrentLevel.GameField.Fields)
+        {
+            if (eField == field || eField.ID == field.ID)
+            {
+                existingField = eField;
+                return true;
+            }
+            if (eField.Coords.X == field.Coords.X && eField.Coords.Y == field.Coords.Y)
+            {
+                existingField = eField;
+                return true;
+            }
+        }
+        existingField = null;
+        return false;
+    }
+
+    public bool GetFieldByCoords(float rawX, float rawY, out Field field)
+    {
+        int x = (int)rawX;
+        int y = (int)rawY;
+        var topFields = GetTopFields();
+        string fieldCoordKey = GetFieldKeyByCoord(x, y);
+        return topFields.TryGetValue(fieldCoordKey, out field);
+    }
+
+    public bool CreateField(float rawX, float rawY)
+    {
+        if (GetFieldByCoords(rawX, rawY, out var field))
+        {
+            field.Height++;
+        }
+        else
+        {
+            field = new Field()
+            {
+                Coords = new GameFrame.Core.Math.Vector2((int)rawX, (int)rawY),
+                Height = 0,
+            };
+            field.ID = field.GenerateFieldID();
+            Core.Game.State.CurrentLevel.GameField.Fields.Add(field);
+        }
+
+        foreach (var listener in OnFieldCreatedEvent)
+        {
+            listener.Invoke(field);
+        }
+        return true;
+    }
+
+
+    private void DestroyField(Field field)
+    {
+
+        foreach (var border in field.Borders)
+        {
+            Core.Game.State.CurrentLevel.GameField.Borders.Remove(border);
+            borders.Remove(border);
+        }
+
+
+        Core.Game.State.CurrentLevel.GameField.Fields.Remove(field);
+        foreach (var listener in OnFieldDestroyedEvent)
+        {
+            listener.Invoke(field);
+        }
+    }
+
+    public bool SpawnBorderAt(float rawX, float rawY, Border border)
+    {
+        if (!GetFieldByCoords(rawX, rawY, out Field field1))
+        {
+            return false;
+        }
+
+        if (!GetNearestNeighbourCoords(rawX, rawY, out int x, out int y))
+        {
+            return false;
+        }
+
+
+        if (!GetFieldByCoords(x, y, out Field field2))
+        {
+            return false;
+        }
+        border.Field1 = field1;
+        border.Field2 = field2;
+
+        return SpawnBorder(border);
+    }
+
+    private bool GetNearestNeighbourCoords(float rawX, float rawY, out int x, out int y)
+    {
+        x = (int)rawX;
+        y = (int)rawY;
+
+
+        float xOffset = rawX - x;
+        float yOffset = rawY - y;
+        float invYOffset = 1 - yOffset;
+
+        if (Mathf.Abs(xOffset - yOffset) < 0.05 || Mathf.Abs(xOffset - invYOffset) < 0.05) //define
+        {
+            return false;
+        }
+
+        if (xOffset > yOffset)
+        {
+            if (xOffset > invYOffset)
+            {
+                x++;
+            }
+            else
+            {
+                y--;
+            }
+        }
+        else
+        {
+            if (xOffset > invYOffset)
+            {
+                y++;
+            }
+            else
+            {
+                x--;
+            }
+        }
+        return true;
+    }
+
     public bool SpawnBorder(Border border)
     {
         if (TryGetBorderWithSameFields(border, out var existingBorder))
@@ -256,7 +403,7 @@ public class CreepBehaviour : MonoBehaviour
         Debug.Log("CreatingBorderHash: " + border.Field1.GetHashCode() + " <=> " + border.Field2.GetHashCode());
         borders.Add(border);
         Core.Game.State.CurrentLevel.GameField.Borders.Add(border);
-        foreach (var listener in CreateBorderEvent)
+        foreach (var listener in OnBorderCreatedEvent)
         {
             listener.Invoke(border);
         }
@@ -317,9 +464,8 @@ public class CreepBehaviour : MonoBehaviour
 
     private string GetFieldKeyByCoord(int x, int y)
     {
-        return x + "_" + y;
+        return x + "," + y;
     }
-
 
     private void ConvertFieldObjectMethodsForAllFlieldObjects()
     {
@@ -416,19 +562,43 @@ public class CreepBehaviour : MonoBehaviour
         timeManagerBehaviour.RegisterEvent(time, () => SpawnCreepAt(fieldObject.Field, amount, creeperId), ID, objectID, interval);
     }
 
-    public void CreateSpawner(Field field, FieldObject spawner)
+    public bool CreateSpawnerAt(float x, float y, FieldObject spawner, bool allowMultiple = true)
     {
+        if (!GetFieldByCoords(x, y, out Field field))
+        {
+            return false;
+        }
+        return CreateSpawner(field, spawner, allowMultiple);
+    }
+
+    public bool CreateSpawner(Field field, FieldObject spawner, bool allowMultiple = true)
+    {
+        if (!allowMultiple && field.FieldObjects != null && field.FieldObjects.Count > 0)
+        {
+            return false;
+        }
         field.FieldObjects.Add(spawner);
         spawner.Field = field;
         Core.Game.State.CurrentLevel.GameField.FieldObjects.Add(spawner);
         ConvertFieldObjectMethods(spawner);
-        foreach (var action in CreateFieldObjectEvent)
+        foreach (var action in OnFieldObjectCreatedEvent)
         {
             action.Invoke(spawner);
         }
+        return true;
     }
 
-    public void SpawnCreepAt(Field field, float amount, string creeperId)
+
+    public bool SpawnCreepAt(float x, float y, float amount, string creeperId)
+    {
+        if (!GetFieldByCoords(x, y, out Field field))
+        {
+            return false;
+        }
+        return SpawnCreepAt(field, amount, creeperId);
+    }
+
+    public bool SpawnCreepAt(Field field, float amount, string creeperId)
     {
         if (field.Creep != null && field.Creep.Creeper != null)
         {
@@ -462,9 +632,10 @@ public class CreepBehaviour : MonoBehaviour
             field.Creep.Creeper = creepers[creeperId];
             CreeperChanged(field, null);
         }
+        return true;
     }
 
-    public void DestroyBorder(Border border, bool replace = true)
+    public bool DestroyBorder(Border border, bool replace = true)
     {
         if (border != null)
         {
@@ -475,13 +646,15 @@ public class CreepBehaviour : MonoBehaviour
             {
                 CreateNewDefaultBorder(border.Field1, border.Field2, borders);
             }
-            foreach (var action in DestroyBorderEvent)
+            foreach (var action in OnBorderDestroyedEvent)
             {
                 action.Invoke(border);
             }
             triggerHandler.UnRegisterByObjectID(border);
             timeManagerBehaviour.UnregisterByObjectID(border.GetHashCode());
+            return true;
         }
+        return false;
     }
 
     public void DestroyFieldObject(FieldObject fieldO)
@@ -490,7 +663,7 @@ public class CreepBehaviour : MonoBehaviour
         {
             Core.Game.State.CurrentLevel.GameField.FieldObjects.Remove(fieldO);
 
-            foreach (var action in DestroyFieldObjectEvent)
+            foreach (var action in OnFieldObjectDestroyedEvent)
             {
                 action.Invoke(fieldO);
             }
@@ -548,7 +721,7 @@ public class CreepBehaviour : MonoBehaviour
         float tickFlowFactor = Time.deltaTime * Core.Game.State.Mode.FlowSpeed;
         foreach (var border in borders)
         {
-            UpdateCreepAtBorder(border, tickFlowFactor);    
+            UpdateCreepAtBorder(border, tickFlowFactor);
         }
     }
 
@@ -795,5 +968,6 @@ public class CreepBehaviour : MonoBehaviour
         }
         return flow;
     }
+
 
 }

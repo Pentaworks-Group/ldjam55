@@ -231,6 +231,9 @@ namespace Assets.Scripts.Core
             border.Field1 = fields[borderDefinition.Field1Ref];
             border.Field2 = fields[borderDefinition.Field2Ref];
 
+            border.Field1.Borders.Add(border);
+            border.Field2.Borders.Add(border);
+
             border.BorderType = ConvertBorderType(borderDefinition.BorderType);
 
             return border;

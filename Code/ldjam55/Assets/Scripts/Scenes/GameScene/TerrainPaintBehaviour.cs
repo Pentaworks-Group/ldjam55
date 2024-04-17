@@ -28,10 +28,21 @@ public class TerrainPaintBehaviour : MonoBehaviour
     private void Awake()
     {
         creepBehaviour.OnCreeperChanged.Add((field, oldCreeper) => paintCreep(field, true));
+        creepBehaviour.OnFieldCreatedEvent.Add((field) => UpdateTerrain());
     }
 
     // Start is called before the first frame update
     void Start()
+    {
+        UpdateTerrain();
+
+
+        //        Field f = new Field { Coords = new GameFrame.Core.Math.Vector2(0, 0) };
+        //        paintCreep(f);
+
+    }
+
+    private void UpdateTerrain()
     {
         scaleFactorX = mainTerrain.terrainData.alphamapWidth / mainTerrain.terrainData.size.x;
         scaleFactorY = mainTerrain.terrainData.alphamapHeight / mainTerrain.terrainData.size.z;
@@ -59,10 +70,6 @@ public class TerrainPaintBehaviour : MonoBehaviour
             }
         }
         mainTerrain.terrainData.SetAlphamaps(0, 0, map);
-
-        //        Field f = new Field { Coords = new GameFrame.Core.Math.Vector2(0, 0) };
-        //        paintCreep(f);
-
     }
 
     // Update is called once per frame

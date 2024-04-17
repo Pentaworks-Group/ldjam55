@@ -1,8 +1,6 @@
+
 using Assets.Scripts.Core.Model;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 namespace Assets.Scripts.Scene.GameScene
@@ -52,7 +50,7 @@ namespace Assets.Scripts.Scene.GameScene
         }
 
 
-        public void CastSelectedAction(object target)
+        public void CastSelectedAction(UserActionInput target)
         {
             if (SelectedUserAction != null)
             {
@@ -71,26 +69,8 @@ namespace Assets.Scripts.Scene.GameScene
 
         private Border getRaycastBorder(RaycastHit hit)
         {
-            Vector2Int terrainHitPoint = new Vector2Int((int)hit.point.x, (int)hit.point.z);
-            Vector2Int mapPoint = terrainBehaviour.TransformTerrainCoordToMap(terrainHitPoint);
-            Vector2Int fieldCenter = terrainBehaviour.TransformMapCoordToTerrainCoord(mapPoint);
-            Vector2Int distance = terrainHitPoint - fieldCenter;
-
-            float angle = Mathf.Atan2(distance.y, distance.x)*Mathf.Rad2Deg;
-            //Default: Left
-            Vector2Int neighborMapPoint = new Vector2Int(mapPoint.x - 1, mapPoint.y );
-            if (angle > -45 && angle < 45) {
-                // Right
-                neighborMapPoint = new Vector2Int(mapPoint.x + 1, mapPoint.y);
-            } else if(angle <= -45 && angle > -135)
-            {
-                //Bottom
-                neighborMapPoint = new Vector2Int(mapPoint.x , mapPoint.y - 1);
-            } else if(angle >= 45 && angle < 135)
-            {
-                //Top
-                neighborMapPoint = new Vector2Int(mapPoint.x, mapPoint.y + 1);
-            }
+            Vector2Int mapPoint, neighborMapPoint;
+            GetMapPoints(hit, out mapPoint, out neighborMapPoint);
 
             var field = terrainBehaviour.getField(mapPoint.x, mapPoint.y);
             var neighbor = terrainBehaviour.getField(neighborMapPoint.x, neighborMapPoint.y);
@@ -98,6 +78,41 @@ namespace Assets.Scripts.Scene.GameScene
             Border border = new Border { Field1 = field, Field2 = neighbor };
             return border;
         }
+
+        private void GetMapPoints(RaycastHit hit, out Vector2Int mapPoint, out Vector2Int neighborMapPoint)
+        {
+            Vector2Int terrainHitPoint = new Vector2Int((int)hit.point.x, (int)hit.point.z);
+            mapPoint = terrainBehaviour.TransformTerrainCoordToMap(terrainHitPoint);
+            Vector2Int fieldCenter = terrainBehaviour.TransformMapCoordToTerrainCoord(mapPoint);
+            Vector2Int distance = terrainHitPoint - fieldCenter;
+
+            float angle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
+            //Default: Left
+            neighborMapPoint = new Vector2Int(mapPoint.x - 1, mapPoint.y);
+            if (angle > -45 && angle < 45)
+            {
+                // Right
+                neighborMapPoint = new Vector2Int(mapPoint.x + 1, mapPoint.y);
+            }
+            else if (angle <= -45 && angle > -135)
+            {
+                //Bottom
+                neighborMapPoint = new Vector2Int(mapPoint.x, mapPoint.y - 1);
+            }
+            else if (angle >= 45 && angle < 135)
+            {
+                //Top
+                neighborMapPoint = new Vector2Int(mapPoint.x, mapPoint.y + 1);
+            }
+        }
+
+        private Vector2 GetHitCoords(RaycastHit hit)
+        {
+            Vector2Int terrainHitPoint = new Vector2Int((int)hit.point.x, (int)hit.point.z);
+            Vector2 mapPoint = terrainBehaviour.TransformTerrainCoordToMapFloat(terrainHitPoint);
+            return mapPoint;
+        }
+
 
         private void LateUpdate()
         {
@@ -114,22 +129,50 @@ namespace Assets.Scripts.Scene.GameScene
                         {
                             if (raycastHit.transform.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var container))
                             {
-                                CastSelectedAction(container.ContainedObject);
+                                var actionInput = new UserActionInput()
+                                {
+                                    Input = container.ContainedObject,
+                                    InputType = container.ObjectType
+                                };
+                                CastSelectedAction(actionInput);
                             }
                             else if (raycastHit.transform.parent && raycastHit.transform.parent.gameObject.TryGetComponent<GameFieldContainerBehaviour>(out var parentContainer))
                             {
-                                CastSelectedAction(parentContainer.ContainedObject);
+                                var actionInput = new UserActionInput()
+                                {
+                                    Input = parentContainer.ContainedObject,
+                                    InputType = parentContainer.ObjectType
+                                };
+                                CastSelectedAction(actionInput);
                             }
                             else if (raycastHit.transform.gameObject.Equals(mainTerrain.gameObject))
                             {
 //                                Vector2Int mapPoint = terrainBehaviour.TransformTerrainCoordToMap(new Vector2Int((int)raycastHit.point.x, (int)raycastHit.point.z));
 //                                var field = terrainBehaviour.getField(mapPoint.x, mapPoint.y);
-                                var border = getRaycastBorder(raycastHit);
-                                CastSelectedAction(border);
+                                //var border = getRaycastBorder(raycastHit);
+                                //var actionInput = new UserActionInput()
+                                //{
+                                //    Input = border,
+                                //    InputType = "Border"
+                                //};
+                                Vector2 coords = GetHitCoords(raycastHit);
+                                var actionInput = new UserActionInput()
+                                {
+                                    Input = coords,
+                                    InputType = "Coords"
+                                };
+
+                                CastSelectedAction(actionInput);
                             }
                             else
                             {
-                                Debug.Log("UnkownObject: " + raycastHit.transform.gameObject);
+                                Vector2 coords = GetHitCoords(raycastHit);
+                                var actionInput = new UserActionInput()
+                                {
+                                    Input = coords,
+                                    InputType = "Coords"
+                                };
+                                CastSelectedAction(actionInput);
                             }
                         }
                     }

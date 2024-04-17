@@ -46,7 +46,7 @@ namespace Assets.Scripts.Scene.GameScene
         {
             if (SelectedUserAction != null)
             {
-                Base.Core.Game.UserActionHandler.UseAction(SelectedUserAction, target.ContainedObject);
+                //Base.Core.Game.UserActionHandler.UseAction(SelectedUserAction, target);
                 UpdateUI();
             }
         }

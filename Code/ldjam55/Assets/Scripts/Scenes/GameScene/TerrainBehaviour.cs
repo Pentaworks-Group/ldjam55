@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class TerrainBehaviour : MonoBehaviour
 {
+
+    [SerializeField]
+    private CreepBehaviour creepBehaviour;
+
     public Terrain mainTerrain;
 
     public int FieldCountX { get; private set; } = 0 ;
@@ -40,8 +44,15 @@ public class TerrainBehaviour : MonoBehaviour
     {
         //TODO: isInit?
         init();
-            
-        mainTerrain.terrainData.size = new Vector3(FieldCountX*fieldSize, 500, FieldCountY*fieldSize);
+
+        GenerateTerrain();
+
+        creepBehaviour.OnFieldCreatedEvent.Add((field) => GenerateTerrain());
+    }
+
+    public void GenerateTerrain()
+    {
+        mainTerrain.terrainData.size = new Vector3(FieldCountX * fieldSize, 500, FieldCountY * fieldSize);
 
         scalingFactorX = mainTerrain.terrainData.heightmapResolution / (FieldCountX * fieldSize);
         scalingFactorY = mainTerrain.terrainData.heightmapResolution / (FieldCountY * fieldSize);
@@ -51,19 +62,13 @@ public class TerrainBehaviour : MonoBehaviour
         float[,] heights = new float[mapSize, mapSize];
         for (int i = 0; i < mapSize; i++)
         {
-            for(int j = 0; j < mapSize; j++)
+            for (int j = 0; j < mapSize; j++)
             {
-                heights[j,i] = getHeightmapValue(i, j);
+                heights[j, i] = getHeightmapValue(i, j);
             }
         }
 
-        mainTerrain.terrainData.SetHeights(0, 0, heights );
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        mainTerrain.terrainData.SetHeights(0, 0, heights);
     }
 
     private void init()
@@ -200,6 +205,14 @@ public class TerrainBehaviour : MonoBehaviour
         pos.y = (int)Math.Floor(pos.y * FieldCountY / heightMapSize);
         return pos;
 //        return (int) Math.Floor(x * mapSize / heightMapSize);
+    }
+
+    public Vector2 TransformTerrainCoordToMapFloat(Vector2 pos)
+    {
+        pos.x = (float)pos.x * (float)FieldCountX / (float)mainTerrain.terrainData.size.x;
+        pos.y = pos.y * FieldCountY / mainTerrain.terrainData.size.z;
+        return pos;
+        //        return (int) Math.Floor(x * mapSize / heightMapSize);
     }
 
     public Vector2Int TransformTerrainCoordToMap(Vector2Int pos)
