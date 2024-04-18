@@ -127,7 +127,7 @@ public class UserActionHandler
 
     private bool DestroyBorder(UserActionInput target)
     {
-        if (target.InputType == "Border")
+        if (target.InputType == "Wall")
         {
             Border border = (Border)target.Input;
             if (border.Field2 != null && border.Field1 != null && border.BorderType != null)
@@ -149,7 +149,7 @@ public class UserActionHandler
             Description = GetStrFromPar(paramsObject, "Description", ""),
             Material = GetStrFromPar(paramsObject, "Material", "Creeper_Yellow_Stage_3"),
             Model = GetStrFromPar(paramsObject, "Model", "Spawner_3"),
-            Hidden = bool.Parse(GetStrFromPar(paramsObject, "Model", "false"))
+            Hidden = bool.Parse(GetStrFromPar(paramsObject, "Hidden", "false"))
         };
 
         bool allowMultiple = bool.Parse(GetStrFromPar(paramsObject, "AllowMultiple", "false"));

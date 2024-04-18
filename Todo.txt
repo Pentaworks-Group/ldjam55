@@ -22,6 +22,7 @@ Todo:
    
  GamePlay:
  - Controll GameSpeed (stop, faster)
+ - Hide UI WhenGameEndScreen is active
  
  UI: 
  - 

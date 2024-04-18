@@ -106,10 +106,20 @@ namespace Assets.Scripts.Core
             var level = GetLevel(nL);
             StartLevel(level);
         }
-        public void StartCurre(Definitions.Level rawLevel)
+        public void StartCurrenLevelWithField(Definitions.GameField field)
         {
-            var level = ConvertLevel(rawLevel);
-            StartLevel(level);
+            foreach (var level in SelectedGameMode.Levels)
+            {
+                if (level.Name == State.CurrentLevel.Name)
+                {
+                    var oldGameField = level.GameField;
+                    level.GameField = field;
+                    var convLevel = ConvertLevel(level);
+                    StartLevel(convLevel);
+                    level.GameField = oldGameField;
+                    break;
+                }
+            }
         }
 
 
@@ -211,10 +221,10 @@ namespace Assets.Scripts.Core
             gameField.FieldObjects = ConvertFieldObjects(gameFieldDefinition.FieldObjects, fields);
             return gameField;
         }
-        private List<Field> ConvertFields(List<Definitions.Field> borderDefinitionList)
+        private List<Field> ConvertFields(List<Definitions.Field> fieldDefinitionList)
         {
             var fieldList = new List<Model.Field>();
-            foreach (var borderDefinition in borderDefinitionList)
+            foreach (var borderDefinition in fieldDefinitionList)
             {
                 var field = new Model.Field()
                 {

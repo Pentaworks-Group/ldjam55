@@ -19,7 +19,7 @@ namespace Assets.Scripts.Scenes.GameScene
         public void StartCurrentLevel()
         {
             var level = CreateDumpGameField();
-            Base.Core.Game.StartLeveDev(level);
+            Base.Core.Game.StartCurrenLevelWithField(level);
         }
 
         public void DumpToGameFiles(string fieldName)
