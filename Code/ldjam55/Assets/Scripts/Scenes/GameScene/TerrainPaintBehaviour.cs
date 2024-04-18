@@ -120,19 +120,19 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
         //int xRT = (int)(topRightCenter.x * scaleFactorX);
         //int xBL = (int)(bottomLeftCenter.x * scaleFactorX);
-        int xTR = (int)(topRightCenter.x);
-        int xBL = (int)(bottomLeftCenter.x);
+        int xTR = (int)(topRightCenter.y);
+        int xBL = (int)(bottomLeftCenter.y);
         int sizeX = xTR - xBL;
-        int yTR = (int)(topRightCenter.y);
-        int yBL = (int)(bottomLeftCenter.y);
+        int yTR = (int)(topRightCenter.x);
+        int yBL = (int)(bottomLeftCenter.x);
         //int yTR = (int)(topRightCenter.y * scaleFactorY);
         //int yBL = (int)(bottomLeftCenter.y * scaleFactorY);
         int sizeY = yTR - yBL;
 
 
-        //var textureMapCut = mainTerrain.terrainData.GetAlphamaps(bottomLeftCenter.x, bottomLeftCenter.y, sizeX, sizeY);
+        //var textureMapCut = mainTerrain.terrainData.GetAlphamaps(bottomLeftCenter.x, bottomLeftCenter.y, 10, 20);
         var textureMapCut = new float[sizeX, sizeY, mainTerrain.terrainData.alphamapLayers];
-        LogSeArray(textureMapCut);
+        //LogSeArray(textureMapCut);
         Dictionary<int, Dictionary<int, Field>> fieldMap = CreateFieldCache();
 
         int sizeX4 = sizeX / 4;
@@ -143,10 +143,10 @@ public class TerrainPaintBehaviour : MonoBehaviour
         int sizeY34 = 3 * sizeY4;
 
         var fBL = GetFieldFieldFromCacheRoooti(x - 1, y - 1, fieldMap);
-        UpdateTerrainInField(fBL, textureMapCut, 0, 0, sizeX4, sizeY4, xBL, yBL);
+        UpdateTerrainInField(fBL, textureMapCut, 0, 0, sizeX4, sizeY4, xBL, yBL, slimeYellowLayerID);
 
         var fML = GetFieldFieldFromCacheRoooti(x - 1, y, fieldMap);
-        UpdateTerrainInField(fML, textureMapCut, 0, sizeY4, sizeX4, sizeY2, xBL, yBL);
+        UpdateTerrainInField(fML, textureMapCut, 0, sizeY4, sizeX4, sizeY2, xBL, yBL, stone1LayerID);
 
         var fTL = GetFieldFieldFromCacheRoooti(x - 1, y + 1, fieldMap);
         UpdateTerrainInField(fTL, textureMapCut, 0, sizeY34, sizeX4, sizeY4, xBL, yBL);
@@ -167,7 +167,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
         UpdateTerrainInField(fMR, textureMapCut, sizeX34, sizeY4, sizeX4, sizeY2, xBL, yBL);
 
         var fTR = GetFieldFieldFromCacheRoooti(x + 1, y + 1, fieldMap);
-        UpdateTerrainInField(fTR, textureMapCut, sizeX34, sizeY34, sizeX4, sizeY4, xBL, yBL);
+        UpdateTerrainInField(fTR, textureMapCut, sizeX34, sizeY34, sizeX4, sizeY4, xBL, yBL, slimeRedLayerID);
 
 
         int layerID = slimeYellowLayerID;
@@ -175,12 +175,13 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
         //paintSlimeArea(layerID, bottomLeftCenter.x - sizeX / 2, bottomLeftCenter.y - sizeY / 2, sizeX, sizeY, 2, 1);
 
-        mainTerrain.terrainData.SetAlphamaps(xBL, yBL, textureMapCut);
+        //mainTerrain.terrainData.SetAlphamaps(xBL, yBL, textureMapCut);
+        mainTerrain.terrainData.SetAlphamaps(yBL, xBL, textureMapCut);
         //mainTerrain.terrainData.SetAlphamaps(0, 0, textureMapCut);
 
 
 
-        LogSeArray(textureMapCut);
+        //LogSeArray(textureMapCut);
         //terrainBehaviour.GenerateTerrain();
 
         //foreach (var f in Core.Game.State.CurrentLevel.GameField.Fields)
@@ -194,14 +195,17 @@ public class TerrainPaintBehaviour : MonoBehaviour
         //UpdateTerrain();
     }
 
-    private void UpdateTerrainInField(Field field, float[,,] map, int startX, int startY, int sizeX, int sizeY, int offsetX = 0, int offsetY = 0)
+    private void UpdateTerrainInField(Field field, float[,,] map, int startX, int startY, int sizeX, int sizeY, int offsetX = 0, int offsetY = 0, int layerID = -1)
     {
-
-        int layerID = rottenGroundLayerID;
-        if (field == null)
+        if (layerID == -1)
         {
-            layerID = grassLayerID;
+            layerID = rottenGroundLayerID;
+            if (field == null)
+            {
+                layerID = grassLayerID;
+            }
         }
+ 
         startX = Math.Max(startX, 0);
         startY = Math.Max(startY, 0);
         int endX = startX + sizeX;
