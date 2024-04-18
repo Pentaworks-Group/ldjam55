@@ -118,11 +118,15 @@ public class TerrainPaintBehaviour : MonoBehaviour
         Vector2Int bottomLeftCenter = getTextureMapCoord(bottomLeftCenterM);
 
 
-        int xRT = (int)(topRightCenter.x * scaleFactorX);
-        int xBL = (int)(bottomLeftCenter.x * scaleFactorX);
-        int sizeX = xRT - xBL;
-        int yTR = (int)(topRightCenter.y * scaleFactorY);
-        int yBL = (int)(bottomLeftCenter.y * scaleFactorY);
+        //int xRT = (int)(topRightCenter.x * scaleFactorX);
+        //int xBL = (int)(bottomLeftCenter.x * scaleFactorX);
+        int xTR = (int)(topRightCenter.x);
+        int xBL = (int)(bottomLeftCenter.x);
+        int sizeX = xTR - xBL;
+        int yTR = (int)(topRightCenter.y);
+        int yBL = (int)(bottomLeftCenter.y);
+        //int yTR = (int)(topRightCenter.y * scaleFactorY);
+        //int yBL = (int)(bottomLeftCenter.y * scaleFactorY);
         int sizeY = yTR - yBL;
 
 
@@ -203,7 +207,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
         int endX = startX + sizeX;
         int endY = startY + sizeY;
         endX = Math.Min(endX, mainTerrain.terrainData.alphamapWidth);
-        endX = Math.Min(endX, mainTerrain.terrainData.alphamapHeight);
+        endY = Math.Min(endY, mainTerrain.terrainData.alphamapHeight);
 
         //Debug.Log("Stuff: x " + startX + "->" + endX + " y: " + startY + "->" + endY);
         for (int y = startY; y < endY; y++)
@@ -398,8 +402,10 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
     private Vector2Int getTextureMapCoord(Vector2Int pos)
     {
-        pos.x = (int)((2 * pos.x + 1) * mainTerrain.terrainData.size.x / (2 * terrainBehaviour.FieldCountX));
-        pos.y = (int)((2 * pos.y + 1) * mainTerrain.terrainData.size.z / (2 * terrainBehaviour.FieldCountY));
+        //pos.x = (int)((2 * pos.x + 1) * mainTerrain.terrainData.size.x / (2 * terrainBehaviour.FieldCountX));
+        //pos.y = (int)((2 * pos.y + 1) * mainTerrain.terrainData.size.z / (2 * terrainBehaviour.FieldCountY));
+        pos.x = (int)((2 * pos.x + 1) * mainTerrain.terrainData.alphamapWidth / (2 * terrainBehaviour.FieldCountX));
+        pos.y = (int)((2 * pos.y + 1) * mainTerrain.terrainData.alphamapHeight / (2 * terrainBehaviour.FieldCountY));
         return pos;
     }
 
