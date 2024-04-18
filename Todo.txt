@@ -18,10 +18,10 @@ Todo:
  - 
  
  Core:
- - 
+ - Replace Coords with int format
    
  GamePlay:
- - 
+ - Controll GameSpeed (stop, faster)
  
  UI: 
  - 

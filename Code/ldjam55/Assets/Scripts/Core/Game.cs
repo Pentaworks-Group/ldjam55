@@ -91,20 +91,33 @@ namespace Assets.Scripts.Core
             return null;
         }
 
+
+
         public void StartNextLevel()
         {
             var nL = State.CurrentLevel.NextLevel;
-            State.CurrentLevel = GetLevel(nL);
-            ChangeScene(State.CurrentScene);
+            var level = GetLevel(nL);
+            StartLevel(level);
         }
 
         public void RestartLevel()
         {
             var nL = State.CurrentLevel.Name;
-            State.CurrentLevel = GetLevel(nL);
-            ChangeScene(State.CurrentScene);
+            var level = GetLevel(nL);
+            StartLevel(level);
+        }
+        public void StartCurre(Definitions.Level rawLevel)
+        {
+            var level = ConvertLevel(rawLevel);
+            StartLevel(level);
         }
 
+
+        public void StartLevel(Level level) 
+        {
+            State.CurrentLevel = level;
+            ChangeScene(State.CurrentScene);
+        }
 
         public Level GetNextLevel()
         {

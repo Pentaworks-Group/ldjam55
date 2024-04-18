@@ -1,4 +1,5 @@
 using Assets.Scripts.Core.Model;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Assets.Scripts.Core.Definitions
@@ -9,8 +10,10 @@ namespace Assets.Scripts.Core.Definitions
         public GameFrame.Core.Math.Vector2 Coords { get; set; }
         public int Height { get; set; }
 
-        public List<FieldObject> FieldObjects { get; set; } = new List<FieldObject>();
-
         public Creep Creep { get; set; }
+
+
+        [JsonIgnore]
+        public List<FieldObject> FieldObjects { get; set; } = new List<FieldObject>();
     }
 }

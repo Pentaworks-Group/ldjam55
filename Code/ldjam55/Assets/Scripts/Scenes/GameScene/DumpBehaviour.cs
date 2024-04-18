@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 
@@ -11,7 +12,58 @@ namespace Assets.Scripts.Scenes.GameScene
 {
     public class DumpBehaviour : MonoBehaviour
     {
+
+        [SerializeField]
+        TMP_InputField gameFieldName;
+
+        public void StartCurrentLevel()
+        {
+            var level = CreateDumpGameField();
+            Base.Core.Game.StartLeveDev(level);
+        }
+
+        public void DumpToGameFiles(string fieldName)
+        {
+            if (fieldName == null || fieldName == "")
+            {
+                fieldName = gameFieldName.text;
+            }
+            var gameField = CreateDumpGameField();
+            gameField.Reference = fieldName;
+            var filePath = Application.streamingAssetsPath + "/GameFields.json";
+            var gameFields = GameFrame.Core.Json.Handler.DeserializeObjectFromFile<List<Core.Definitions.GameField>>(filePath);
+            bool repalced = false;
+            for (int i = 0; i < gameFields.Count; i++)
+            {
+                var g = gameFields[i];
+                if (g.Reference == fieldName)
+                {
+                    gameFields.RemoveAt(i);
+                    gameFields.Insert(i, gameField);
+                    repalced = true;
+                    break;
+                }
+            }
+            if (!repalced)
+            {
+                gameFields.Add(gameField);
+            }
+            var json = GameFrame.Core.Json.Handler.SerializePrettyIgnoreNull(gameFields);
+            File.WriteAllText(filePath, json);
+        }
+
         public void DoSeDump()
+        {
+            var gameField = CreateDumpGameField();
+
+            //JObject obi = JObject.FromObject(gameField);
+
+            string json = GameFrame.Core.Json.Handler.SerializePrettyIgnoreNull(gameField);
+            var filePath = Application.streamingAssetsPath + "/dumpGameField.json";
+            File.WriteAllText(filePath, json);
+        }
+
+        private Core.Definitions.GameField CreateDumpGameField()
         {
             GameField game = Base.Core.Game.State.CurrentLevel.GameField;
             RecenterFields(game.Fields);
@@ -25,15 +77,7 @@ namespace Assets.Scripts.Scenes.GameScene
                 Reference = game.Reference,
                 IsReferenced = game.IsReferenced
             };
-
-            //JObject obi = JObject.FromObject(gameField);
-
-            string json = GameFrame.Core.Json.Handler.SerializePrettyIgnoreNull(gameField);
-            //string json = SerializePrettyIgnoreNull(obi);
-            var filePath = Application.streamingAssetsPath + "/dumpGameField.json";
-            StreamWriter writer = new StreamWriter(filePath, false);
-            writer.Write(json);
-            writer.Close();
+            return gameField;
         }
 
         private void RemoveDuplicates(List<Field> fields)
@@ -64,7 +108,7 @@ namespace Assets.Scripts.Scenes.GameScene
                         borders.AddRange(field.Borders);
                         fields.Remove(field);
                     }
-                }                 
+                }
             }
         }
 
@@ -169,102 +213,6 @@ namespace Assets.Scripts.Scenes.GameScene
             return conFields;
         }
 
-        //public static string SerializePrettyIgnoreNull(object objectToSerialize)
-        //{
-        //    JsonSerializerSettings settings = new JsonSerializerSettings
-        //    {
-        //        TypeNameHandling = TypeNameHandling.None,
-        //        DefaultValueHandling = JsonIgnoreConditon.,
-        //    };
-        //    return JsonConvert.SerializeObject(objectToSerialize, Formatting.Indented, settings);
-        //}
 
-        //public static string SerializePrettyIgnoreNull(System.Object objectToSerialize)
-        //{
-        //    var jObject = JObject.FromObject(objectToSerialize);
-        //    var tokern = RemoveEmptyChildren(jObject);
-        //    Debug.Log(tokern.ToString());
-        //    tokern = RemoveUnreferencedTokens(tokern);
-        //    Debug.Log(tokern.ToString());
-
-        //    return tokern.ToString();
-        //}
-        public static JToken RemoveEmptyChildren(JToken token)
-        {
-            if (token.Type == JTokenType.Object)
-            {
-                JObject copy = new JObject();
-                foreach (JProperty prop in token.Children<JProperty>())
-                {
-                    JToken child = prop.Value;
-                    if (child.HasValues)
-                    {
-                        child = RemoveEmptyChildren(child);
-                    }
-                    if (!IsEmpty(child))
-                    {
-                        copy.Add(prop.Name, child);
-                    }
-                }
-                return copy;
-            }
-            else if (token.Type == JTokenType.Array)
-            {
-                JArray copy = new JArray();
-                foreach (JToken item in token.Children())
-                {
-                    JToken child = item;
-                    if (child.HasValues)
-                    {
-                        child = RemoveEmptyChildren(child);
-                    }
-                    if (!IsEmpty(child))
-                    {
-                        copy.Add(child);
-                    }
-                }
-                return copy;
-            }
-            return token;
-        }
-        public static bool IsEmpty(JToken token)
-        {
-            return (token.Type == JTokenType.Null);
-        }
-
-        public static JToken RemoveUnreferencedTokens(JToken token)
-        {
-            if (token is JContainer container)
-            {
-                // Use ToList() to create a copy of children before iterating
-                foreach (JToken child in container.Children().ToList())
-                {
-                    // Recursively process each child
-                    JToken filteredChild = RemoveUnreferencedTokens(child);
-
-                    // If the child is a JObject and has "IsReferenced" with value false, remove it
-                    if (filteredChild is JObject obj &&
-                        obj.TryGetValue("IsReferenced", out var isReferencedToken) &&
-                        isReferencedToken.Type == JTokenType.Boolean &&
-                        !(bool)isReferencedToken)
-                    {
-                        try
-                        {
-                            child.Remove(); // Remove the child from the parent container
-                        }
-                        catch (JsonException)
-                        {
-                            Debug.Log("Cannot remove child: " + child.ToString());
-                        }
-                    }
-                }
-
-                return token; // Return the container after processing children
-            }
-            else
-            {
-                return token; // Base case: Return the token as-is if it's not a container
-            }
-        }
     }
 }
