@@ -4275,6 +4275,7 @@ MonoBehaviour:
   creepBehaviour: {fileID: 1201049504}
   mainTerrain: {fileID: 261588236}
   terrainBehaviour: {fileID: 261588234}
+  terrainPaintBehaviour: {fileID: 261588238}
   gameStartScreenBehaviour: {fileID: 196478715}
   gameEndScreenBehaviour: {fileID: 219737000}
   cameraBehaviour: {fileID: 119510465}

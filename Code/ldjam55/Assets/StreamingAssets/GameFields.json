@@ -741,7 +741,7 @@
         "Methods": [
           {
             "Method": "SpawnCreep",
-            "ArumentsJson": "{\"Amount\": 5,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 20}"
+            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperFire\", \"Intervall\": 20}"
           }
         ]
       },

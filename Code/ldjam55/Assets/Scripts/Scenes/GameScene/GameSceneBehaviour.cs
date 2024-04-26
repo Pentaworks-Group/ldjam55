@@ -23,6 +23,10 @@ public class GameSceneBehaviour : MonoBehaviour
     [SerializeField]
     private TerrainBehaviour terrainBehaviour;
 
+
+    [SerializeField]
+    private TerrainPaintBehaviour terrainPaintBehaviour;
+
     [SerializeField]
     private GameStartScreenBehaviour gameStartScreenBehaviour;
 
@@ -90,7 +94,8 @@ public class GameSceneBehaviour : MonoBehaviour
         GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
 
         levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
-
+        terrainBehaviour.GenerateTerrain();
+        terrainPaintBehaviour.UpdateTerrain();
         gameStartScreenBehaviour.ShowStartScreen();
         cameraBehaviour.UpdatePosition();
     }

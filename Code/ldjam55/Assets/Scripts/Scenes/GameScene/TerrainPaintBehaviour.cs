@@ -32,18 +32,8 @@ public class TerrainPaintBehaviour : MonoBehaviour
         creepBehaviour.OnFieldCreatedEvent.Add((field) => UpdateTerrain());
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        UpdateTerrain();
 
-
-        //        Field f = new Field { Coords = new GameFrame.Core.Math.Vector2(0, 0) };
-        //        paintCreep(f);
-
-    }
-
-    private void UpdateTerrain()
+    public void UpdateTerrain()
     {
         if (Core.Game.State.CurrentLevel.GameField.Fields.Count == 0)
         {

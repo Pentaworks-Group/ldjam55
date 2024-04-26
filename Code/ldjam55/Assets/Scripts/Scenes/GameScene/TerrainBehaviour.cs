@@ -45,7 +45,6 @@ public class TerrainBehaviour : MonoBehaviour
         //TODO: isInit?
         init();
 
-        GenerateTerrain();
 
         creepBehaviour.OnFieldCreatedEvent.Add((field) => GenerateTerrain());
     }

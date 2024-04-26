@@ -31,6 +31,7 @@ namespace Assets.Scripts.Core.Definitions.Loaders
                         Levels = loadedGameMode.Levels,
                         FlowSpeed = loadedGameMode.FlowSpeed,
                         MinFlow = loadedGameMode.MinFlow,
+                        MinNewCreep = loadedGameMode.MinNewCreep,
                         NothingFlowRate = loadedGameMode.NothingFlowRate,
                     };
 

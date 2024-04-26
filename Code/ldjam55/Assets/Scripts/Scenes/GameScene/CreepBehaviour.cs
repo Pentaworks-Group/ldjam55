@@ -712,20 +712,24 @@ public class CreepBehaviour : MonoBehaviour
 
     private void UpdateCreep()
     {
-        SetOldValues();
         UpdateCreepAtBorders();
     }
 
     private void UpdateCreepAtBorders()
     {
         float tickFlowFactor = Time.deltaTime * Core.Game.State.Mode.FlowSpeed;
+        List<Creep> creeperChanged = new();
         foreach (var border in borders)
         {
-            UpdateCreepAtBorder(border, tickFlowFactor);
+            UpdateCreepAtBorder(border, tickFlowFactor, creeperChanged);
+        }
+        foreach (var creeper in creeperChanged)
+        {
+            creeper.CreeperChanged = false;
         }
     }
 
-    private void UpdateCreepAtBorder(Border border, float tickFlowFactor)
+    private void UpdateCreepAtBorder(Border border, float tickFlowFactor, List<Creep> creeperChanged)
     {
         if (border.BorderStatus.FlowValue == 0)
         {
@@ -747,226 +751,98 @@ public class CreepBehaviour : MonoBehaviour
         float heightDiff = border.Field1.Height - border.Field2.Height;
         if (creep1 == null)
         {
-            float flow = GetFlowPreassure(creep2, border.BorderStatus.FlowValue, tickFlowFactor, heightDiff);
-            if (Mathf.Abs(flow) < Core.Game.State.Mode.MinFlow)
-            {
-                return;
-            }
-            creep2.Value -= flow;
-            creep1 = new Creep()
-            {
-                Creeper = creep2.Creeper,
-                Value = flow,
-                ValueOld = 0
-            };
-            border.Field1.Creep = creep1;
-            CreeperChanged(border.Field1, null);
+            CreepingCreeper(border.Field1, border, tickFlowFactor, creep2, heightDiff, creeperChanged);
         }
         else if (creep2 == null)
         {
-            float flow = GetFlowPreassure(creep1, border.BorderStatus.FlowValue, tickFlowFactor, heightDiff);
-            if (Mathf.Abs(flow) < Core.Game.State.Mode.MinFlow)
-            {
-                return;
-            }
-            creep1.Value -= flow;
-            creep2 = new Creep()
-            {
-                Creeper = creep1.Creeper,
-                Value = flow,
-                ValueOld = 0
-            };
-            border.Field2.Creep = creep2;
-            CreeperChanged(border.Field2, null);
+            CreepingCreeper(border.Field2, border, tickFlowFactor, creep1, -heightDiff, creeperChanged);
         }
         else
         {
-            float flow1 = GetFlowPreassure(creep1, border.BorderStatus.FlowValue, tickFlowFactor, heightDiff);
-            float flow2 = GetFlowPreassure(creep2, border.BorderStatus.FlowValue, tickFlowFactor, -heightDiff);
-            float diff = flow1 - flow2;
-            if (Mathf.Abs(diff) < Core.Game.State.Mode.MinFlow)
-            {
-                return;
-            }
-            if (creep1.Creeper == creep2.Creeper)
-            {
-                creep1.Value -= diff;
-                creep2.Value += diff;
-                return;
-            }
-            creep1.Value -= flow1;
-            creep2.Value -= flow2;
-            if (diff > 0)
-            {
-                if (creep2.Value < diff)
-                {
-                    var oldCreeper = creep2.Creeper;
-                    creep2.Value = diff - creep2.Value;
-                    creep2.Creeper = creep1.Creeper;
-                    CreeperChanged(border.Field2, oldCreeper);
-                }
-                else
-                {
-                    creep2.Value -= diff;
-                }
-            }
-            else
-            {
-                if (creep1.Value < -diff)
-                {
-                    var oldCreeper = creep1.Creeper;
-                    creep1.Value = diff - creep1.Value;
-                    creep1.Creeper = creep2.Creeper;
-                    CreeperChanged(border.Field1, oldCreeper);
-                }
-                else
-                {
-                    creep1.Value += diff;
-                }
-            }
+            CreeperFight(border, tickFlowFactor, creep1, creep2, heightDiff, creeperChanged);
         }
+    }
+
+    private void CreeperFight(Border border, float tickFlowFactor, Creep creep1, Creep creep2, float heightDiff, List<Creep> creeperChanged)
+    {
+        float flow1 = GetFlowPreassure(creep1, border.BorderStatus.FlowValue, tickFlowFactor, heightDiff);
+        float flow2 = GetFlowPreassure(creep2, border.BorderStatus.FlowValue, tickFlowFactor, -heightDiff);
+        float diff = flow1 - flow2;
+        if (flow1 < Core.Game.State.Mode.MinFlow && flow2 < Core.Game.State.Mode.MinFlow)
+        {
+            return;
+        }
+        if (creep1.Creeper == creep2.Creeper)
+        {
+            creep1.Value -= diff;
+            creep2.Value += diff;
+            return;
+        }
+        creep1.Value -= flow1;
+        creep2.Value -= flow2;
+        if (diff > 0)
+        {
+            UpdateLoosingCreep(border.Field2, creep1, creep2, creeperChanged, diff);
+        }
+        else
+        {
+            UpdateLoosingCreep(border.Field1, creep2, creep1, creeperChanged, -diff);
+        }
+    }
+
+    private void UpdateLoosingCreep(Field field, Creep winnerCreep, Creep looserCreep, List<Creep> creeperChanged, float diff)
+    {
+        if (looserCreep.Value < diff)
+        {
+            var oldCreeper = looserCreep.Creeper;
+            looserCreep.Value = diff - looserCreep.Value;
+            looserCreep.Creeper = winnerCreep.Creeper;
+            looserCreep.CreeperChanged = true;
+            creeperChanged.Add(looserCreep);
+            CreeperChanged(field, oldCreeper);
+        }
+        else
+        {
+            looserCreep.Value -= diff;
+        }
+    }
+
+    private void CreepingCreeper(Field field, Border border, float tickFlowFactor, Creep creep, float heightDiff, List<Creep> creeperChanged)
+    {
+        float flow = GetFlowPreassure(creep, border.BorderStatus.FlowValue, tickFlowFactor, heightDiff);
+        if (flow < Core.Game.State.Mode.MinNewCreep)
+        {
+            return;
+        }
+        creep.Value -= flow;
+        var newCreep = new Creep()
+        {
+            Creeper = creep.Creeper,
+            Value = flow,
+            CreeperChanged = true
+        };
+        field.Creep = newCreep;
+        creeperChanged.Add(newCreep);
+        CreeperChanged(field, null);
     }
 
     private float GetFlowPreassure(Creep creep, float borderFlowFactor, float tickFlowFactor, float heightDiff)
     {
+        if (creep.CreeperChanged)
+        {
+            return 0;
+        }
         if (heightDiff == 0)
         {
             return creep.Value * borderFlowFactor * tickFlowFactor;
         }
         float creeperFactor = creep.Creeper.Parameters.HightTraverseRate;
-        float hightFactor = creeperFactor * heightDiff;
-        if (hightFactor < 0)
+        float heightFactor = creeperFactor * heightDiff;
+        if (heightFactor < 0)
         {
-            hightFactor = 1 / Mathf.Abs(hightFactor);
+            heightFactor = 1 / Mathf.Abs(heightFactor);
         }
-        return creep.Value * borderFlowFactor * tickFlowFactor * hightFactor;
-    }
-
-    private void SetOldValues()
-    {
-        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
-        {
-            if (field.Creep != null)
-            {
-                field.Creep.ValueOld = field.Creep.Value;
-            }
-        }
-    }
-
-    private void distributeCreep()
-    {
-        foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
-        {
-            if (field.Creep != null)
-            {
-                field.Creep.ValueOld = field.Creep.Value;
-            }
-        }
-
-
-        for (int i = borders.Count - 1; i >= 0; i--)
-        {
-            var border = borders[i];
-            float flow = getFlow(border.Field1, border.Field2, border.BorderStatus.FlowValue);
-            if (flow == 0)
-            {
-                continue;
-            }
-            if (border.Field1.Creep == null)
-            {
-                border.Field1.Creep = new Creep { Value = 0 };
-            }
-            if (border.Field2.Creep == null)
-            {
-                border.Field2.Creep = new Creep { Value = 0 };
-            }
-            copyCreeper(flow, border.Field1, border.Field2);
-            border.Field1.Creep.Value -= flow;
-            border.Field2.Creep.Value += flow;
-            if (border.Field1.Creep.Creeper == null)
-            {
-                border.Field1.Creep = null;
-            }
-            if (border.Field2.Creep.Creeper == null)
-            {
-                border.Field2.Creep = null;
-            }
-            //Update Border state
-        }
-    }
-
-    private void copyCreeper(float flow, Field field1, Field field2)
-    {
-        //TODO: what happens if both fields have a creeper -> Game Over/Win?
-        if (flow > 0)
-        {
-            if (field2.Creep.Creeper != field1.Creep.Creeper)
-            {
-                if (field1.Creep.Creeper == null)
-                {
-                    Debug.Log("StupidCreeper: " + field1.ID);
-                    return;
-                }
-                Creeper oldCreeper = field2.Creep.Creeper;
-                field2.Creep.Creeper = field1.Creep.Creeper;
-                CreeperChanged(field2, oldCreeper);
-            }
-        }
-        else if (flow < 0)
-        {
-            if (field1.Creep.Creeper != field2.Creep.Creeper)
-            {
-                if (field2.Creep.Creeper == null)
-                {
-                    Debug.Log("StupidCreeper: " + field2.ID);
-                    return;
-                }
-                Creeper oldCreeper = field1.Creep.Creeper;
-                field1.Creep.Creeper = field2.Creep.Creeper;
-                CreeperChanged(field1, oldCreeper);
-            }
-        }
-    }
-
-
-
-    private float getFlow(Field field1, Field field2, float borderState)
-    {
-        float valueField1 = 0;
-        if (field1.Creep != null)
-        {
-            valueField1 = field1.Creep.ValueOld;
-        }
-        float valueField2 = 0;
-        if (field2.Creep != null)
-        {
-            valueField2 = field2.Creep.ValueOld;
-        }
-        float flow = (valueField1 - valueField2) * borderState * Time.deltaTime * Core.Game.State.Mode.FlowSpeed;
-
-        var heightDiff = field1.Height - field2.Height;
-        if (Mathf.Abs(heightDiff) > 0)
-        {
-            if (field1.Creep != null && field2.Creep != null && field1.Creep.Creeper != null && field2.Creep.Creeper != null)
-            {
-                var flow1 = heightDiff * field1.Creep.Creeper.Parameters.HightTraverseRate;
-                var flow2 = heightDiff * field2.Creep.Creeper.Parameters.HightTraverseRate;
-                flow = flow1 - flow2;
-            }
-            else if (field1.Creep != null && field1.Creep.Creeper != null)
-            {
-                flow = heightDiff * field1.Creep.Creeper.Parameters.HightTraverseRate;
-            }
-            else if (field2.Creep != null && field2.Creep.Creeper != null)
-            {
-                flow = heightDiff * field2.Creep.Creeper.Parameters.HightTraverseRate;
-            }
-        }
-        if (flow > -Core.Game.State.Mode.MinFlow && flow < Core.Game.State.Mode.MinFlow)
-        {
-            flow = 0;
-        }
-        return flow;
+        return creep.Value * borderFlowFactor * tickFlowFactor * heightFactor;
     }
 
 

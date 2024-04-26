@@ -4,16 +4,17 @@
         "Name": "Default GameMode",
         "Description": "Default Default Default",
         "NothingFlowRate": 1,
-        "FlowSpeed": 0.1,
-        "MinFlow": 0.00001,
-        "StartLevel": "Testing",
+        "FlowSpeed": 0.7,
+        "MinFlow": 0.005,
+        "MinNewCreep": 0.02,
+        "StartLevel": "Level 1",
         "Creepers": [
             {
                 "ID": "CreeperWater",
                 "Name": "Holy Water",
                 "Parameters": {
                     "Material": "Water",
-                    "HightTraverseRate": 1.2
+                    "HightTraverseRate": 1.05
                 }
             },
             {
@@ -21,7 +22,7 @@
                 "Name": "Hell! Fire",
                 "Parameters": {
                     "Material": "Fire",
-                    "HightTraverseRate": -1.2
+                    "HightTraverseRate": -1.05
                 }
             }
         ],

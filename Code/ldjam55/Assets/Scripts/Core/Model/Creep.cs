@@ -8,7 +8,7 @@ namespace Assets.Scripts.Core.Model
 
         public float Value { get; set; }
 
-        public float ValueOld { get; set; }
+        public bool CreeperChanged { get; set; } = false;
 
         public int PaintRadiusOld { get; set; }
     }
