@@ -1,127 +1,158 @@
-using Assets.Scripts.Core.Model;
-using Assets.Scripts.Scenes.GameScene;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimeManagerBehaviour : MonoBehaviour
+namespace Assets.Scripts.Scene.GameScene
 {
-
-    private class SheduledEvent
+    public class TimeManagerBehaviour : MonoBehaviour
     {
-        public float Time;
-        public Action EventAction;
-        public string EventName;
-        public float Interval;
-    }
 
-    private List<SheduledEvent> sheduledEvents = new List<SheduledEvent>();
-    private Dictionary<int, List<SheduledEvent>> eventsByObjectID = new();
-    private float nextEventTime;
-
-
-    private void Awake()
-    {
-        nextEventTime = 0;
-    }
-
-    private void OnEnable()
-    {
-        nextEventTime = 0;
-    }
-
-
-    void Update()
-    {
-        if (nextEventTime != default && nextEventTime < Time.time)
+        private class SheduledEvent
         {
-            SheduledEvent sheduledEvent = sheduledEvents[0];
-            sheduledEvent.EventAction();
-            sheduledEvents.Remove(sheduledEvent);
-            if (sheduledEvent.Interval > 0)
+            public float Time;
+            public Action EventAction;
+            public string EventName;
+            public float Interval;
+        }
+
+        private List<SheduledEvent> sheduledEvents = new List<SheduledEvent>();
+        private Dictionary<int, List<SheduledEvent>> eventsByObjectID = new();
+        private float nextEventTime;
+
+
+        private void Awake()
+        {
+            nextEventTime = 0;
+        }
+
+        private void OnEnable()
+        {
+            nextEventTime = 0;
+        }
+
+
+        void Update()
+        {
+            if (Base.Core.Game.isRunning && nextEventTime != default && nextEventTime < Time.time)
             {
-                sheduledEvent.Time += sheduledEvent.Interval;
-                InsertEvent(sheduledEvent);
-            }
-            else
-            {
-                if (sheduledEvents.Count > 0)
+                SheduledEvent sheduledEvent = sheduledEvents[0];
+                sheduledEvent.EventAction();
+                sheduledEvents.Remove(sheduledEvent);
+                if (sheduledEvent.Interval > 0)
                 {
-                    nextEventTime = sheduledEvent.Time;
+                    sheduledEvent.Time += sheduledEvent.Interval;
+                    InsertEvent(sheduledEvent);
                 }
                 else
                 {
-                    nextEventTime = 0;
+                    if (sheduledEvents.Count > 0)
+                    {
+                        nextEventTime = sheduledEvent.Time;
+                    }
+                    else
+                    {
+                        nextEventTime = 0;
+                    }
+                }
+
+            }
+        }
+
+        public void Reset()
+        {
+            sheduledEvents = new List<SheduledEvent>();
+            eventsByObjectID = new();
+            nextEventTime = 0;
+        }
+
+        private void AddToEventsByObjectID(int objectId, SheduledEvent sheduledEvent)
+        {
+            if (!eventsByObjectID.TryGetValue(objectId, out var sheduledEs))
+            {
+                sheduledEs = new();
+                eventsByObjectID[objectId] = sheduledEs;
+            }
+            sheduledEs.Add(sheduledEvent);
+        }
+
+        public void RegisterEvent(float time, Action action, string eventName, int objectId, float Interval = 0, bool fromNow = true)
+        {
+            var newEvent = new SheduledEvent { EventName = eventName, EventAction = action, Interval = Interval };
+            float eventTime;
+            if (fromNow)
+            {
+                eventTime = time + Time.time;
+            }
+            else
+            {
+                eventTime = time;
+            }
+            newEvent.Time = eventTime;
+            AddToEventsByObjectID(objectId, newEvent);
+            InsertEvent(newEvent);
+        }
+
+        private void InsertEvent(SheduledEvent newEvent)
+        {
+            float eventTime = newEvent.Time;
+            for (int i = 0; i < sheduledEvents.Count; i++)
+            {
+                var shEvent = sheduledEvents[i];
+                if (eventTime < shEvent.Time)
+                {
+                    sheduledEvents.Insert(i, newEvent);
+                    nextEventTime = sheduledEvents[0].Time;
+                    return;
                 }
             }
-
-        }
-    }
-
-    public void Reset()
-    {
-        sheduledEvents = new List<SheduledEvent>();
-        eventsByObjectID = new();
-        nextEventTime = 0;
-    }
-
-    private void AddToEventsByObjectID(int objectId, SheduledEvent sheduledEvent)
-    {
-        if (!eventsByObjectID.TryGetValue(objectId, out var sheduledEs))
-        {
-            sheduledEs = new();
-            eventsByObjectID[objectId] = sheduledEs;
-        }
-        sheduledEs.Add(sheduledEvent);
-    }
-
-    public void RegisterEvent(float time, Action action, string eventName, int objectId, float Interval = 0, bool fromNow = true)
-    {
-        var newEvent = new SheduledEvent { EventName = eventName, EventAction = action, Interval = Interval };
-        float eventTime;
-        if (fromNow)
-        {
-            eventTime = time + Time.time;
-        }
-        else
-        {
-            eventTime = time;
-        }
-        newEvent.Time = eventTime;
-        AddToEventsByObjectID(objectId, newEvent);
-        InsertEvent(newEvent);
-    }
-
-    private void InsertEvent(SheduledEvent newEvent)
-    {
-        float eventTime = newEvent.Time;
-        for (int i = 0; i < sheduledEvents.Count; i++)
-        {
-            var shEvent = sheduledEvents[i];
-            if (eventTime < shEvent.Time)
+            sheduledEvents.Add(newEvent);
+            if (sheduledEvents.Count <= 1)
             {
-                sheduledEvents.Insert(i, newEvent);
                 nextEventTime = sheduledEvents[0].Time;
-                return;
             }
         }
-        sheduledEvents.Add(newEvent);
-        if (sheduledEvents.Count <= 1)
-        {
-            nextEventTime = sheduledEvents[0].Time;
-        }
-    }
 
-    public void UnregisterByObjectID(int objectId)
-    {
-        if (eventsByObjectID.TryGetValue(objectId, out var sheduledEs))
+        public void UnregisterByObjectID(int objectId)
         {
-            foreach (var sheduledE in sheduledEs)
+            if (eventsByObjectID.TryGetValue(objectId, out var sheduledEs))
             {
-                sheduledEvents.Remove(sheduledE);
-            }
-            eventsByObjectID.Remove(objectId);
+                foreach (var sheduledE in sheduledEs)
+                {
+                    sheduledEvents.Remove(sheduledE);
+                }
+                eventsByObjectID.Remove(objectId);
 
+                if (sheduledEvents.Count > 0)
+                {
+                    nextEventTime = sheduledEvents[0].Time;
+                }
+                else
+                {
+                    nextEventTime = default;
+                }
+            }
+        }
+
+        public void UnregisterEvent(string eventName, bool startingWith = false)
+        {
+            for (int i = sheduledEvents.Count - 1; i >= 0; i--)
+            {
+                var shEvent = sheduledEvents[i];
+                if (startingWith)
+                {
+                    if (shEvent.EventName.StartsWith(eventName))
+                    {
+                        sheduledEvents.RemoveAt(i);
+                    }
+                }
+                else
+                {
+                    if (shEvent.EventName == eventName)
+                    {
+                        sheduledEvents.RemoveAt(i);
+                    }
+                }
+            }
             if (sheduledEvents.Count > 0)
             {
                 nextEventTime = sheduledEvents[0].Time;
@@ -130,36 +161,6 @@ public class TimeManagerBehaviour : MonoBehaviour
             {
                 nextEventTime = default;
             }
-        }
-    }
-
-    public void UnregisterEvent(string eventName, bool startingWith = false)
-    {
-        for (int i = sheduledEvents.Count - 1; i >= 0; i--)
-        {
-            var shEvent = sheduledEvents[i];
-            if (startingWith)
-            {
-                if (shEvent.EventName.StartsWith(eventName))
-                {
-                    sheduledEvents.RemoveAt(i);
-                }
-            }
-            else
-            {
-                if (shEvent.EventName == eventName)
-                {
-                    sheduledEvents.RemoveAt(i);
-                }
-            }
-        }
-        if (sheduledEvents.Count > 0)
-        {
-            nextEventTime = sheduledEvents[0].Time;
-        }
-        else
-        {
-            nextEventTime = default;
         }
     }
 }

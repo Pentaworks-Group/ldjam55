@@ -1,5 +1,6 @@
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
+using Assets.Scripts.Scene.GameScene;
 using Assets.Scripts.Scenes.GameScene;
 using Newtonsoft.Json.Linq;
 using System;
@@ -62,7 +63,11 @@ public class CreepBehaviour : MonoBehaviour
         if (Core.Game.isRunning)
         {
             //distributeCreep();
-            UpdateCreep();
+
+            for (int i = 0; i < Core.Game.GameSpeed; i++)
+            {
+                UpdateCreep();
+            }
         }
     }
 

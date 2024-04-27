@@ -15,7 +15,9 @@ namespace Assets.Scripts.Core
 
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
-        public bool isRunning = false;
+        public bool isRunning { get; set; } = false;
+
+        public int GameSpeed { get; set; } = 1;
 
         public List<AudioClip> EffectsClipList { get; set; }
 

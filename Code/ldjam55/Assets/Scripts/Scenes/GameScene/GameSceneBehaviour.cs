@@ -40,7 +40,14 @@ public class GameSceneBehaviour : MonoBehaviour
     private TextMeshProUGUI timeElapsedDisplay;
 
     [SerializeField]
+    private TextMeshProUGUI gameSpeedDisplay;
+
+    [SerializeField]
     private TextMeshProUGUI levelDisplay;
+
+
+    [SerializeField]
+    private TextMeshProUGUI pauseButtonDisplay;
 
     private Dictionary<string, GameObject> Templates;
 
@@ -48,9 +55,8 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private float timeUpdate = 0;
 
-    private float levelStartTime = 0;
+    private Dictionary<FieldObject, GameObject> fieldObjectsCache = new();
 
-    private Dictionary<FieldObject,  GameObject> fieldObjectsCache = new();
 
     private void Awake()
     {
@@ -61,25 +67,14 @@ public class GameSceneBehaviour : MonoBehaviour
     void Start()
     {
         //        creepBehaviour.StartGame();
-        
-        foreach (var fieldObject in Core.Game.State.CurrentLevel.GameField.FieldObjects)
-        {
-            SpawnFieldObject(fieldObject);
-        }
 
-        Borders = new Dictionary<string, GameObject>();
-        foreach (var border in Core.Game.State.CurrentLevel.GameField.Borders)
-        {
-            if (border.BorderType.Name == "BorderWall")
-            {
-                SpawnBorder(border);
-            }
-        }
 
+        Time.timeScale = 0f;
         creepBehaviour.OnBorderCreatedEvent.Add(SpawnBorder);
         creepBehaviour.OnBorderDestroyedEvent.Add(DestroyBorder);
         creepBehaviour.OnFieldObjectCreatedEvent.Add(SpawnFieldObject);
         creepBehaviour.OnFieldObjectDestroyedEvent.Add(DestroyFieldObject);
+        creepBehaviour.OnFieldCreatedEvent.Add(UpdateField);
 
         creepBehaviour.gameEndConditionHandler.RegisterListener(GameEnded);
 
@@ -96,23 +91,60 @@ public class GameSceneBehaviour : MonoBehaviour
         levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
         terrainBehaviour.GenerateTerrain();
         terrainPaintBehaviour.UpdateTerrain();
+
+        SpawnObjectsOnMap();
         gameStartScreenBehaviour.ShowStartScreen();
         cameraBehaviour.UpdatePosition();
     }
 
+    private void Update()
+    {
+        //        Core.Game.State.TimeElapsed += Time.deltaTime;
+        if (Core.Game.isRunning)
+        {
+            Core.Game.State.TimeElapsed += Core.Game.GameSpeed * Time.deltaTime;
+            if (timeUpdate < 0)
+            {
+                timeElapsedDisplay.text = (Core.Game.State.TimeElapsed).ToString("F0");// Core.Game.State.TimeElapsed.ToString("F1");
+                timeUpdate = 0.2f;
+            }
+            else
+            {
+                timeUpdate -= Time.deltaTime;
+            }
+        }
+    }
+
+
+    private void SpawnObjectsOnMap()
+    {
+        foreach (var fieldObject in Core.Game.State.CurrentLevel.GameField.FieldObjects)
+        {
+            SpawnFieldObject(fieldObject);
+        }
+
+        Borders = new Dictionary<string, GameObject>();
+        foreach (var border in Core.Game.State.CurrentLevel.GameField.Borders)
+        {
+            if (border.BorderType.Name == "BorderWall")
+            {
+                SpawnBorder(border);
+            }
+        }
+    }
+
     public void StartLevel()
     {
-        levelStartTime = Time.time;
 
-        Core.Game.PlayButtonSound();
+        Core.Game.State.TimeElapsed = 0;
+        Core.Game.GameSpeed = 1;
 
-        gameStartScreenBehaviour.HideStartScreen();
+        gameSpeedDisplay.text = Core.Game.GameSpeed.ToString();
 
         creepBehaviour.StartGame();
+        Core.Game.PlayButtonSound();
+        gameStartScreenBehaviour.HideStartScreen();
 
-        Core.Game.isRunning = true;
-
-        creepBehaviour.OnFieldCreatedEvent.Add(UpdateField);
     }
 
     private void SpawnBorder(Border border)
@@ -128,19 +160,6 @@ public class GameSceneBehaviour : MonoBehaviour
         Borders.Add(GetBorderKey(border), newFieldGO);
     }
 
-    private void Update()
-    {
-//        Core.Game.State.TimeElapsed += Time.deltaTime;
-        if (timeUpdate < 0)
-        {
-            timeElapsedDisplay.text = (Time.time - levelStartTime).ToString("F0");// Core.Game.State.TimeElapsed.ToString("F1");
-            timeUpdate = 0.2f;
-        }
-        else
-        {
-            timeUpdate -= Time.deltaTime;
-        }
-    }
 
     private void GameEnded(GameEndCondition conditon)
     {
@@ -209,7 +228,7 @@ public class GameSceneBehaviour : MonoBehaviour
         var container = newFieldGO.AddComponent<GameFieldContainerBehaviour>();
         container.ContainedObject = fieldObject;
         container.ObjectType = "FieldObject";
-        if(fieldObject.Material.Length > 0 )
+        if (fieldObject.Material.Length > 0)
         {
             var material = GameFrame.Base.Resources.Manager.Materials.Get(fieldObject.Material);
             newFieldGO.GetComponent<Renderer>().material = material;
@@ -260,7 +279,7 @@ public class GameSceneBehaviour : MonoBehaviour
         pos.z = (int)((2 * pos.z + 1) * mapSize.z / (2 * terrainBehaviour.FieldCountY));
         return pos;
     }
-        
+
     private void SetBorderPositionAndRotation(Assets.Scripts.Core.Model.Border border, GameObject borderObject)
     {
         float x1 = border.Field1.Coords.X;
@@ -284,4 +303,31 @@ public class GameSceneBehaviour : MonoBehaviour
         }
     }
 
+
+    public void IncreaseGameSpeed()
+    {
+        Core.Game.GameSpeed++;
+        gameSpeedDisplay.text = Core.Game.GameSpeed.ToString();
+    }
+    public void DecreaseGameSpeed()
+    {
+        Core.Game.GameSpeed--;
+        Core.Game.GameSpeed = Mathf.Max(1, Core.Game.GameSpeed);
+        gameSpeedDisplay.text = Core.Game.GameSpeed.ToString();
+    }
+
+    public void TogglePause()
+    {
+        Core.Game.isRunning = !Core.Game.isRunning;
+        if (Core.Game.isRunning)
+        {
+            Time.timeScale = 1f;
+            pauseButtonDisplay.text = "Pause";
+        }
+        else
+        {
+            Time.timeScale = 0f;
+            pauseButtonDisplay.text = "Resume";
+        }
+    }
 }
