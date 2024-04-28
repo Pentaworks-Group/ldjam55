@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
-using Assets.Scripts.Scenes.GameScene;
-using System.Collections.Generic;
+
 using TMPro;
+
 using UnityEngine;
 
 public class GameSceneBehaviour : MonoBehaviour
@@ -13,7 +15,6 @@ public class GameSceneBehaviour : MonoBehaviour
     [SerializeField]
     private GameObject World;
 
-
     [SerializeField]
     private CreepBehaviour creepBehaviour;
 
@@ -22,7 +23,6 @@ public class GameSceneBehaviour : MonoBehaviour
 
     [SerializeField]
     private TerrainBehaviour terrainBehaviour;
-
 
     [SerializeField]
     private TerrainPaintBehaviour terrainPaintBehaviour;
@@ -45,7 +45,6 @@ public class GameSceneBehaviour : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI levelDisplay;
 
-
     [SerializeField]
     private TextMeshProUGUI pauseButtonDisplay;
 
@@ -57,7 +56,6 @@ public class GameSceneBehaviour : MonoBehaviour
 
     private Dictionary<FieldObject, GameObject> fieldObjectsCache = new();
 
-
     private void Awake()
     {
         FetchTemplates();
@@ -67,8 +65,6 @@ public class GameSceneBehaviour : MonoBehaviour
     void Start()
     {
         //        creepBehaviour.StartGame();
-
-
         Time.timeScale = 0f;
         creepBehaviour.OnBorderCreatedEvent.Add(SpawnBorder);
         creepBehaviour.OnBorderDestroyedEvent.Add(DestroyBorder);
@@ -79,12 +75,12 @@ public class GameSceneBehaviour : MonoBehaviour
         creepBehaviour.gameEndConditionHandler.RegisterListener(GameEnded);
 
         var backgroundAudioClips = new List<AudioClip>()
-            {
-                GameFrame.Base.Resources.Manager.Audio.Get("Music_2"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Music_3"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Music_4"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Music_5")
-            };
+        {
+            GameFrame.Base.Resources.Manager.Audio.Get("Music_2"),
+            GameFrame.Base.Resources.Manager.Audio.Get("Music_3"),
+            GameFrame.Base.Resources.Manager.Audio.Get("Music_4"),
+            GameFrame.Base.Resources.Manager.Audio.Get("Music_5")
+        };
 
         GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
 
@@ -135,7 +131,6 @@ public class GameSceneBehaviour : MonoBehaviour
 
     public void StartLevel()
     {
-
         Core.Game.State.TimeElapsed = 0;
         Core.Game.GameSpeed = 1;
 
@@ -144,7 +139,6 @@ public class GameSceneBehaviour : MonoBehaviour
         creepBehaviour.StartGame();
         Core.Game.PlayButtonSound();
         gameStartScreenBehaviour.HideStartScreen();
-
     }
 
     private void SpawnBorder(Border border)
@@ -159,7 +153,6 @@ public class GameSceneBehaviour : MonoBehaviour
         newFieldGO.SetActive(true);
         Borders.Add(GetBorderKey(border), newFieldGO);
     }
-
 
     private void GameEnded(GameEndCondition conditon)
     {
@@ -189,7 +182,7 @@ public class GameSceneBehaviour : MonoBehaviour
     public void RestartLevel()
     {
         Core.Game.PlayButtonSound();
-
+                
         Core.Game.RestartLevel();
 
         levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
@@ -303,7 +296,6 @@ public class GameSceneBehaviour : MonoBehaviour
         }
     }
 
-
     public void IncreaseGameSpeed()
     {
         Core.Game.GameSpeed++;
@@ -319,6 +311,7 @@ public class GameSceneBehaviour : MonoBehaviour
     public void TogglePause()
     {
         Core.Game.isRunning = !Core.Game.isRunning;
+
         if (Core.Game.isRunning)
         {
             Time.timeScale = 1f;

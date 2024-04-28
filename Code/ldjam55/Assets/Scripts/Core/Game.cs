@@ -1,8 +1,9 @@
-using Assets.Scripts.Core.Definitions.Loaders;
-using Assets.Scripts.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Assets.Scripts.Core.Definitions.Loaders;
+using Assets.Scripts.Core.Model;
 
 using UnityEngine;
 
@@ -36,12 +37,10 @@ namespace Assets.Scripts.Core
 
         public UserActionHandler UserActionHandler { get; private set; } = new UserActionHandler();
 
-
         public void PlayButtonSound()
         {
             GameFrame.Base.Audio.Effects.Play("Button");
         }
-
 
         public GameState GetInitGameState()
         {
@@ -73,6 +72,7 @@ namespace Assets.Scripts.Core
             {
                 gameState.CurrentLevel = GetLevel(SelectedGameMode.StartLevel);
             }
+
             if (gameState.CurrentLevel == null)
             {
                 gameState.CurrentLevel = ConvertLevel(SelectedGameMode.Levels[0]);
@@ -90,10 +90,9 @@ namespace Assets.Scripts.Core
                     return ConvertLevel(level);
                 }
             }
+
             return null;
         }
-
-
 
         public void StartNextLevel()
         {
@@ -104,10 +103,14 @@ namespace Assets.Scripts.Core
 
         public void RestartLevel()
         {
+            isRunning = false;
+
             var nL = State.CurrentLevel.Name;
             var level = GetLevel(nL);
+
             StartLevel(level);
         }
+
         public void StartCurrenLevelWithField(Definitions.GameField field)
         {
             foreach (var level in SelectedGameMode.Levels)
@@ -124,8 +127,7 @@ namespace Assets.Scripts.Core
             }
         }
 
-
-        public void StartLevel(Level level) 
+        public void StartLevel(Level level)
         {
             State.CurrentLevel = level;
             ChangeScene(State.CurrentScene);
@@ -385,8 +387,6 @@ namespace Assets.Scripts.Core
 
             return gameMode;
         }
-
-
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void GameStart()
