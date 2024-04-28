@@ -29,7 +29,7 @@
         "Levels": [
             {
                 "Name": "Level 1",
-                "Description": "Can you see the yellow slime mold? That's you. Do you see the Grail? That's where you want to go. If you reach this grail, then you win. Destroy the wall. It is in the way.",
+                "Description": "Can you see the yellow slime mold? That's you. Do you see the Grail? That's where you want to go. If you reach this grail, then you win. Destroy the wall. It is in the way. To speed up the spread you can increase the game speed with the + button.",
                 "NextLevel": "Level 2",
                 "UserActions": [
                     {
@@ -194,7 +194,7 @@
                 ]
             },
             {
-                "Name": "Level 6",
+                "Name": "Level 7",
                 "Description": "Protect the red grail from the red slime. You can only place two yellow slimes. You'll loose anyway",
                 "UserActions": [
                     {
@@ -261,6 +261,36 @@
                         "IsWin": false,
                         "WinCount": 1
                     },
+                    {
+                        "Name": "WinTouch",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "Description": "You didn't reach the target field'.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
+            },
+            {
+                "Name": "Level 6",
+                "Description": "How to stop the onslaught?",
+                "NextLevel": "Level 7",
+                "UserActions": [
+                    {
+                        "Name": "CreateWall",
+                        "UsesRemaining": 1,
+                        "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "TheF"
+                },
+                "EndConditions": [
                     {
                         "Name": "WinTouch",
                         "Description": "You reached the target field.",
