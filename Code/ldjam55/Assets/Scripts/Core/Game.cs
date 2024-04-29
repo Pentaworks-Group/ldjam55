@@ -68,11 +68,11 @@ namespace Assets.Scripts.Core
                 Mode = ConvertGameMode(SelectedGameMode),
             };
 
+            Debug.Log("InitGameState: " + availableGameFields.Count);
             if (SelectedGameMode.StartLevel != null)
             {
                 gameState.CurrentLevel = GetLevel(SelectedGameMode.StartLevel);
             }
-
             if (gameState.CurrentLevel == null)
             {
                 gameState.CurrentLevel = ConvertLevel(SelectedGameMode.Levels[0]);
@@ -234,6 +234,7 @@ namespace Assets.Scripts.Core
 
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
+            Debug.Log("Converting field: " + gameFieldDefinition.Reference);
             Debug.Log("Converting field: " + gameFieldDefinition.Reference);
 
             var gameField = new Model.GameField()
