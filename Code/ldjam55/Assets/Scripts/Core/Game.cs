@@ -218,6 +218,7 @@ namespace Assets.Scripts.Core
 
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
+            Debug.Log("Converting field: " + gameFieldDefinition.Reference);
             var gameField = new Model.GameField() { IsReferenced = gameFieldDefinition.IsReferenced, Reference = gameFieldDefinition.Reference };
             gameField.Fields = ConvertFields(gameFieldDefinition.Fields);
             var fields = gameField.Fields.ToDictionary(field => field.ID, field => field);
