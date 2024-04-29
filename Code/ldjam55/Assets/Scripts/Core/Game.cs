@@ -194,6 +194,8 @@ namespace Assets.Scripts.Core
 
         private void TestGameFields(List<Definitions.GameField> fields)
         {
+            Debug.Log($"Testing GameFields: {fields?.Count}");
+
             foreach (var field in fields)
             {
                 if (field.Fields == null)
