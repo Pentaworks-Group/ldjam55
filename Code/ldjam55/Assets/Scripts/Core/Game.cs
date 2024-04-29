@@ -184,16 +184,21 @@ namespace Assets.Scripts.Core
 
         private void LoadGameSettings()
         {
-            new ResourceLoader<Definitions.GameField>(this.availableGameFields).LoadDefinition("GameFields.json");
-            foreach (var field in this.availableGameFields.Values)
+            new ResourceLoader<Definitions.GameField>(this.availableGameFields).LoadDefinition("GameFields.json", TestGameFields);
+
+            //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
+            new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
+        }
+
+        private void TestGameFields(List<Definitions.GameField> fields)
+        {
+            foreach (var field in fields)
             {
                 if (field.Fields == null)
                 {
                     Debug.Log("Loaded gamefield with no fields: " + field.Reference);
                 }
             }
-            //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
-            new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
         }
 
         private void InitializeAudioClips()
@@ -226,13 +231,21 @@ namespace Assets.Scripts.Core
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
             Debug.Log("Converting field: " + gameFieldDefinition.Reference);
-            var gameField = new Model.GameField() { IsReferenced = gameFieldDefinition.IsReferenced, Reference = gameFieldDefinition.Reference };
+
+            var gameField = new Model.GameField()
+            {
+                IsReferenced = gameFieldDefinition.IsReferenced,
+                Reference = gameFieldDefinition.Reference
+            };
+
             gameField.Fields = ConvertFields(gameFieldDefinition.Fields);
             var fields = gameField.Fields.ToDictionary(field => field.ID, field => field);
             gameField.Borders = ConvertBordersForGameField(gameFieldDefinition.Borders, fields);
             gameField.FieldObjects = ConvertFieldObjects(gameFieldDefinition.FieldObjects, fields);
+
             return gameField;
         }
+
         private List<Field> ConvertFields(List<Definitions.Field> fieldDefinitionList)
         {
             if (fieldDefinitionList == null)
@@ -241,6 +254,7 @@ namespace Assets.Scripts.Core
                 return new();
             }
             var fieldList = new List<Model.Field>();
+
             foreach (var borderDefinition in fieldDefinitionList)
             {
                 var field = new Model.Field()
@@ -249,18 +263,22 @@ namespace Assets.Scripts.Core
                     Height = borderDefinition.Height,
                     ID = borderDefinition.ID,
                 };
+
                 fieldList.Add(field);
             }
+
             return fieldList;
         }
+
         private List<Border> ConvertBordersForGameField(List<Definitions.Border> borderDefinitionList, Dictionary<string, Model.Field> fieldDict)
         {
-
             var borderList = new List<Model.Border>();
+
             foreach (var borderDefinition in borderDefinitionList)
             {
                 borderList.Add(ConvertBorder(borderDefinition, fieldDict));
             }
+
             return borderList;
         }
 
@@ -333,13 +351,16 @@ namespace Assets.Scripts.Core
                 UserActions = CopyUserActions(level.UserActions),
                 NextLevel = level.NextLevel
             };
+
             modelLevel.GameField = ConvertGameField(level.GameField);
+
             return modelLevel;
         }
 
         private List<UserAction> CopyUserActions(List<UserAction> actions)
         {
             var cps = new List<UserAction>();
+
             foreach (var action in actions)
             {
                 cps.Add(new UserAction()
@@ -357,6 +378,7 @@ namespace Assets.Scripts.Core
         private List<GameEndCondition> CopyGameEndCondition(List<GameEndCondition> conditions)
         {
             var cps = new List<GameEndCondition>();
+
             foreach (var action in conditions)
             {
                 cps.Add(new GameEndCondition()

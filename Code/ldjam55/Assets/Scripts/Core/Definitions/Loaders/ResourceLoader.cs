@@ -10,6 +10,7 @@ namespace Assets.Scripts.Core.Definitions.Loaders
     public class ResourceLoader<TDefinition> where TDefinition : GameFrame.Core.Definitions.BaseDefinition
     {
         protected readonly Dictionary<String, TDefinition> targetCache;
+        protected Action<List<TDefinition>> onCompleteAction;
 
         public ResourceLoader(Dictionary<String, TDefinition> targetCache)
         {
@@ -21,9 +22,11 @@ namespace Assets.Scripts.Core.Definitions.Loaders
             this.targetCache = targetCache;
         }
 
-        public virtual void LoadDefinition(String resourceName)
+        public virtual void LoadDefinition(String resourceName, Action<List<TDefinition>> onCompleteAction = default)
         {
             var filePath = $"{Application.streamingAssetsPath}/{resourceName}";
+
+            this.onCompleteAction = onCompleteAction;
 
             LoadAsset(filePath, HandleDefinitions);
         }
@@ -60,6 +63,8 @@ namespace Assets.Scripts.Core.Definitions.Loaders
                     }
                 }
             }
+
+            this.onCompleteAction?.Invoke(sourceList);
 
             return sourceList;
         }

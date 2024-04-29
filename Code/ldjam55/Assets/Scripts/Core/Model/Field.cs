@@ -1,8 +1,7 @@
-
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
+using Newtonsoft.Json;
 
 namespace Assets.Scripts.Core.Model
 {
@@ -24,6 +23,5 @@ namespace Assets.Scripts.Core.Model
         {
             return this.Coords.X + ", " + this.Coords.Y + ", " + this.Height;
         }
-
     }
 }
