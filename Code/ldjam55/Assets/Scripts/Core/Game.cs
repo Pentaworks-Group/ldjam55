@@ -192,6 +192,7 @@ namespace Assets.Scripts.Core
                     Debug.Log("Loaded gamefield with no fields: " + field.Reference);
                 }
             }
+            Debug.Log("Loaded resources");
             //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
             new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
         }
