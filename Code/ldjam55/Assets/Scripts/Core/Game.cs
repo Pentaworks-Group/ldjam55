@@ -61,6 +61,7 @@ namespace Assets.Scripts.Core
                 }
             }
 
+            Debug.Log("InitGameState: " + availableGameFields.Count);
             var gameState = new GameState()
             {
                 CreatedOn = DateTime.Now,
@@ -68,7 +69,6 @@ namespace Assets.Scripts.Core
                 Mode = ConvertGameMode(SelectedGameMode),
             };
 
-            Debug.Log("InitGameState: " + availableGameFields.Count);
             if (SelectedGameMode.StartLevel != null)
             {
                 gameState.CurrentLevel = GetLevel(SelectedGameMode.StartLevel);
