@@ -227,6 +227,11 @@ namespace Assets.Scripts.Core
         }
         private List<Field> ConvertFields(List<Definitions.Field> fieldDefinitionList)
         {
+            if (fieldDefinitionList == null)
+            {
+                Debug.Log("Null fieldDefinitionList");
+                return new();
+            }
             var fieldList = new List<Model.Field>();
             foreach (var borderDefinition in fieldDefinitionList)
             {
