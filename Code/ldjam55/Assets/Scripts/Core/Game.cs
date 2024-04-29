@@ -185,6 +185,13 @@ namespace Assets.Scripts.Core
         private void LoadGameSettings()
         {
             new ResourceLoader<Definitions.GameField>(this.availableGameFields).LoadDefinition("GameFields.json");
+            foreach (var field in this.availableGameFields.Values)
+            {
+                if (field.Fields == null)
+                {
+                    Debug.Log("Loaded gamefield with no fields: " + field.Reference);
+                }
+            }
             //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
             new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
         }
