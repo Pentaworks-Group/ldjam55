@@ -188,6 +188,8 @@ namespace Assets.Scripts.Core
 
             //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
             new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
+
+            Debug.Log("Loaded resources");
         }
 
         private void TestGameFields(List<Definitions.GameField> fields)
