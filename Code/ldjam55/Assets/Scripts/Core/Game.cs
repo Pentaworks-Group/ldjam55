@@ -361,6 +361,7 @@ namespace Assets.Scripts.Core
                 NextLevel = level.NextLevel
             };
 
+            level.GameField = availableGameFields[level.GameField.Reference];
             modelLevel.GameField = ConvertGameField(level.GameField);
 
             return modelLevel;
