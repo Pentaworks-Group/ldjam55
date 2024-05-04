@@ -415,8 +415,7 @@ namespace Assets.Scripts.Core
                 FlowSpeed = selectedGameMode.FlowSpeed,
                 MinFlow = selectedGameMode.MinFlow,
                 MinNewCreep = selectedGameMode.MinNewCreep,
-                NothingFlowRate = selectedGameMode.NothingFlowRate,
-                Levels = ConvertLevels(selectedGameMode.Levels),
+                NothingFlowRate = selectedGameMode.NothingFlowRate
                 //JunkSpawnInterval = selectedGameMode.JunkSpawnInterval.GetValueOrDefault(-1),
                 //JunkSpawnInitialDistance = selectedGameMode.JunkSpawnInitialDistance.GetValueOrDefault(),
                 //JunkSpawnPosition = selectedGameMode.JunkSpawnPosition?.Copy(),
