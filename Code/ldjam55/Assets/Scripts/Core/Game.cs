@@ -235,8 +235,11 @@ namespace Assets.Scripts.Core
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
         {
             Debug.Log("Converting field: " + gameFieldDefinition.Reference);
-            Debug.Log("Converting field: " + gameFieldDefinition.Reference);
-
+            if (gameFieldDefinition.Fields == null)
+            {
+                Debug.Log("Fields: " + gameFieldDefinition.Fields);
+                Debug.Log("other fields: " + availableGameFields[gameFieldDefinition.Reference].Fields);
+            }
             var gameField = new Model.GameField()
             {
                 IsReferenced = gameFieldDefinition.IsReferenced,
@@ -256,6 +259,7 @@ namespace Assets.Scripts.Core
             if (fieldDefinitionList == null)
             {
                 Debug.Log("Null fieldDefinitionList");
+
                 return new();
             }
             var fieldList = new List<Model.Field>();
