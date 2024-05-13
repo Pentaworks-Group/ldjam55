@@ -360,8 +360,8 @@ namespace Assets.Scripts.Core
                 UserActions = CopyUserActions(level.UserActions),
                 NextLevel = level.NextLevel
             };
-
-            level.GameField = availableGameFields[level.GameField.Reference];
+            Debug.Log("description:" + level.GameField.Description + " isReferenced: " + level.GameField.IsReferenced);
+            //level.GameField = availableGameFields[level.GameField.Reference];
             modelLevel.GameField = ConvertGameField(level.GameField);
 
             return modelLevel;

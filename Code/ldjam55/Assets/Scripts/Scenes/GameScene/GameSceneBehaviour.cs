@@ -6,6 +6,7 @@ using Assets.Scripts.Core.Model;
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameSceneBehaviour : MonoBehaviour
 {
@@ -47,6 +48,12 @@ public class GameSceneBehaviour : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI pauseButtonDisplay;
+
+    [SerializeField]
+    private Image pauseButtonImage;
+
+    [SerializeField]
+    private Image menuButtonImage;
 
     private Dictionary<string, GameObject> Templates;
 
@@ -182,7 +189,7 @@ public class GameSceneBehaviour : MonoBehaviour
     public void RestartLevel()
     {
         Core.Game.PlayButtonSound();
-                
+
         Core.Game.RestartLevel();
 
         levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
@@ -316,6 +323,7 @@ public class GameSceneBehaviour : MonoBehaviour
         {
             Time.timeScale = 1f;
             pauseButtonDisplay.text = "Pause";
+            pauseButtonImage.color = menuButtonImage.color;
         }
         else
         {

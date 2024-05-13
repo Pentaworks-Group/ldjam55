@@ -39,7 +39,8 @@
                 ],
                 "GameField": {
                     "IsReferenced": true,
-                    "Reference": "World1"
+                    "Reference": "World1",
+                    "Description" : "This is a not used gamefield descripotion"
                 },
                 "EndConditions": [
                     {

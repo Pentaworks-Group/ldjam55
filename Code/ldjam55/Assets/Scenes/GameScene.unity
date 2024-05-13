@@ -1292,6 +1292,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5865278983240936799, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
   m_PrefabInstance: {fileID: 272282656}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &276500755 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7235878592488330974, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
+  m_PrefabInstance: {fileID: 613661991}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &286218823
 GameObject:
   m_ObjectHideFlags: 0
@@ -3126,7 +3137,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.45
+  m_fontSize: 38.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3350,6 +3361,18 @@ PrefabInstance:
     - target: {fileID: 6782373280921254793, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
       propertyPath: m_fontSize
       value: 19.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 7235878592488330974, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7235878592488330974, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
+      propertyPath: m_Color.g
+      value: 0.75964546
+      objectReference: {fileID: 0}
+    - target: {fileID: 7235878592488330974, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8849340443900071137, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -4661,6 +4684,8 @@ MonoBehaviour:
   gameSpeedDisplay: {fileID: 539569002}
   levelDisplay: {fileID: 396956252}
   pauseButtonDisplay: {fileID: 1848237692}
+  pauseButtonImage: {fileID: 276500755}
+  menuButtonImage: {fileID: 1520150892}
 --- !u!114 &1201049504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5604,6 +5629,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5865278983240936799, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
   m_PrefabInstance: {fileID: 1520150890}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1520150892 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7235878592488330974, guid: 28b444f801ae2654faf5606c5cdbf323, type: 3}
+  m_PrefabInstance: {fileID: 1520150890}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1538379715
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6347,7 +6383,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.45
+  m_fontSize: 38.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
