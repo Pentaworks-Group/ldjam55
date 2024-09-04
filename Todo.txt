@@ -47,6 +47,8 @@ Nice to have:
  - Implement Creeper eliminated
  - Use button prefab for UserActionButtons
  - CountDown for timers
+ - Allow multipe creepTriggers to be added for same object. Actions for map objects (TriggerHandler)
+ 
  
 Ideas:
 ----------------------------------

@@ -7,7 +7,7 @@
         "FlowSpeed": 0.7,
         "MinFlow": 0.005,
         "MinNewCreep": 0.02,
-        "StartLevel": "Level 1",
+        "StartLevel": "Level 7",
         "Creepers": [
             {
                 "ID": "CreeperWater",
@@ -195,7 +195,7 @@
                 ]
             },
             {
-                "Name": "Level 7",
+                "Name": "Level 8",
                 "Description": "Protect the red grail from the red slime. You can only place two yellow slimes. You'll loose anyway",
                 "UserActions": [
                     {
@@ -306,6 +306,36 @@
                     }
                 ]
             },
+            {
+                "Name": "Level 7",
+                "Description": "Two paths along a mountain, we can not be faster. But maybe our enemy can be distracted.",
+                "NextLevel": "Level 8",
+                "UserActions": [
+                    {
+                        "Name": "DestroyWall",
+                        "UsesRemaining": 5
+                    }
+                ],
+                "GameField": {
+                    "IsReferenced": true,
+                    "Reference": "MountainSide"
+                },
+                "EndConditions": [
+                    {
+                        "Name": "WinTouch",
+                        "Description": "You reached the target field.",
+                        "IsWin": true,
+                        "WinCount": 1
+                    },
+                    {
+                        "Name": "LooseTouch",
+                        "Description": "Your enemy was faster.",
+                        "IsWin": false,
+                        "WinCount": 1
+                    }
+                ]
+            },
+            
             {
                 "Name": "Testing",
                 "Description": "Testerdi test di test",
