@@ -36,14 +36,14 @@ public class TerrainBehaviour : MonoBehaviour
         {
             Core.Game.Start();
         }
-        init();
+        Init();
     }
 
     // Start is called before the first frame update    
     void Start()
     {
         //TODO: isInit?
-        init();
+        Init();
 
 
         creepBehaviour.OnFieldCreatedEvent.Add((field) => GenerateTerrain());
@@ -63,14 +63,14 @@ public class TerrainBehaviour : MonoBehaviour
         {
             for (int j = 0; j < mapSize; j++)
             {
-                heights[j, i] = getHeightmapValue(i, j);
+                heights[j, i] = GetHeightmapValue(i, j);
             }
         }
 
         mainTerrain.terrainData.SetHeights(0, 0, heights);
     }
 
-    private void init()
+    private void Init()
     {
         if(!isInit)
         {
@@ -100,10 +100,10 @@ public class TerrainBehaviour : MonoBehaviour
         }
     }
 
-    private float getHeightmapValue(int x, int y)
+    private float GetHeightmapValue(int x, int y)
     {
-        Vector2Int mapPos = transformHeightmapCoordToMap(new Vector2Int(x, y));
-        Vector2Int hMapCenter = transformMapCoordToHeigthmap(mapPos);
+        Vector2Int mapPos = TransformHeightmapCoordToMap(new Vector2Int(x, y));
+        Vector2Int hMapCenter = TransformMapCoordToHeigthmap(mapPos);
         int distX = x - hMapCenter.x;
         int distY = y - hMapCenter.y;
         int fieldDistX = (int)(scalingFactorX * ( fieldSize - flatFieldSize) );
@@ -112,7 +112,7 @@ public class TerrainBehaviour : MonoBehaviour
         float fieldMarginY = scalingFactorY * flatFieldSize / 2;
 
         //Main Field
-        Field field = getField(mapPos.x, mapPos.y);
+        Field field = GetField(mapPos.x, mapPos.y);
 
         //Is inside flat field
         bool isInsideField = Math.Abs(distX) <= fieldMarginX && Math.Abs(distY) <= fieldMarginY;
@@ -144,18 +144,18 @@ public class TerrainBehaviour : MonoBehaviour
             float heightBottomLeft = GetFieldHeight(field);
             float heightBottomRight = GetFieldHeight(field);
 
-            Field topRightField = getField(mapPos.x + Math.Sign(distX), mapPos.y);
+            Field topRightField = GetField(mapPos.x + Math.Sign(distX), mapPos.y);
             heightTopRight = GetFieldHeight(topRightField);
 
-            Field bottomLeftField = getField(mapPos.x, mapPos.y + Math.Sign(distY));
+            Field bottomLeftField = GetField(mapPos.x, mapPos.y + Math.Sign(distY));
             heightBottomLeft = GetFieldHeight(bottomLeftField);
 
-            Field bottomRightField = getField(mapPos.x + Math.Sign(distX), mapPos.y + Math.Sign(distY));
+            Field bottomRightField = GetField(mapPos.x + Math.Sign(distX), mapPos.y + Math.Sign(distY));
             heightBottomRight = GetFieldHeight(bottomRightField);
 
-            float interpolateX1 = getSinInterpolation(heightTopLeft, heightTopRight, paramX);
-            float interpolateX2 = getSinInterpolation(heightBottomLeft, heightBottomRight, paramX);
-            return getSinInterpolation(interpolateX1, interpolateX2, paramY);
+            float interpolateX1 = GetSinInterpolation(heightTopLeft, heightTopRight, paramX);
+            float interpolateX2 = GetSinInterpolation(heightBottomLeft, heightBottomRight, paramX);
+            return GetSinInterpolation(interpolateX1, interpolateX2, paramY);
         }
         else if (Math.Abs(distY) > fieldMarginY &&
             !(mapPos.y == 0 && distY < 0) && !(mapPos.y == FieldCountY - 1 && distY > 0)) 
@@ -164,9 +164,9 @@ public class TerrainBehaviour : MonoBehaviour
             float param = (Math.Abs(distY) - fieldMarginY) / (fieldDistY);
             float height = GetFieldHeight(field);
             float nextHeight = GetFieldHeight(field);
-            Field nextField = getField(mapPos.x, mapPos.y + Math.Sign(distY));
+            Field nextField = GetField(mapPos.x, mapPos.y + Math.Sign(distY));
             nextHeight = GetFieldHeight(nextField);
-            return getSinInterpolation(height, nextHeight, param);
+            return GetSinInterpolation(height, nextHeight, param);
         }
         else if( Math.Abs(distX) > fieldMarginX)
         {
@@ -174,14 +174,14 @@ public class TerrainBehaviour : MonoBehaviour
             float param = (Math.Abs(distX) - fieldMarginX) / (fieldDistX);
             float height = GetFieldHeight(field);
             float nextHeight = GetFieldHeight(field);
-            Field nextField = getField(mapPos.x + Math.Sign(distX), mapPos.y);
+            Field nextField = GetField(mapPos.x + Math.Sign(distX), mapPos.y);
             nextHeight = GetFieldHeight(nextField);
-            return getSinInterpolation(height, nextHeight, param);
+            return GetSinInterpolation(height, nextHeight, param);
         }
         return 0;
     }
 
-    private float getSinInterpolation(float z1, float z2, float param)
+    private float GetSinInterpolation(float z1, float z2, float param)
     {
         float p = Math.Max(0, param);
         p = Math.Min(1, p);
@@ -189,7 +189,7 @@ public class TerrainBehaviour : MonoBehaviour
         return (z2-z1)*factor+z1;
     }
 
-    private Vector2Int transformMapCoordToHeigthmap(Vector2Int pos)
+    private Vector2Int TransformMapCoordToHeigthmap(Vector2Int pos)
     {
         float heightMapSize = mainTerrain.terrainData.heightmapResolution;
         pos.x = (int)((2 * pos.x + 1) * heightMapSize / (2 * FieldCountX ));
@@ -197,7 +197,7 @@ public class TerrainBehaviour : MonoBehaviour
         return pos;
     }
 
-    private Vector2Int transformHeightmapCoordToMap(Vector2Int pos)
+    private Vector2Int TransformHeightmapCoordToMap(Vector2Int pos)
     {
         float heightMapSize = mainTerrain.terrainData.heightmapResolution;
         pos.x = (int)Math.Floor(pos.x * FieldCountX / heightMapSize);
@@ -229,7 +229,7 @@ public class TerrainBehaviour : MonoBehaviour
         return pos;
     }
 
-    public Field getField(int x, int y)
+    public Field GetField(int x, int y)
     {
         //Shift negative to 0
         Field f = Core.Game.State.CurrentLevel.GameField.Fields.Find(field => field.Coords.X==x+XOffset && field.Coords.Y==y+YOffset);

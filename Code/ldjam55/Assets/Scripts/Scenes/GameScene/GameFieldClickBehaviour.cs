@@ -72,8 +72,8 @@ namespace Assets.Scripts.Scene.GameScene
             Vector2Int mapPoint, neighborMapPoint;
             GetMapPoints(hit, out mapPoint, out neighborMapPoint);
 
-            var field = terrainBehaviour.getField(mapPoint.x, mapPoint.y);
-            var neighbor = terrainBehaviour.getField(neighborMapPoint.x, neighborMapPoint.y);
+            var field = terrainBehaviour.GetField(mapPoint.x, mapPoint.y);
+            var neighbor = terrainBehaviour.GetField(neighborMapPoint.x, neighborMapPoint.y);
 
             Border border = new Border { Field1 = field, Field2 = neighbor };
             return border;
