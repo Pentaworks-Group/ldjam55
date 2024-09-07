@@ -15,7 +15,7 @@
           "X": 0.0,
           "Y": 1.0
         },
-        "Height": 1
+        "Height": 0
       },
       {
         "ID": "0-2-0",
@@ -31,7 +31,7 @@
           "X": 0.0,
           "Y": 3.0
         },
-        "Height": 2
+        "Height": 1
       },
       {
         "ID": "0-4-0",
@@ -39,7 +39,7 @@
           "X": 0.0,
           "Y": 4.0
         },
-        "Height": 2
+        "Height": 1
       }
     ],
     "Borders": [
@@ -65,7 +65,7 @@
         "Methods": [
           {
             "Method": "SpawnCreep",
-            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 20}"
+            "ArumentsJson": "{\"Amount\": 1,\"Time\": 1,\"Creeper\": \"CreeperWater\", \"Intervall\": 2}"
           }
         ]
       },

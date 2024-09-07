@@ -2,6 +2,7 @@ using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
 using System;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class TerrainBehaviour : MonoBehaviour
 {

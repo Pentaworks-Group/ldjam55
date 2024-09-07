@@ -67,44 +67,44 @@ namespace Assets.Scripts.Scene.GameScene
             }
         }
 
-        private Border getRaycastBorder(RaycastHit hit)
-        {
-            Vector2Int mapPoint, neighborMapPoint;
-            GetMapPoints(hit, out mapPoint, out neighborMapPoint);
+        //private Border getRaycastBorder(RaycastHit hit)
+        //{
+        //    Vector2Int mapPoint, neighborMapPoint;
+        //    GetMapPoints(hit, out mapPoint, out neighborMapPoint);
 
-            var field = terrainBehaviour.GetField(mapPoint.x, mapPoint.y);
-            var neighbor = terrainBehaviour.GetField(neighborMapPoint.x, neighborMapPoint.y);
+        //    var field = terrainBehaviour.GetField(mapPoint.x, mapPoint.y);
+        //    var neighbor = terrainBehaviour.GetField(neighborMapPoint.x, neighborMapPoint.y);
 
-            Border border = new Border { Field1 = field, Field2 = neighbor };
-            return border;
-        }
+        //    Border border = new Border { Field1 = field, Field2 = neighbor };
+        //    return border;
+        //}
 
-        private void GetMapPoints(RaycastHit hit, out Vector2Int mapPoint, out Vector2Int neighborMapPoint)
-        {
-            Vector2Int terrainHitPoint = new Vector2Int((int)hit.point.x, (int)hit.point.z);
-            mapPoint = terrainBehaviour.TransformTerrainCoordToMap(terrainHitPoint);
-            Vector2Int fieldCenter = terrainBehaviour.TransformMapCoordToTerrainCoord(mapPoint);
-            Vector2Int distance = terrainHitPoint - fieldCenter;
+        //private void GetMapPoints(RaycastHit hit, out Vector2Int mapPoint, out Vector2Int neighborMapPoint)
+        //{
+        //    Vector2Int terrainHitPoint = new Vector2Int((int)hit.point.x, (int)hit.point.z);
+        //    mapPoint = terrainBehaviour.TransformTerrainCoordToMap(terrainHitPoint);
+        //    Vector2Int fieldCenter = terrainBehaviour.TransformMapCoordToTerrainCoord(mapPoint);
+        //    Vector2Int distance = terrainHitPoint - fieldCenter;
 
-            float angle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
-            //Default: Left
-            neighborMapPoint = new Vector2Int(mapPoint.x - 1, mapPoint.y);
-            if (angle > -45 && angle < 45)
-            {
-                // Right
-                neighborMapPoint = new Vector2Int(mapPoint.x + 1, mapPoint.y);
-            }
-            else if (angle <= -45 && angle > -135)
-            {
-                //Bottom
-                neighborMapPoint = new Vector2Int(mapPoint.x, mapPoint.y - 1);
-            }
-            else if (angle >= 45 && angle < 135)
-            {
-                //Top
-                neighborMapPoint = new Vector2Int(mapPoint.x, mapPoint.y + 1);
-            }
-        }
+        //    float angle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
+        //    //Default: Left
+        //    neighborMapPoint = new Vector2Int(mapPoint.x - 1, mapPoint.y);
+        //    if (angle > -45 && angle < 45)
+        //    {
+        //        // Right
+        //        neighborMapPoint = new Vector2Int(mapPoint.x + 1, mapPoint.y);
+        //    }
+        //    else if (angle <= -45 && angle > -135)
+        //    {
+        //        //Bottom
+        //        neighborMapPoint = new Vector2Int(mapPoint.x, mapPoint.y - 1);
+        //    }
+        //    else if (angle >= 45 && angle < 135)
+        //    {
+        //        //Top
+        //        neighborMapPoint = new Vector2Int(mapPoint.x, mapPoint.y + 1);
+        //    }
+        //}
 
         private Vector2 GetHitCoords(RaycastHit hit)
         {
