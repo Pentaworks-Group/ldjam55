@@ -3,6 +3,7 @@ using Assets.Scripts.Core.Model;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class TerrainPaintBehaviour : MonoBehaviour
 {
@@ -31,6 +32,9 @@ public class TerrainPaintBehaviour : MonoBehaviour
     float _alphamapHeightM1;
     int _alphamapLayers;
 
+    int _pixelPerFieldX;
+    int _pixelPerFieldY;
+
     TerrainData _terrainData;
 
     private void Awake()
@@ -57,26 +61,29 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
         _alphamapLayers = _terrainData.alphamapLayers;
 
+        _pixelPerFieldX = _alphamapWidth / terrainBehaviour.FieldCountX;
+        _pixelPerFieldY = _alphamapHeight / terrainBehaviour.FieldCountY;
         //Texture test
-        float[,,] map = new float[_alphamapWidth, _alphamapHeight, _alphamapLayers];
+        //float[,,] map = new float[_alphamapWidth, _alphamapHeight, _alphamapLayers];
 
-        Dictionary<int, Dictionary<int, Field>> fieldMap = CreateFieldCache();
-        //For each point on the alphamap
-        for (int y = 0; y < _alphamapHeight; y++)
-        {
-            for (int x = 0; x < _alphamapWidth; x++)
-            {
-                Vector2Int mapPos = GetMapCoordFromTextureCoord(new Vector2Int(y, x));
-                Field field = GetFieldFieldFromCache(mapPos.x, mapPos.y, fieldMap);
-                int layerID = rottenGroundLayerID;
-                if (field == null)
-                {
-                    layerID = grassLayerID;
-                }
-                UpdateTerrainAtPoint(map, x, y, layerID);
-            }
-        }
-        _terrainData.SetAlphamaps(0, 0, map);
+        //Dictionary<int, Dictionary<int, Field>> fieldMap = CreateFieldCache();
+        ////For each point on the alphamap
+        //for (int y = 0; y < _alphamapHeight; y++)
+        //{
+        //    for (int x = 0; x < _alphamapWidth; x++)
+        //    {
+        //        Vector2Int mapPos = GetMapCoordFromTextureCoord(new Vector2Int(y, x));
+        //        Field field = GetFieldFieldFromCache(mapPos.x, mapPos.y, fieldMap);
+        //        int layerID = rottenGroundLayerID;
+        //        if (field == null)
+        //        {
+        //            layerID = grassLayerID;
+        //        }
+        //        UpdateTerrainAtPoint(map, x, y, layerID);
+        //    }
+        //}
+        //_terrainData.SetAlphamaps(0, 0, map);
+        PaintTerrainByFields();
     }
 
     private static Dictionary<int, Dictionary<int, Field>> CreateFieldCache()
@@ -97,6 +104,49 @@ public class TerrainPaintBehaviour : MonoBehaviour
         return fieldMap;
     }
 
+    private void PaintTerrainByFields()
+    {
+        float[,,] map = new float[_alphamapWidth, _alphamapHeight, _alphamapLayers];
+
+        Dictionary<int, Dictionary<int, Field>> fieldMap = CreateFieldCache();
+        //For each point on the alphamap
+        for (int y = 0; y < terrainBehaviour.FieldCountY; y++)
+        {
+            for (int x = 0; x < terrainBehaviour.FieldCountX; x++)
+            {
+                int layerID = GetLayerID(fieldMap, y, x);
+                int xStart = x * _pixelPerFieldX;
+                int xEnd = xStart + _pixelPerFieldX;
+                int yStart = y * _pixelPerFieldY;
+                int yEnd = yStart + _pixelPerFieldY;
+                PaintField(map, layerID, xStart, xEnd, yStart, yEnd);
+            }
+        }
+        _terrainData.SetAlphamaps(0, 0, map);
+    }
+
+    private int GetLayerID(Dictionary<int, Dictionary<int, Field>> fieldMap, int y, int x)
+    {
+        Field field = GetFieldFieldFromCache(x, y, fieldMap);
+        int layerID = rottenGroundLayerID;
+        if (field == null)
+        {
+            layerID = grassLayerID;
+        }
+
+        return layerID;
+    }
+
+    private void PaintField(float[,,] map, int layerID, int xStart, int xEnd, int yStart, int yEnd)
+    {
+        for (int y = xStart; y < xEnd; y++)
+        {
+            for (int x = yStart; x < yEnd; x++)
+            {
+                UpdateTerrainAtPoint(map, x, y, layerID);
+            }
+        }
+    }
 
     private Field GetFieldFieldFromCache(int x, int y, Dictionary<int, Dictionary<int, Field>> fieldMap)
     {
