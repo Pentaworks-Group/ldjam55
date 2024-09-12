@@ -283,9 +283,12 @@ namespace Assets.Scripts.Core
         {
             var borderList = new List<Model.Border>();
 
-            foreach (var borderDefinition in borderDefinitionList)
+            if (borderDefinitionList?.Count > 0)
             {
-                borderList.Add(ConvertBorder(borderDefinition, fieldDict));
+                foreach (var borderDefinition in borderDefinitionList)
+                {
+                    borderList.Add(ConvertBorder(borderDefinition, fieldDict));
+                }
             }
 
             return borderList;
