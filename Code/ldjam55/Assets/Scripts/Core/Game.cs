@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,6 +7,7 @@ using Assets.Scripts.Core.Definitions.Loaders;
 using Assets.Scripts.Core.Model;
 
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Assets.Scripts.Core
 {
@@ -16,6 +18,8 @@ namespace Assets.Scripts.Core
 
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
+        public UnityEvent GameLoadedEvent { get; set; } = new UnityEvent();
+        GameObject LoadingGameObject;
         public bool isRunning { get; set; } = false;
 
         public int GameSpeed { get; set; } = 1;
@@ -163,8 +167,17 @@ namespace Assets.Scripts.Core
 
         protected override void OnGameStart()
         {
-            LoadGameSettings();
+            LoadingGameObject = new GameObject();
+            var mono = LoadingGameObject.AddComponent<EmptyLoadingBehaviour>();
+            _ = mono.StartCoroutine(LoadingCoRoutine());
+            GameLoadedEvent.AddListener(() => GameObject.Destroy(LoadingGameObject));
 
+        }
+
+        private IEnumerator LoadingCoRoutine()
+        {  
+
+            yield return LoadGameSettings();
             InitializeAudioClips();
 
             EffectsClipList = new List<AudioClip>()
@@ -180,16 +193,22 @@ namespace Assets.Scripts.Core
                 GameFrame.Base.Resources.Manager.Audio.Get("Slime_11"),
                 GameFrame.Base.Resources.Manager.Audio.Get("Slime_12"),
             };
+
+
+            GameLoadedEvent.Invoke();
+
         }
 
-        private void LoadGameSettings()
+        private IEnumerator LoadGameSettings()
         {
-            new ResourceLoader<Definitions.GameField>(this.availableGameFields).LoadDefinition("GameFields.json", TestGameFields);
+            var gameO = new GameObject();
 
-            //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
-            new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
+            var asd = gameO.AddComponent<EmptyLoadingBehaviour>();
+            ResourceLoader<Definitions.GameField> resourceLoader = new ResourceLoader<Definitions.GameField>(this.availableGameFields);
+            yield return asd.StartCoroutine(resourceLoader.LoadDefinitionInumerator("GameFields.json", TestGameFields));
+            yield return asd.StartCoroutine(new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinitionInumerator("GameModes.json"));
 
-            Debug.Log("Loaded resources");
+            GameObject.Destroy(gameO);
         }
 
         private void TestGameFields(List<Definitions.GameField> fields)
@@ -417,17 +436,7 @@ namespace Assets.Scripts.Core
                 MinFlow = selectedGameMode.MinFlow,
                 MinNewCreep = selectedGameMode.MinNewCreep,
                 NothingFlowRate = selectedGameMode.NothingFlowRate
-                //JunkSpawnInterval = selectedGameMode.JunkSpawnInterval.GetValueOrDefault(-1),
-                //JunkSpawnInitialDistance = selectedGameMode.JunkSpawnInitialDistance.GetValueOrDefault(),
-                //JunkSpawnPosition = selectedGameMode.JunkSpawnPosition?.Copy(),
-                //JunkSpawnForce = selectedGameMode.JunkSpawnForce.Copy(),
-                //JunkSpawnTorque = selectedGameMode.JunkSpawnTorque.Copy(),
-                //ShipSpawnDistance = selectedGameMode.ShipSpawnDistance.GetValueOrDefault(),
-                //RequiredSurvivors = selectedGameMode.RequiredSurvivors,
             };
-            //gameMode.Star = ConvertStar(selectedGameMode.Stars.GetRandomEntry());
-            //gameMode.Spacecrafts = ConvertSpacecrafts(selectedGameMode.Spacecrafts);
-            //gameMode.PlayerSpacecrafts = ConvertSpacecrafts(selectedGameMode.PlayerSpacecrafts);
 
             return gameMode;
         }

@@ -2,7 +2,6 @@ using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
 using System;
 using UnityEngine;
-using UnityEngine.Profiling;
 
 public class TerrainBehaviour : MonoBehaviour
 {
@@ -33,11 +32,12 @@ public class TerrainBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        if(Core.Game.State == default)
+        if (Core.Game.State == default)
         {
             Core.Game.Start();
         }
         Init();
+        Core.Game.GameLoadedEvent.AddListener(Init);
     }
 
     // Start is called before the first frame update    
@@ -73,7 +73,7 @@ public class TerrainBehaviour : MonoBehaviour
 
     private void Init()
     {
-        if(!isInit)
+        if(!isInit && Core.Game.State.CurrentLevel.GameField.Fields?.Count > 0)
         {
             int minX = 0;
             int minY = 0;

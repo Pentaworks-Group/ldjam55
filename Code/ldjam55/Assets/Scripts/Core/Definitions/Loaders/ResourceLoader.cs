@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using GameFrame.Core.Extensions;
@@ -31,15 +32,29 @@ namespace Assets.Scripts.Core.Definitions.Loaders
             LoadAsset(filePath, HandleDefinitions);
         }
 
+        public virtual IEnumerator LoadDefinitionInumerator(String resourceName, Action<List<TDefinition>> onCompleteAction = default)
+        {
+            var filePath = $"{Application.streamingAssetsPath}/{resourceName}";
+
+            this.onCompleteAction = onCompleteAction;
+
+            return LoadAssetInumerator(filePath, HandleDefinitions);
+        }
+
         protected void LoadAsset(String filePath, Func<List<TDefinition>, List<TDefinition>> onLoadedCallback)
         {
             var gameO = new GameObject();
 
             var mono = gameO.AddComponent<EmptyLoadingBehaviour>();
 
-            _ = mono.StartCoroutine(GameFrame.Core.Json.Handler.DeserializeObjectFromStreamingAssets(filePath, onLoadedCallback));
+            _ = mono.StartCoroutine(LoadAssetInumerator(filePath, onLoadedCallback));
 
             GameObject.Destroy(gameO);
+        }
+
+        private static IEnumerator LoadAssetInumerator(string filePath, Func<List<TDefinition>, List<TDefinition>> onLoadedCallback)
+        {
+            return GameFrame.Core.Json.Handler.DeserializeObjectFromStreamingAssets(filePath, onLoadedCallback);
         }
 
         protected virtual List<TDefinition> HandleDefinitions(List<TDefinition> sourceList)
@@ -65,7 +80,6 @@ namespace Assets.Scripts.Core.Definitions.Loaders
             }
 
             this.onCompleteAction?.Invoke(sourceList);
-
             return sourceList;
         }
     }
