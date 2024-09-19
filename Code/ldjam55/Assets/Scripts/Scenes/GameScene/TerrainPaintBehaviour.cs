@@ -199,7 +199,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Core.Game.isRunning)
+        if (Core.Game.IsRunning)
         {
             foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
             {

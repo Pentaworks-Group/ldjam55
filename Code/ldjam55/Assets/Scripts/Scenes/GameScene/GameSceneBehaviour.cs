@@ -103,7 +103,7 @@ public class GameSceneBehaviour : MonoBehaviour
     private void Update()
     {
         //        Core.Game.State.TimeElapsed += Time.deltaTime;
-        if (Core.Game.isRunning)
+        if (Core.Game.IsRunning)
         {
             Core.Game.State.TimeElapsed += Core.Game.GameSpeed * Time.deltaTime;
             if (timeUpdate < 0)
@@ -165,7 +165,7 @@ public class GameSceneBehaviour : MonoBehaviour
     {
         gameEndScreenBehaviour.UpdateUI(conditon, conditon.Description);
         gameEndScreenBehaviour.gameObject.SetActive(true);
-        Core.Game.isRunning = false;
+        Core.Game.IsRunning = false;
     }
 
     private void FetchTemplates()
@@ -317,9 +317,9 @@ public class GameSceneBehaviour : MonoBehaviour
 
     public void TogglePause()
     {
-        Core.Game.isRunning = !Core.Game.isRunning;
+        Core.Game.IsRunning = !Core.Game.IsRunning;
 
-        if (Core.Game.isRunning)
+        if (Core.Game.IsRunning)
         {
             Time.timeScale = 1f;
             pauseButtonDisplay.text = "Pause";

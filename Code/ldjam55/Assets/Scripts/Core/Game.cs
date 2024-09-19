@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,8 +18,7 @@ namespace Assets.Scripts.Core
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
         public UnityEvent GameLoadedEvent { get; set; } = new UnityEvent();
-        GameObject LoadingGameObject;
-        public bool isRunning { get; set; } = false;
+        public bool IsRunning { get; set; } = false;
 
         public int GameSpeed { get; set; } = 1;
 
@@ -32,7 +30,7 @@ namespace Assets.Scripts.Core
             {
                 if (this.availableGameModes.Count == 0)
                 {
-                    LoadGameSettings();
+                    LoadGameDefinitions();
                 }
 
                 return this.availableGameModes.Values.ToList();
@@ -107,7 +105,7 @@ namespace Assets.Scripts.Core
 
         public void RestartLevel()
         {
-            isRunning = false;
+            IsRunning = false;
 
             var nL = State.CurrentLevel.Name;
             var level = GetLevel(nL);
@@ -122,10 +120,15 @@ namespace Assets.Scripts.Core
                 if (level.Name == State.CurrentLevel.Name)
                 {
                     var oldGameField = level.GameField;
+
                     level.GameField = field;
+
                     var convLevel = ConvertLevel(level);
+
                     StartLevel(convLevel);
+
                     level.GameField = oldGameField;
+
                     break;
                 }
             }
@@ -167,17 +170,7 @@ namespace Assets.Scripts.Core
 
         protected override void OnGameStart()
         {
-            LoadingGameObject = new GameObject();
-            var mono = LoadingGameObject.AddComponent<EmptyLoadingBehaviour>();
-            _ = mono.StartCoroutine(LoadingCoRoutine());
-            GameLoadedEvent.AddListener(() => GameObject.Destroy(LoadingGameObject));
-
-        }
-
-        private IEnumerator LoadingCoRoutine()
-        {  
-
-            yield return LoadGameSettings();
+            LoadGameDefinitions();
             InitializeAudioClips();
 
             EffectsClipList = new List<AudioClip>()
@@ -194,57 +187,35 @@ namespace Assets.Scripts.Core
                 GameFrame.Base.Resources.Manager.Audio.Get("Slime_12"),
             };
 
-
             GameLoadedEvent.Invoke();
-
         }
 
-        private IEnumerator LoadGameSettings()
+        private void LoadGameDefinitions()
         {
             var filePath = $"{Application.streamingAssetsPath}/GameFields.json";
             var filePath2 = $"{Application.streamingAssetsPath}/GameModes.json";
 
-            var gameFieldsLoader = new GameFrame.Core.Definitions.Loaders.ResourceLoader<Definitions.GameField>();
+            new GameFrame.Core.Definitions.Loaders.DefinitionLoader<Definitions.GameField>(this.availableGameFields).LoadAssets(filePath, ValidateGameFields);
 
-            var gameFields = gameFieldsLoader.LoadAssets(filePath);
-
-            TestGameFields(gameFields);
-
-            foreach (var field in gameFields)
-            {
-                this.availableGameFields[field.Reference] = field;
-            }
-
-            var gameModesLoader = new NewGameModesLoader(this.availableGameFields);
-
-            var gameModes = gameModesLoader.LoadAssets(filePath2);
-
-            var actualStuff = gameModesLoader.AfterLoad(gameModes);
-
-            foreach (var mode in actualStuff)
-            {
-                this.availableGameModes[mode.Reference] = mode;
-            }
-
-            //new ResourceLoader<Definitions.GameField>(this.availableGameFields).LoadDefinition("GameFields.json", TestGameFields);
-
-            //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
-            //new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
-
-            GameObject.Destroy(gameO);
+            new GameModesLoader(this.availableGameModes, availableGameFields).LoadAssets(filePath2);
         }
 
-        private void TestGameFields(List<Definitions.GameField> fields)
+        private Boolean ValidateGameFields(List<Definitions.GameField> fields)
         {
+            var isSuccessful = true;
+
             Debug.Log($"Testing GameFields: {fields?.Count}");
 
             foreach (var field in fields)
             {
                 if (field.Fields == null)
                 {
+                    isSuccessful = false;
                     Debug.Log("Loaded gamefield with no fields: " + field.Reference);
                 }
             }
+
+            return isSuccessful;
         }
 
         private void InitializeAudioClips()

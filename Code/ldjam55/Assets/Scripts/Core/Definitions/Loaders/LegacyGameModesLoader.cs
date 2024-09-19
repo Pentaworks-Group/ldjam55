@@ -2,31 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using GameFrame.Core.Definitions.Loaders;
-
 using Unity.VisualScripting;
 
 namespace Assets.Scripts.Core.Definitions.Loaders
 {
-    public class GameModesLoader : DefinitionLoader<GameMode>
+    public class LegacyGameModesLoader : LegacyResourceLoader<GameMode>
     {
-        private readonly IDictionary<String, GameField> gameFieldCache;
+        private readonly Dictionary<String, GameField> gameFieldCache;
 
-        public GameModesLoader(IDictionary<String, GameMode> targetCache, IDictionary<String, GameField> gameFieldCache) : base(targetCache)
+        public LegacyGameModesLoader(Dictionary<String, GameMode> targetCache, Dictionary<String, GameField> gameFieldCache) : base(targetCache)
         {
-            if (gameFieldCache == default)
-            {
-                throw new ArgumentNullException(nameof(gameFieldCache));
-            }
-
             this.gameFieldCache = gameFieldCache;
         }
 
-        protected override void OnDefinitionsLoaded(List<GameMode> loadedDefinitions)
+        protected override List<GameMode> HandleDefinitions(List<GameMode> loadedGameModes)
         {
-            if (loadedDefinitions?.Count > 0)
+            if (loadedGameModes?.Count > 0)
             {
-                foreach (var loadedGameMode in loadedDefinitions)
+                foreach (var loadedGameMode in loadedGameModes)
                 {
                     var newGameMode = new GameMode()
                     {
@@ -46,13 +39,16 @@ namespace Assets.Scripts.Core.Definitions.Loaders
                     {
                         level.GameField = CheckItem(level.GameField, this.gameFieldCache);
                     }
+                    //CheckItems(loadedGameMode.PlayerSpacecrafts, newGameMode.PlayerSpacecrafts, this.spacecraftCache);
 
                     targetCache[loadedGameMode.Reference] = newGameMode;
                 }
             }
+
+            return loadedGameModes;
         }
 
-        protected virtual TItem CheckItem<TItem>(TItem loadedItem, IDictionary<String, TItem> referenceCache) where TItem : GameFrame.Core.Definitions.BaseDefinition, new()
+        private TItem CheckItem<TItem>(TItem loadedItem, Dictionary<String, TItem> referenceCache) where TItem : GameFrame.Core.Definitions.BaseDefinition, new()
         {
             var targetItem = new TItem()
             {
@@ -80,7 +76,7 @@ namespace Assets.Scripts.Core.Definitions.Loaders
                             {
                                 foreach (var item in list)
                                 {
-                                    _ = newList.Add(item);
+                                    newList.Add(item);
                                 }
                             }
 
@@ -114,7 +110,7 @@ namespace Assets.Scripts.Core.Definitions.Loaders
                         {
                             foreach (var item in list)
                             {
-                                _ = newList.Add(item);
+                                newList.Add(item);
                             }
                         }
 
@@ -131,14 +127,14 @@ namespace Assets.Scripts.Core.Definitions.Loaders
             return targetItem;
         }
 
-        protected virtual void CheckItems<TItem>(List<TItem> loadedItems, List<TItem> targetItems, Dictionary<String, TItem> referenceCache) where TItem : GameFrame.Core.Definitions.BaseDefinition, new()
+        private void CheckItems<TItem>(List<TItem> loadedItems, List<TItem> targetItems, Dictionary<String, TItem> referenceCache) where TItem : GameFrame.Core.Definitions.BaseDefinition, new()
         {
             if (loadedItems?.Count > 0)
             {
                 foreach (var loadedItem in loadedItems)
                 {
-                    var targetItem = CheckItem(loadedItem, referenceCache);
 
+                    var targetItem = CheckItem(loadedItem, referenceCache);
                     targetItems.Add(targetItem);
                 }
             }

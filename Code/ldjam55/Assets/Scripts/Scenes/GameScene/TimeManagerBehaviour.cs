@@ -33,7 +33,7 @@ namespace Assets.Scripts.Scene.GameScene
 
         void Update()
         {
-            if (Base.Core.Game.isRunning && nextEventTime != default && nextEventTime < Time.time)
+            if (Base.Core.Game.IsRunning && nextEventTime != default && nextEventTime < Time.time)
             {
                 SheduledEvent sheduledEvent = sheduledEvents[0];
                 sheduledEvent.EventAction();

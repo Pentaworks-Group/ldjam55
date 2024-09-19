@@ -36,6 +36,7 @@ public class TerrainBehaviour : MonoBehaviour
         {
             Core.Game.Start();
         }
+
         Init();
         Core.Game.GameLoadedEvent.AddListener(Init);
     }
@@ -45,7 +46,6 @@ public class TerrainBehaviour : MonoBehaviour
     {
         //TODO: isInit?
         Init();
-
 
         creepBehaviour.OnFieldCreatedEvent.Add((field) => GenerateTerrain());
     }
