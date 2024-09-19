@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using GameFrame.Core.Definitions.Loaders;
 using GameFrame.Core.Extensions;
 
 using UnityEngine;

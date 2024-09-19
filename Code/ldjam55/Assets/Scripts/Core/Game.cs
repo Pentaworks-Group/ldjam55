@@ -201,12 +201,35 @@ namespace Assets.Scripts.Core
 
         private IEnumerator LoadGameSettings()
         {
-            var gameO = new GameObject();
+            var filePath = $"{Application.streamingAssetsPath}/GameFields.json";
+            var filePath2 = $"{Application.streamingAssetsPath}/GameModes.json";
 
-            var asd = gameO.AddComponent<EmptyLoadingBehaviour>();
-            ResourceLoader<Definitions.GameField> resourceLoader = new ResourceLoader<Definitions.GameField>(this.availableGameFields);
-            yield return asd.StartCoroutine(resourceLoader.LoadDefinitionInumerator("GameFields.json", TestGameFields));
-            yield return asd.StartCoroutine(new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinitionInumerator("GameModes.json"));
+            var gameFieldsLoader = new GameFrame.Core.Definitions.Loaders.ResourceLoader<Definitions.GameField>();
+
+            var gameFields = gameFieldsLoader.LoadAssets(filePath);
+
+            TestGameFields(gameFields);
+
+            foreach (var field in gameFields)
+            {
+                this.availableGameFields[field.Reference] = field;
+            }
+
+            var gameModesLoader = new NewGameModesLoader(this.availableGameFields);
+
+            var gameModes = gameModesLoader.LoadAssets(filePath2);
+
+            var actualStuff = gameModesLoader.AfterLoad(gameModes);
+
+            foreach (var mode in actualStuff)
+            {
+                this.availableGameModes[mode.Reference] = mode;
+            }
+
+            //new ResourceLoader<Definitions.GameField>(this.availableGameFields).LoadDefinition("GameFields.json", TestGameFields);
+
+            //new ResourceLoader<Definitions.Star>(this.availableStars).LoadDefinition("Stars.json");
+            //new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinition("GameModes.json");
 
             GameObject.Destroy(gameO);
         }

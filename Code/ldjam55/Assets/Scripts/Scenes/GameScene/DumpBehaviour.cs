@@ -1,10 +1,10 @@
-using Assets.Scripts.Core.Model;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+
+using Assets.Scripts.Core.Model;
+
 using TMPro;
+
 using UnityEngine;
 
 
@@ -48,7 +48,9 @@ namespace Assets.Scripts.Scenes.GameScene
             {
                 gameFields.Add(gameField);
             }
+
             var json = GameFrame.Core.Json.Handler.SerializePrettyIgnoreNull(gameFields);
+
             File.WriteAllText(filePath, json);
         }
 
@@ -59,6 +61,7 @@ namespace Assets.Scripts.Scenes.GameScene
             //JObject obi = JObject.FromObject(gameField);
 
             string json = GameFrame.Core.Json.Handler.SerializePrettyIgnoreNull(gameField);
+
             var filePath = Application.streamingAssetsPath + "/dumpGameField.json";
             File.WriteAllText(filePath, json);
         }

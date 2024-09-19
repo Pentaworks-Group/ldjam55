@@ -34,7 +34,6 @@ namespace Assets.Scripts.Scenes.MainMenu
             GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
         }
 
-
         public void PlayGame()
         {
             Base.Core.Game.PlayButtonSound();
