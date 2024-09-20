@@ -19,9 +19,12 @@ namespace Assets.Scripts.Core
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
         public UnityEvent GameLoadedEvent { get; set; } = new UnityEvent();
-        GameObject LoadingGameObject;
+
+        private GameObject LoadingGameObject;
         public bool isRunning { get; set; } = false;
         public bool isLoaded { get; private set; } = false;
+        public bool isInstantiated { get; private set; } = false;
+        private bool isGameStarted { get; set; } = false;
 
         public int GameSpeed { get; set; } = 1;
 
@@ -53,7 +56,7 @@ namespace Assets.Scripts.Core
         }
         protected override GameState InitializeGameState()
         {
-
+            isGameStarted = true;
             if (SelectedGameMode == default)
             {
                 if (this.availableGameModes.Count > 0)
@@ -82,8 +85,23 @@ namespace Assets.Scripts.Core
             {
                 gameState.CurrentLevel = ConvertLevel(SelectedGameMode.Levels[0]);
             }
-
+            isInstantiated = true;
             return gameState;
+        }
+
+        public void EnsureGameState()
+        {
+            if (!isGameStarted)
+            {
+                if (isLoaded)
+                {
+                    Start();
+                }
+                else
+                {
+                    GameLoadedEvent.AddListener(() => Start());
+                }
+            }
         }
 
         public Level GetLevel(string levelName)
@@ -196,8 +214,8 @@ namespace Assets.Scripts.Core
             };
 
 
-            GameLoadedEvent.Invoke();
             isLoaded = true;
+            GameLoadedEvent.Invoke();
         }
 
         private IEnumerator LoadGameSettings()

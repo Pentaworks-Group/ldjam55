@@ -11,9 +11,9 @@ public class TerrainBehaviour : MonoBehaviour
 
     public Terrain mainTerrain;
 
-    public int FieldCountX { get; private set; } = 0 ;
+    public int FieldCountX { get; private set; } = 0;
     public int FieldCountY { get; private set; } = 0;
-    public float XOffset { get; private set;  } = 0;
+    public float XOffset { get; private set; } = 0;
     public float YOffset { get; private set; } = 0;
 
 
@@ -32,12 +32,14 @@ public class TerrainBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        if (Core.Game.State == default)
+        if (Core.Game.isLoaded)
         {
-            Core.Game.Start();
+            Init();
         }
-        Init();
-        Core.Game.GameLoadedEvent.AddListener(Init);
+        else
+        {
+            Core.Game.GameInstantiated.AddListener(Init);
+        }
     }
 
     // Start is called before the first frame update    
@@ -73,7 +75,7 @@ public class TerrainBehaviour : MonoBehaviour
 
     private void Init()
     {
-        if(!isInit && Core.Game.State.CurrentLevel.GameField.Fields?.Count > 0)
+        if (!isInit && Core.Game.isLoaded)
         {
             int minX = 0;
             int minY = 0;
@@ -107,8 +109,8 @@ public class TerrainBehaviour : MonoBehaviour
         Vector2Int hMapCenter = TransformMapCoordToHeigthmap(mapPos);
         int distX = x - hMapCenter.x;
         int distY = y - hMapCenter.y;
-        int fieldDistX = (int)(scalingFactorX * ( fieldSize - flatFieldSize) );
-        int fieldDistY = (int)(scalingFactorY * ( fieldSize - flatFieldSize) );   
+        int fieldDistX = (int)(scalingFactorX * (fieldSize - flatFieldSize));
+        int fieldDistY = (int)(scalingFactorY * (fieldSize - flatFieldSize));
         float fieldMarginX = scalingFactorX * flatFieldSize / 2;
         float fieldMarginY = scalingFactorY * flatFieldSize / 2;
 
@@ -117,7 +119,7 @@ public class TerrainBehaviour : MonoBehaviour
 
         //Is inside flat field
         bool isInsideField = Math.Abs(distX) <= fieldMarginX && Math.Abs(distY) <= fieldMarginY;
-        
+
         bool isCorner = mapPos.x == 0 && mapPos.y == 0 && distX <= fieldMarginX && distY <= fieldMarginY;
         isCorner |= mapPos.x == 0 && mapPos.y == FieldCountY - 1 && distX <= fieldMarginX && distY >= fieldMarginY;
         isCorner |= mapPos.x == FieldCountX - 1 && mapPos.y == 0 && distX >= fieldMarginX && distY <= fieldMarginY;
@@ -133,9 +135,9 @@ public class TerrainBehaviour : MonoBehaviour
             return GetFieldHeight(field);
         }
         //Interpolate
-        else if (Math.Abs(distX) > fieldMarginX && Math.Abs(distY) > fieldMarginY && 
-            !(mapPos.x==0 && distX<0) && !(mapPos.x == FieldCountX - 1 && distX>0) &&
-            !(mapPos.y==0 && distY<0) && !(mapPos.y == FieldCountY - 1 && distY>0))
+        else if (Math.Abs(distX) > fieldMarginX && Math.Abs(distY) > fieldMarginY &&
+            !(mapPos.x == 0 && distX < 0) && !(mapPos.x == FieldCountX - 1 && distX > 0) &&
+            !(mapPos.y == 0 && distY < 0) && !(mapPos.y == FieldCountY - 1 && distY > 0))
         {
             float paramX = (Math.Abs(distX) - fieldMarginX) / (fieldDistX);
             float paramY = (Math.Abs(distY) - fieldMarginY) / (fieldDistY);
@@ -159,7 +161,7 @@ public class TerrainBehaviour : MonoBehaviour
             return GetSinInterpolation(interpolateX1, interpolateX2, paramY);
         }
         else if (Math.Abs(distY) > fieldMarginY &&
-            !(mapPos.y == 0 && distY < 0) && !(mapPos.y == FieldCountY - 1 && distY > 0)) 
+            !(mapPos.y == 0 && distY < 0) && !(mapPos.y == FieldCountY - 1 && distY > 0))
         {
             //Case 1: y is outside the field
             float param = (Math.Abs(distY) - fieldMarginY) / (fieldDistY);
@@ -169,7 +171,7 @@ public class TerrainBehaviour : MonoBehaviour
             nextHeight = GetFieldHeight(nextField);
             return GetSinInterpolation(height, nextHeight, param);
         }
-        else if( Math.Abs(distX) > fieldMarginX)
+        else if (Math.Abs(distX) > fieldMarginX)
         {
             //Case 2: x is outside the field
             float param = (Math.Abs(distX) - fieldMarginX) / (fieldDistX);
@@ -187,13 +189,13 @@ public class TerrainBehaviour : MonoBehaviour
         float p = Math.Max(0, param);
         p = Math.Min(1, p);
         float factor = 0.5f * Mathf.Sin(Mathf.PI * p - Mathf.PI / 2) + 0.5f;
-        return (z2-z1)*factor+z1;
+        return (z2 - z1) * factor + z1;
     }
 
     private Vector2Int TransformMapCoordToHeigthmap(Vector2Int pos)
     {
         float heightMapSize = mainTerrain.terrainData.heightmapResolution;
-        pos.x = (int)((2 * pos.x + 1) * heightMapSize / (2 * FieldCountX ));
+        pos.x = (int)((2 * pos.x + 1) * heightMapSize / (2 * FieldCountX));
         pos.y = (int)((2 * pos.y + 1) * heightMapSize / (2 * FieldCountY));
         return pos;
     }
@@ -204,7 +206,7 @@ public class TerrainBehaviour : MonoBehaviour
         pos.x = (int)Math.Floor(pos.x * FieldCountX / heightMapSize);
         pos.y = (int)Math.Floor(pos.y * FieldCountY / heightMapSize);
         return pos;
-//        return (int) Math.Floor(x * mapSize / heightMapSize);
+        //        return (int) Math.Floor(x * mapSize / heightMapSize);
     }
 
     public Vector2 TransformTerrainCoordToMapFloat(Vector2 pos)
@@ -233,16 +235,16 @@ public class TerrainBehaviour : MonoBehaviour
     public Field GetField(int x, int y)
     {
         //Shift negative to 0
-        Field f = Core.Game.State.CurrentLevel.GameField.Fields.Find(field => field.Coords.X==x+XOffset && field.Coords.Y==y+YOffset);
+        Field f = Core.Game.State.CurrentLevel.GameField.Fields.Find(field => field.Coords.X == x + XOffset && field.Coords.Y == y + YOffset);
         return f;
     }
 
-    public float GetFieldHeight(Field f) 
-    { 
-        if(f==null)
+    public float GetFieldHeight(Field f)
+    {
+        if (f == null)
         {
             return 0f;
         }
-        return (f.Height - zOffset) * zFactor; 
+        return (f.Height - zOffset) * zFactor;
     }
 }

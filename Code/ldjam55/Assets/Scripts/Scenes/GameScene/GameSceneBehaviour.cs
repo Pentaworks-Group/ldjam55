@@ -79,7 +79,15 @@ public class GameSceneBehaviour : MonoBehaviour
         creepBehaviour.OnFieldObjectDestroyedEvent.Add(DestroyFieldObject);
         creepBehaviour.OnFieldCreatedEvent.Add(UpdateField);
 
-        creepBehaviour.gameEndConditionHandler.RegisterListener(GameEnded);
+        if (Core.Game.isLoaded)
+        {
+            Init();
+        }
+        else
+        {
+            Core.Game.EnsureGameState();
+            Core.Game.GameInstantiated.AddListener(Init);
+        }
 
         var backgroundAudioClips = new List<AudioClip>()
         {
@@ -91,6 +99,12 @@ public class GameSceneBehaviour : MonoBehaviour
 
         GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
 
+        
+    }
+
+    private void Init()
+    {
+        creepBehaviour.gameEndConditionHandler.RegisterListener(GameEnded);
         levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
         terrainBehaviour.GenerateTerrain();
         terrainPaintBehaviour.UpdateTerrain();
@@ -319,6 +333,7 @@ public class GameSceneBehaviour : MonoBehaviour
 
     public void TogglePause()
     {
+        Core.Game.PlayButtonSound();
         Core.Game.isRunning = !Core.Game.isRunning;
 
         if (Core.Game.isRunning)
