@@ -305,11 +305,13 @@ public class GameSceneBehaviour : MonoBehaviour
 
     public void IncreaseGameSpeed()
     {
+        Core.Game.PlayButtonSound();
         Core.Game.GameSpeed++;
         gameSpeedDisplay.text = Core.Game.GameSpeed.ToString();
     }
     public void DecreaseGameSpeed()
     {
+        Core.Game.PlayButtonSound();
         Core.Game.GameSpeed--;
         Core.Game.GameSpeed = Mathf.Max(1, Core.Game.GameSpeed);
         gameSpeedDisplay.text = Core.Game.GameSpeed.ToString();
