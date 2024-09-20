@@ -21,6 +21,7 @@ namespace Assets.Scripts.Core
         public UnityEvent GameLoadedEvent { get; set; } = new UnityEvent();
         GameObject LoadingGameObject;
         public bool isRunning { get; set; } = false;
+        public bool isLoaded { get; private set; } = false;
 
         public int GameSpeed { get; set; } = 1;
 
@@ -196,7 +197,7 @@ namespace Assets.Scripts.Core
 
 
             GameLoadedEvent.Invoke();
-
+            isLoaded = true;
         }
 
         private IEnumerator LoadGameSettings()
