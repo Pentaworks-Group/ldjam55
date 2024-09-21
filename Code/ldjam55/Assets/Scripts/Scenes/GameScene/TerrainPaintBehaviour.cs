@@ -258,50 +258,93 @@ public class TerrainPaintBehaviour : MonoBehaviour
         //        width = 80;
         //        height = 30;
 
-        float[,,] map = new float[width, height, _terrainData.alphamapLayers];
+        int alphamapLayers = _terrainData.alphamapLayers;
+        float[,,] map = new float[width, height, alphamapLayers];
 
+        //for (int j = 0; j < height; j++)
+        //{
+        //    for (int i = 0; i < width; i++)
+        //    {
+        //        float distance = Vector2.Distance(new Vector2(width / (2 * scaleFactorY), height / (2 * scaleFactorX)), new Vector2(i / scaleFactorY, j / scaleFactorX));
+        //        float frac = GetSteepnessFactor(y + i, x + j);
+
+        //        for (int k = 0; k < alphamapLayers; k++)
+        //        {
+        //            if (distance < radius - hardness)
+        //            {
+        //                if (k == slimeLayerID && distance <= radius)
+        //                {
+        //                    map[i, j, k] = 1f;
+        //                }
+        //                else
+        //                {
+        //                    map[i, j, k] = 0;
+        //                }
+        //            }
+        //            else if (distance <= radius)
+        //            {
+        //                float strength = 1f - Mathf.InverseLerp(radius - hardness, radius, distance);
+        //                if (k == slimeLayerID)
+        //                {
+        //                    map[i, j, k] = strength;
+        //                }
+        //                else
+        //                {
+        //                    map[i, j, k] = GetSteepnessAlpha(k, frac, rottenGroundLayerID) * (1 - strength);
+        //                }
+
+        //            }
+        //            else
+        //            {
+        //                map[i, j, k] = GetSteepnessAlpha(k, frac, rottenGroundLayerID);
+        //            }
+        //        }
+        //    }
+        //}
+        var middleVector = new Vector2(width / (2 * scaleFactorY), height / (2 * scaleFactorX));
+        int radMinHard = radius - hardness;
+        PaintLayers(width, height, radMinHard, radius, slimeLayerID, map, x, y, middleVector);
+        //PaintRottenGroundLayer(width, height, radMinHard, radius, map, x, y, middleVector);
+        //PaintStoneLayer(width, height, radMinHard, radius, map, x, y, middleVector);
+        //PaintSlimeLayer(width, height, radMinHard, radius, slimeLayerID, map, middleVector);
+
+        _terrainData.SetAlphamaps(x, y, map);
+    }
+
+    private void PaintLayers(int width, int height, int radMinHard, int radius, int slimeLayerID, float[,,] map, int x, int y, Vector2 middleVector)
+    {
         for (int j = 0; j < height; j++)
         {
             for (int i = 0; i < width; i++)
             {
-                float distance = Vector2.Distance(new Vector2(width / (2 * scaleFactorY), height / (2 * scaleFactorX)), new Vector2(i / scaleFactorY, j / scaleFactorX));
-                float frac = GetSteepnessFactor(y + i, x + j);
+                float distance = Vector2.Distance(middleVector, new Vector2(i / scaleFactorY, j / scaleFactorX));
 
-                for (int k = 0; k < _terrainData.alphamapLayers; k++)
+                if (distance < radMinHard)
                 {
-                    if (distance < radius - hardness)
-                    {
-                        if (k == slimeLayerID && distance <= radius)
-                        {
-                            map[i, j, k] = 1f;
-                        }
-                        else
-                        {
-                            map[i, j, k] = 0;
-                        }
-                    }
-                    else if (distance <= radius)
-                    {
-                        float strength = 1f - Mathf.InverseLerp(radius - hardness, radius, distance);
-                        if (k == slimeLayerID)
-                        {
-                            map[i, j, k] = strength;
-                        }
-                        else
-                        {
-                            map[i, j, k] = GetSteepnessAlpha(k, frac, rottenGroundLayerID) * (1 - strength);
-                        }
-
-                    }
-                    else
-                    {
-                        map[i, j, k] = GetSteepnessAlpha(k, frac, rottenGroundLayerID);
-                    }
+                    //map[i, j, rottenGroundLayerID] = 0;
+                    //map[i, j, stone2LayerID] = 0;
+                    map[i, j, slimeLayerID] = 1f;
                 }
+                else if (distance <= radius)
+                {
+                    float strength = Mathf.InverseLerp(radMinHard, radius, distance);
+                    float frac = GetSteepnessFactor(y + i, x + j);
+
+                    map[i, j, rottenGroundLayerID] = (1 - frac) * strength;
+                    map[i, j, stone2LayerID] = frac * strength;
+                    map[i, j, slimeLayerID] = 1 - strength;
+                }
+                else
+                {
+                    float frac = GetSteepnessFactor(y + i, x + j);
+                    map[i, j, rottenGroundLayerID] = (1 - frac);
+                    //map[i, j, slimeLayerID] = 0;
+                }
+
             }
         }
-        _terrainData.SetAlphamaps(x, y, map);
     }
+
 
     private Vector2Int GetTextureMapCoord(Vector2Int pos)
     {
