@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Scenes.MainMenu
@@ -8,7 +6,13 @@ namespace Assets.Scripts.Scenes.MainMenu
     {
         void Awake()
         {
-            Assets.Scripts.Base.Core.Game.GameLoadedEvent.AddListener(() => Destroy(gameObject));
+            if (Base.Core.Game.isLoaded)
+            {
+                Destroy(gameObject);
+            } else
+            {
+                Base.Core.Game.GameLoadedEvent.AddListener(() => Destroy(gameObject));
+            }
         }
     }
 }

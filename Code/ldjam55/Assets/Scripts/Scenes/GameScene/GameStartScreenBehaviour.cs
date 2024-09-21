@@ -6,33 +6,22 @@ using UnityEngine;
 public class GameStartScreenBehaviour : MonoBehaviour
 {
     [SerializeField]
-    private GameObject gameStartScreen;
-
-
-    [SerializeField]
     private TextMeshProUGUI nameField;
 
     [SerializeField]
     private TextMeshProUGUI descriptionField;
 
-    [SerializeField]
-    private List<GameObject> ObjectsToHide = new();
 
     public void ShowStartScreen()
     {
-        updateUI();
+        UpdateUI();
 
-        gameStartScreen.SetActive(true);
-
-        foreach (GameObject gameObject in ObjectsToHide)
-        {
-            gameObject.SetActive(false);
-        }
+        gameObject.SetActive(true);
 
         Time.timeScale = 0.0f;
     }
 
-    private void updateUI()
+    private void UpdateUI()
     {
         nameField.SetText(Core.Game.State.CurrentLevel.Name);
         descriptionField.SetText(Core.Game.State.CurrentLevel.Description);
@@ -40,12 +29,7 @@ public class GameStartScreenBehaviour : MonoBehaviour
 
     public void HideStartScreen()
     {
-        gameStartScreen.SetActive(false);
-
-        foreach (GameObject gameObject in ObjectsToHide)
-        {
-            gameObject.SetActive(true);
-        }
+        gameObject.SetActive(false);
 
         Time.timeScale = 1.0f;
     }

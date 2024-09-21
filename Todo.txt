@@ -12,7 +12,7 @@ Todo:
   
  Bugs: 
  - Crash with Safari
- - Level 1 sometimes not loaded
+ - Level 1 sometimes not loaded (Should no longer happen, since we now wait for loading)
  
  Exceptions: 
  - 

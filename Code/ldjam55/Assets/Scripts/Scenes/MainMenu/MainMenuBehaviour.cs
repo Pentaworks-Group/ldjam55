@@ -17,12 +17,6 @@ namespace Assets.Scripts.Scenes.MainMenu
         [SerializeField]
         private GameObject Menu;
 
-        [SerializeField]
-        private Button PlayButton;
-        private void Awake()
-        {
-            Assets.Scripts.Base.Core.Game.GameLoadedEvent.AddListener(() => PlayButton.interactable = true);
-        }
 
         private void Start()
         {

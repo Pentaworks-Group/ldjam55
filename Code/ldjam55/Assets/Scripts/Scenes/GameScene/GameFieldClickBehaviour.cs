@@ -33,6 +33,19 @@ namespace Assets.Scripts.Scene.GameScene
 
         private void Start()
         {
+            if (Base.Core.Game.isLoaded)
+            {
+                Init();
+            }
+            else
+            {
+                Base.Core.Game.GameInstantiated.AddListener(Init);
+            }
+           
+        }
+
+        private void Init()
+        {
             float current = 0;
             var s = Base.Core.Game.State.CurrentLevel.UserActions;
             foreach (var action in actions)
@@ -48,7 +61,6 @@ namespace Assets.Scripts.Scene.GameScene
             }
             UpdateUI();
         }
-
 
         public void CastSelectedAction(UserActionInput target)
         {

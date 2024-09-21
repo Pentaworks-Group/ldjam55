@@ -18,7 +18,12 @@ namespace Assets.Scripts.Core
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
         public UnityEvent GameLoadedEvent { get; set; } = new UnityEvent();
-        public bool IsRunning { get; set; } = false;
+
+        private GameObject LoadingGameObject;
+        public bool isRunning { get; set; } = false;
+        public bool isLoaded { get; private set; } = false;
+        public bool isInstantiated { get; private set; } = false;
+        private bool isGameStarted { get; set; } = false;
 
         public int GameSpeed { get; set; } = 1;
 
@@ -48,9 +53,10 @@ namespace Assets.Scripts.Core
         {
             return InitializeGameState();
         }
+
         protected override GameState InitializeGameState()
         {
-
+            isGameStarted = true;
             if (SelectedGameMode == default)
             {
                 if (this.availableGameModes.Count > 0)
@@ -75,12 +81,29 @@ namespace Assets.Scripts.Core
             {
                 gameState.CurrentLevel = GetLevel(SelectedGameMode.StartLevel);
             }
+
             if (gameState.CurrentLevel == null)
             {
                 gameState.CurrentLevel = ConvertLevel(SelectedGameMode.Levels[0]);
             }
 
+            isInstantiated = true;
             return gameState;
+        }
+
+        public void EnsureGameState()
+        {
+            if (!isGameStarted)
+            {
+                if (isLoaded)
+                {
+                    Start();
+                }
+                else
+                {
+                    GameLoadedEvent.AddListener(() => Start());
+                }
+            }
         }
 
         public Level GetLevel(string levelName)
@@ -187,6 +210,8 @@ namespace Assets.Scripts.Core
                 GameFrame.Base.Resources.Manager.Audio.Get("Slime_12"),
             };
 
+
+            isLoaded = true;
             GameLoadedEvent.Invoke();
         }
 
