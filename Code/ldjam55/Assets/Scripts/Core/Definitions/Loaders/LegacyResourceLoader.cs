@@ -2,18 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using GameFrame.Core.Definitions.Loaders;
 using GameFrame.Core.Extensions;
 
 using UnityEngine;
 
 namespace Assets.Scripts.Core.Definitions.Loaders
 {
-    public class ResourceLoader<TDefinition> where TDefinition : GameFrame.Core.Definitions.BaseDefinition
+    public class LegacyResourceLoader<TDefinition> where TDefinition : GameFrame.Core.Definitions.BaseDefinition
     {
         protected readonly Dictionary<String, TDefinition> targetCache;
         protected Action<List<TDefinition>> onCompleteAction;
 
-        public ResourceLoader(Dictionary<String, TDefinition> targetCache)
+        public LegacyResourceLoader(Dictionary<String, TDefinition> targetCache)
         {
             if (targetCache == default)
             {

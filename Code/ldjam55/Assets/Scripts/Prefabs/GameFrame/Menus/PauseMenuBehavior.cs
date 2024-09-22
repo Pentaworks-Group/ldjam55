@@ -97,7 +97,7 @@ namespace Assets.Scripts.Prefabs.Menus
                 {
                     Hide();
                     this.PauseToggled.Invoke(false);
-                    Base.Core.Game.isRunning = true;
+                    Base.Core.Game.IsRunning = true;
                     foreach (GameObject gameObject in ObjectsToHide)
                     {
                         gameObject.SetActive(true);
@@ -107,7 +107,7 @@ namespace Assets.Scripts.Prefabs.Menus
             else
             {
                 this.PauseToggled.Invoke(true);
-                Base.Core.Game.isRunning = false;
+                Base.Core.Game.IsRunning = false;
                 foreach (GameObject gameObject in ObjectsToHide)
                 {
                     gameObject.SetActive(false);

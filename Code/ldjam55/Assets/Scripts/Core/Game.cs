@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,13 +17,11 @@ namespace Assets.Scripts.Core
 
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
-        public UnityEvent GameLoadedEvent { get; set; } = new UnityEvent();
-
         private GameObject LoadingGameObject;
-        public bool isRunning { get; set; } = false;
-        public bool isLoaded { get; private set; } = false;
-        public bool isInstantiated { get; private set; } = false;
-        private bool isGameStarted { get; set; } = false;
+
+        private bool isGameStarted = false;
+        public bool IsRunning { get; set; } = false;
+        public bool IsInstantiated { get; private set; } = false;
 
         public int GameSpeed { get; set; } = 1;
 
@@ -36,7 +33,8 @@ namespace Assets.Scripts.Core
             {
                 if (this.availableGameModes.Count == 0)
                 {
-                    LoadGameSettings();
+                    //LoadGameDefinitions();
+                    throw new NotSupportedException("Game not ready");
                 }
 
                 return this.availableGameModes.Values.ToList();
@@ -54,6 +52,7 @@ namespace Assets.Scripts.Core
         {
             return InitializeGameState();
         }
+
         protected override GameState InitializeGameState()
         {
             isGameStarted = true;
@@ -81,11 +80,13 @@ namespace Assets.Scripts.Core
             {
                 gameState.CurrentLevel = GetLevel(SelectedGameMode.StartLevel);
             }
+
             if (gameState.CurrentLevel == null)
             {
                 gameState.CurrentLevel = ConvertLevel(SelectedGameMode.Levels[0]);
             }
-            isInstantiated = true;
+
+            IsInstantiated = true;
             return gameState;
         }
 
@@ -93,7 +94,7 @@ namespace Assets.Scripts.Core
         {
             if (!isGameStarted)
             {
-                if (isLoaded)
+                if (IsLoaded)
                 {
                     Start();
                 }
@@ -126,7 +127,7 @@ namespace Assets.Scripts.Core
 
         public void RestartLevel()
         {
-            isRunning = false;
+            IsRunning = false;
 
             var nL = State.CurrentLevel.Name;
             var level = GetLevel(nL);
@@ -141,10 +142,15 @@ namespace Assets.Scripts.Core
                 if (level.Name == State.CurrentLevel.Name)
                 {
                     var oldGameField = level.GameField;
+
                     level.GameField = field;
+
                     var convLevel = ConvertLevel(level);
+
                     StartLevel(convLevel);
+
                     level.GameField = oldGameField;
+
                     break;
                 }
             }
@@ -186,17 +192,7 @@ namespace Assets.Scripts.Core
 
         protected override void OnGameStart()
         {
-            LoadingGameObject = new GameObject();
-            var mono = LoadingGameObject.AddComponent<EmptyLoadingBehaviour>();
-            _ = mono.StartCoroutine(LoadingCoRoutine());
-            GameLoadedEvent.AddListener(() => GameObject.Destroy(LoadingGameObject));
-
-        }
-
-        private IEnumerator LoadingCoRoutine()
-        {  
-
-            yield return LoadGameSettings();
+            //LoadGameDefinitions();
             InitializeAudioClips();
 
             EffectsClipList = new List<AudioClip>()
@@ -213,34 +209,44 @@ namespace Assets.Scripts.Core
                 GameFrame.Base.Resources.Manager.Audio.Get("Slime_12"),
             };
 
-
-            isLoaded = true;
-            GameLoadedEvent.Invoke();
         }
 
-        private IEnumerator LoadGameSettings()
+        protected override void LoadDefintions()
         {
-            var gameO = new GameObject();
+            var filePath = $"{Application.streamingAssetsPath}/GameFields.json";
+            var filePath2 = $"{Application.streamingAssetsPath}/GameModes.json";
 
-            var asd = gameO.AddComponent<EmptyLoadingBehaviour>();
-            ResourceLoader<Definitions.GameField> resourceLoader = new ResourceLoader<Definitions.GameField>(this.availableGameFields);
-            yield return asd.StartCoroutine(resourceLoader.LoadDefinitionInumerator("GameFields.json", TestGameFields));
-            yield return asd.StartCoroutine(new GameModesLoader(this.availableGameModes, this.availableGameFields).LoadDefinitionInumerator("GameModes.json"));
+            new GameFrame.Core.Definitions.Loaders.DefinitionLoader<Definitions.GameField>(this.availableGameFields).LoadAssets(filePath, ValidateGameFields);
 
-            GameObject.Destroy(gameO);
+            new GameModesLoader(this.availableGameModes, availableGameFields).LoadAssets(filePath2);
         }
 
-        private void TestGameFields(List<Definitions.GameField> fields)
+        private void LoadGameDefinitions()
         {
+            //var filePath = $"{Application.streamingAssetsPath}/GameFields.json";
+            //var filePath2 = $"{Application.streamingAssetsPath}/GameModes.json";
+
+            //new GameFrame.Core.Definitions.Loaders.DefinitionLoader<Definitions.GameField>(this.availableGameFields).LoadAssets(filePath, ValidateGameFields);
+
+            //new GameModesLoader(this.availableGameModes, availableGameFields).LoadAssets(filePath2);
+        }
+
+        private Boolean ValidateGameFields(List<Definitions.GameField> fields)
+        {
+            var isSuccessful = true;
+
             Debug.Log($"Testing GameFields: {fields?.Count}");
 
             foreach (var field in fields)
             {
                 if (field.Fields == null)
                 {
+                    isSuccessful = false;
                     Debug.Log("Loaded gamefield with no fields: " + field.Reference);
                 }
             }
+
+            return isSuccessful;
         }
 
         private void InitializeAudioClips()

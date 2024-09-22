@@ -60,7 +60,7 @@ public class CreepBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (Core.Game.isRunning)
+        if (Core.Game.IsRunning)
         {
             //distributeCreep();
 
@@ -449,7 +449,7 @@ public class CreepBehaviour : MonoBehaviour
 
     public void ToggleCreeperActivity()
     {
-        Core.Game.isRunning = !Core.Game.isRunning;
+        Core.Game.IsRunning = !Core.Game.IsRunning;
     }
 
     private static string GetBorderKey(Border border)

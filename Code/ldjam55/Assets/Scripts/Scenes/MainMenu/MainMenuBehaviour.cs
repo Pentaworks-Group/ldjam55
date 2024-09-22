@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
 using Assets.Scripts.Constants;
+
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.Scripts.Scenes.MainMenu
 {
@@ -17,7 +18,6 @@ namespace Assets.Scripts.Scenes.MainMenu
         [SerializeField]
         private GameObject Menu;
 
-
         private void Start()
         {
             var backgroundAudioClips = new List<AudioClip>()
@@ -27,7 +27,6 @@ namespace Assets.Scripts.Scenes.MainMenu
 
             GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
         }
-
 
         public void PlayGame()
         {
