@@ -17,13 +17,11 @@ namespace Assets.Scripts.Core
 
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
-        public UnityEvent GameLoadedEvent { get; set; } = new UnityEvent();
-
         private GameObject LoadingGameObject;
-        public bool isRunning { get; set; } = false;
-        public bool isLoaded { get; private set; } = false;
-        public bool isInstantiated { get; private set; } = false;
-        private bool isGameStarted { get; set; } = false;
+
+        private bool isGameStarted = false;
+        public bool IsRunning { get; set; } = false;
+        public bool IsInstantiated { get; private set; } = false;
 
         public int GameSpeed { get; set; } = 1;
 
@@ -35,7 +33,8 @@ namespace Assets.Scripts.Core
             {
                 if (this.availableGameModes.Count == 0)
                 {
-                    LoadGameDefinitions();
+                    //LoadGameDefinitions();
+                    throw new NotSupportedException("Game not ready");
                 }
 
                 return this.availableGameModes.Values.ToList();
@@ -87,7 +86,7 @@ namespace Assets.Scripts.Core
                 gameState.CurrentLevel = ConvertLevel(SelectedGameMode.Levels[0]);
             }
 
-            isInstantiated = true;
+            IsInstantiated = true;
             return gameState;
         }
 
@@ -95,7 +94,7 @@ namespace Assets.Scripts.Core
         {
             if (!isGameStarted)
             {
-                if (isLoaded)
+                if (IsLoaded)
                 {
                     Start();
                 }
@@ -193,7 +192,7 @@ namespace Assets.Scripts.Core
 
         protected override void OnGameStart()
         {
-            LoadGameDefinitions();
+            //LoadGameDefinitions();
             InitializeAudioClips();
 
             EffectsClipList = new List<AudioClip>()
@@ -210,12 +209,9 @@ namespace Assets.Scripts.Core
                 GameFrame.Base.Resources.Manager.Audio.Get("Slime_12"),
             };
 
-
-            isLoaded = true;
-            GameLoadedEvent.Invoke();
         }
 
-        private void LoadGameDefinitions()
+        protected override void LoadDefintions()
         {
             var filePath = $"{Application.streamingAssetsPath}/GameFields.json";
             var filePath2 = $"{Application.streamingAssetsPath}/GameModes.json";
@@ -223,6 +219,16 @@ namespace Assets.Scripts.Core
             new GameFrame.Core.Definitions.Loaders.DefinitionLoader<Definitions.GameField>(this.availableGameFields).LoadAssets(filePath, ValidateGameFields);
 
             new GameModesLoader(this.availableGameModes, availableGameFields).LoadAssets(filePath2);
+        }
+
+        private void LoadGameDefinitions()
+        {
+            //var filePath = $"{Application.streamingAssetsPath}/GameFields.json";
+            //var filePath2 = $"{Application.streamingAssetsPath}/GameModes.json";
+
+            //new GameFrame.Core.Definitions.Loaders.DefinitionLoader<Definitions.GameField>(this.availableGameFields).LoadAssets(filePath, ValidateGameFields);
+
+            //new GameModesLoader(this.availableGameModes, availableGameFields).LoadAssets(filePath2);
         }
 
         private Boolean ValidateGameFields(List<Definitions.GameField> fields)

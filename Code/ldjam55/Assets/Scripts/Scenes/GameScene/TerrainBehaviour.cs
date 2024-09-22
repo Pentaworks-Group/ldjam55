@@ -1,6 +1,8 @@
+using System;
+
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
-using System;
+
 using UnityEngine;
 
 public class TerrainBehaviour : MonoBehaviour
@@ -15,7 +17,6 @@ public class TerrainBehaviour : MonoBehaviour
     public int FieldCountY { get; private set; } = 0;
     public float XOffset { get; private set; } = 0;
     public float YOffset { get; private set; } = 0;
-
 
     private float fieldSize = 8f;
     private float flatFieldSize = 4f;
@@ -32,13 +33,13 @@ public class TerrainBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        if (Core.Game.isLoaded)
+        if (Core.Game.IsLoaded)
         {
             Init();
         }
         else
         {
-            Core.Game.GameInstantiated.AddListener(Init);
+            Core.Game.NewGameStarted.AddListener(Init);
         }
     }
 
@@ -74,7 +75,7 @@ public class TerrainBehaviour : MonoBehaviour
 
     private void Init()
     {
-        if (!isInit && Core.Game.isLoaded)
+        if (!isInit && Core.Game.IsLoaded)
         {
             int minX = 0;
             int minY = 0;
@@ -82,6 +83,7 @@ public class TerrainBehaviour : MonoBehaviour
             int maxX = 0;
             int maxY = 0;
             float maxZ = 0;
+
             foreach (var field in Core.Game.State.CurrentLevel.GameField.Fields)
             {
                 minX = (int)Math.Min(field.Coords.X, minX);
@@ -91,6 +93,7 @@ public class TerrainBehaviour : MonoBehaviour
                 maxY = (int)Math.Max(field.Coords.Y, maxY);
                 maxZ = Mathf.Max(field.Height, maxZ);
             }
+
             FieldCountX = (maxX - minX) + 1;
             FieldCountY = (maxY - minY) + 1;
 
@@ -180,6 +183,7 @@ public class TerrainBehaviour : MonoBehaviour
             nextHeight = GetFieldHeight(nextField);
             return GetSinInterpolation(height, nextHeight, param);
         }
+
         return 0;
     }
 

@@ -79,14 +79,14 @@ public class GameSceneBehaviour : MonoBehaviour
         creepBehaviour.OnFieldObjectDestroyedEvent.Add(DestroyFieldObject);
         creepBehaviour.OnFieldCreatedEvent.Add(UpdateField);
 
-        if (Core.Game.isLoaded)
+        if (Core.Game.IsLoaded)
         {
             Init();
         }
         else
         {
             Core.Game.EnsureGameState();
-            Core.Game.GameInstantiated.AddListener(Init);
+            Core.Game.NewGameStarted.AddListener(Init);
         }
 
         var backgroundAudioClips = new List<AudioClip>()
@@ -99,7 +99,7 @@ public class GameSceneBehaviour : MonoBehaviour
 
         GameFrame.Base.Audio.Background.ReplaceClips(backgroundAudioClips);
 
-        
+
     }
 
     private void Init()
@@ -334,7 +334,7 @@ public class GameSceneBehaviour : MonoBehaviour
     public void TogglePause()
     {
         Core.Game.PlayButtonSound();
-        Core.Game.isRunning = !Core.Game.isRunning;
+        Core.Game.IsRunning = !Core.Game.IsRunning;
 
         if (Core.Game.IsRunning)
         {

@@ -6,10 +6,11 @@ namespace Assets.Scripts.Scenes.MainMenu
     {
         void Awake()
         {
-            if (Base.Core.Game.isLoaded)
+            if (Base.Core.Game.IsLoaded)
             {
                 Destroy(gameObject);
-            } else
+            }
+            else
             {
                 Base.Core.Game.GameLoadedEvent.AddListener(() => Destroy(gameObject));
             }

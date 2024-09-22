@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 
 using Assets.Scripts.Core.Model;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
+
 namespace Assets.Scripts.Scene.GameScene
 {
     public class GameFieldClickBehaviour : MonoBehaviour
@@ -33,21 +35,21 @@ namespace Assets.Scripts.Scene.GameScene
 
         private void Start()
         {
-            if (Base.Core.Game.isLoaded)
+            if (Base.Core.Game.IsLoaded)
             {
                 Init();
             }
             else
             {
-                Base.Core.Game.GameInstantiated.AddListener(Init);
+                Base.Core.Game.NewGameStarted.AddListener(Init);
             }
-           
         }
 
         private void Init()
         {
             float current = 0;
             var s = Base.Core.Game.State.CurrentLevel.UserActions;
+
             foreach (var action in actions)
             {
                 var actionBehaviour = Instantiate<UserActionBehavior>(actionTemplate, actionTemplate.transform.parent);
@@ -59,6 +61,7 @@ namespace Assets.Scripts.Scene.GameScene
                 actionBehaviors.Add(actionBehaviour);
                 current += increment;
             }
+
             UpdateUI();
         }
 
@@ -124,11 +127,10 @@ namespace Assets.Scripts.Scene.GameScene
             Vector2 mapPoint = terrainBehaviour.TransformTerrainCoordToMapFloat(terrainHitPoint);
             return mapPoint;
         }
-
-
+        
         private void LateUpdate()
         {
-            if (Input.GetMouseButtonUp(0)) 
+            if (Input.GetMouseButtonUp(0))
             {
                 if (!EventSystem.current.IsPointerOverGameObject())    // is the touch on the GUI
                 {
@@ -159,8 +161,8 @@ namespace Assets.Scripts.Scene.GameScene
                             }
                             else if (raycastHit.transform.gameObject.Equals(mainTerrain.gameObject))
                             {
-//                                Vector2Int mapPoint = terrainBehaviour.TransformTerrainCoordToMap(new Vector2Int((int)raycastHit.point.x, (int)raycastHit.point.z));
-//                                var field = terrainBehaviour.getField(mapPoint.x, mapPoint.y);
+                                //                                Vector2Int mapPoint = terrainBehaviour.TransformTerrainCoordToMap(new Vector2Int((int)raycastHit.point.x, (int)raycastHit.point.z));
+                                //                                var field = terrainBehaviour.getField(mapPoint.x, mapPoint.y);
                                 //var border = getRaycastBorder(raycastHit);
                                 //var actionInput = new UserActionInput()
                                 //{
