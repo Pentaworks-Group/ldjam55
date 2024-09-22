@@ -15,7 +15,7 @@ namespace Assets.Scripts.Core.Definitions.Loaders
             this.gameFieldCache = gameFieldCache;
         }
 
-        protected override List<GameMode> HandleDefinitions(List<GameMode> loadedGameModes)
+        protected override void HandleDefinitions(List<GameMode> loadedGameModes)
         {
             if (loadedGameModes?.Count > 0)
             {
@@ -44,8 +44,6 @@ namespace Assets.Scripts.Core.Definitions.Loaders
                     targetCache[loadedGameMode.Reference] = newGameMode;
                 }
             }
-
-            return loadedGameModes;
         }
 
         private TItem CheckItem<TItem>(TItem loadedItem, Dictionary<String, TItem> referenceCache) where TItem : GameFrame.Core.Definitions.BaseDefinition, new()
