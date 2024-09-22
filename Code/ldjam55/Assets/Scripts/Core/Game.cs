@@ -17,8 +17,6 @@ namespace Assets.Scripts.Core
 
         public static Definitions.GameMode SelectedGameMode { get; set; }
 
-        private GameObject LoadingGameObject;
-
         private bool isGameStarted = false;
         public bool IsRunning { get; set; } = false;
         public bool IsInstantiated { get; private set; } = false;
