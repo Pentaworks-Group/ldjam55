@@ -421,6 +421,7 @@ namespace Assets.Scripts.Core
                 cps.Add(new UserAction()
                 {
                     Name = action.Name,
+                    IconName = action.IconName,
                     ActionParamers = action.ActionParamers,
                     Cooldown = action.Cooldown,
                     UsesRemaining = action.UsesRemaining

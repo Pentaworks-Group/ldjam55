@@ -59,6 +59,10 @@ public class UserActionHandler
         {
             Func<UserActionInput, bool> builtAction = DestroyBorder;
             buildActions.Add(action, builtAction);
+            if (action.IconName == default)
+            {
+                action.IconName = "DestroyWall";
+            }
             return builtAction;
         }
         else if (action.Name == "CreateWall")

@@ -34,6 +34,7 @@
                 "UserActions": [
                     {
                         "Name": "DestroyWall",
+                        "IconName": "DestroyWall",
                         "UsesRemaining": 1
                     }
                 ],
@@ -76,6 +77,7 @@
                 "UserActions": [
                     {
                         "Name": "SpawnCreep",
+                        "IconName": "SpawnCreep",
                         "UsesRemaining": 1,
                         "ActionParamers": "{\"Amount\": 25,\"Creeper\": \"CreeperWater\"}"
                     }
@@ -118,6 +120,7 @@
                 "UserActions": [
                     {
                         "Name": "DestroyWall",
+                        "IconName": "DestroyWall",
                         "UsesRemaining": 1
                     }
                 ],
@@ -159,6 +162,7 @@
                 "UserActions": [
                     {
                         "Name": "CreateWall",
+                        "IconName": "CreateWall",
                         "UsesRemaining": 1,
                         "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     }
@@ -200,6 +204,7 @@
                 "UserActions": [
                     {
                         "Name": "SpawnCreep",
+                        "IconName": "SpawnCreep",
                         "UsesRemaining": 2,
                         "ActionParamers": "{\"Amount\": 0.1,\"Creeper\": \"CreeperWater\"}"
                     }
@@ -242,6 +247,7 @@
                 "UserActions": [
                     {
                         "Name": "DestroyWall",
+                        "IconName": "DestroyWall",
                         "UsesRemaining": 1
                     }
                 ],
@@ -283,6 +289,7 @@
                 "UserActions": [
                     {
                         "Name": "CreateWall",
+                        "IconName": "CreateWall",
                         "UsesRemaining": 1,
                         "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     }
@@ -313,6 +320,7 @@
                 "UserActions": [
                     {
                         "Name": "DestroyWall",
+                        "IconName": "DestroyWall",
                         "UsesRemaining": 5
                     }
                 ],
@@ -343,25 +351,30 @@
                 "UserActions": [
                     {
                         "Name": "CreateWall",
+                        "IconName": "CreateWall",
                         "UsesRemaining": 1000,
                         "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     },
                     {
                         "Name": "DestroyWall",
+                        "IconName": "DestroyWall",
                         "UsesRemaining": 1000
                     },
                     {
                         "Name": "SpawnCreep",
+                        "IconName": "SpawnCreep",
                         "UsesRemaining": 1000,
                         "ActionParamers": "{\"Amount\": 25,\"Creeper\": \"CreeperWater\"}"
                     },
                     {
                         "Name": "CreateSpawner",
+                        "IconName": "CreateSpawner",
                         "UsesRemaining": 1000,
                         "ActionParamers": "{\"Amount\": 25,\"Intervall\": 20,\"Creeper\": \"CreeperWater\", \"Name\": \"Water Spawner\", \"Model\": \"Spawner_1\", \"Material\": \"Creeper_Yellow_Stage_1\"}"
                     },
                     {
                         "Name": "CreateField",
+                        "IconName": "CreateField",
                         "UsesRemaining": 1000
                     }
                 ],

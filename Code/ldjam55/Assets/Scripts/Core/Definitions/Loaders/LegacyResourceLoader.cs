@@ -24,39 +24,39 @@ namespace Assets.Scripts.Core.Definitions.Loaders
             this.targetCache = targetCache;
         }
 
-        public virtual void LoadDefinition(String resourceName, Action<List<TDefinition>> onCompleteAction = default)
-        {
-            var filePath = $"{Application.streamingAssetsPath}/{resourceName}";
+        //public virtual void LoadDefinition(String resourceName, Action<List<TDefinition>> onCompleteAction = default)
+        //{
+        //    var filePath = $"{Application.streamingAssetsPath}/{resourceName}";
 
-            this.onCompleteAction = onCompleteAction;
+        //    this.onCompleteAction = onCompleteAction;
 
-            LoadAsset(filePath, HandleDefinitions);
-        }
+        //    LoadAsset(filePath, HandleDefinitions);
+        //}
 
-        public virtual IEnumerator LoadDefinitionInumerator(String resourceName, Action<List<TDefinition>> onCompleteAction = default)
-        {
-            var filePath = $"{Application.streamingAssetsPath}/{resourceName}";
+        //public virtual IEnumerator LoadDefinitionInumerator(String resourceName, Action<List<TDefinition>> onCompleteAction = default)
+        //{
+        //    var filePath = $"{Application.streamingAssetsPath}/{resourceName}";
 
-            this.onCompleteAction = onCompleteAction;
+        //    this.onCompleteAction = onCompleteAction;
 
-            return LoadAssetInumerator(filePath, HandleDefinitions);
-        }
+        //    return LoadAssetInumerator(filePath, HandleDefinitions);
+        //}
 
-        protected void LoadAsset(String filePath, Action<List<TDefinition>> onLoadedCallback)
-        {
-            var gameO = new GameObject();
+        //protected void LoadAsset(String filePath, Action<List<TDefinition>> onLoadedCallback)
+        //{
+        //    var gameO = new GameObject();
 
-            var mono = gameO.AddComponent<EmptyLoadingBehaviour>();
+        //    var mono = gameO.AddComponent<EmptyLoadingBehaviour>();
 
-            _ = mono.StartCoroutine(LoadAssetInumerator(filePath, onLoadedCallback));
+        //    _ = mono.StartCoroutine(LoadAssetInumerator(filePath, onLoadedCallback));
 
-            GameObject.Destroy(gameO);
-        }
+        //    GameObject.Destroy(gameO);
+        //}
 
-        private static IEnumerator LoadAssetInumerator(string filePath, Action<List<TDefinition>> onLoadedCallback)
-        {
-            return GameFrame.Core.Json.Handler.DeserializeObjectFromStreamingAssets(filePath, onLoadedCallback);
-        }
+        //private static IEnumerator LoadAssetInumerator(string filePath, Action<List<TDefinition>> onLoadedCallback)
+        //{
+        //    return GameFrame.Core.Json.Handler.DeserializeObjectFromStreamingAssets(filePath, onLoadedCallback);
+        //}
 
         protected virtual void HandleDefinitions(List<TDefinition> sourceList)
         {
