@@ -35,16 +35,6 @@ namespace Assets.Scripts.Scenes.MainMenu
 
         }
 
-        public void ShowGameModes()
-        {
-            ShowScene(SceneNames.GameModes);
-        }
-
-        public void ShowSavedGames()
-        {
-            ShowScene(SceneNames.SavedGames);
-        }
-
         public void ShowOptions()
         {
             ShowScene(SceneNames.Options);

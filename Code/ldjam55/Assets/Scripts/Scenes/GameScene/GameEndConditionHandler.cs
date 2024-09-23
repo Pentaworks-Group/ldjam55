@@ -9,25 +9,7 @@ namespace Assets.Scripts.Scenes.GameScene
     {
         private Dictionary<string, GameEndCondition> conditions;
 
-        //private Action<GameEndCondition> winAction;
-        //private Action<GameEndCondition> loseAction;
-
         private List<Action<GameEndCondition>> actions = new();
-
-        //private static GameEndConditionHandler _Instance;
-        //public static GameEndConditionHandler Instance
-        //{
-        //    get
-        //    {
-        //        if (_Instance == null)
-        //        {
-        //            _Instance = new GameEndConditionHandler();
-        //        }
-        //        return _Instance;
-        //    }
-        //}
-
-        private bool isInitied = false;
 
         public GameEndConditionHandler()
         {
