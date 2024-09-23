@@ -42,7 +42,7 @@ namespace Assets.Scripts.Core.Definitions.Loaders
             return LoadAssetInumerator(filePath, HandleDefinitions);
         }
 
-        protected void LoadAsset(String filePath, Func<List<TDefinition>, List<TDefinition>> onLoadedCallback)
+        protected void LoadAsset(String filePath, Action<List<TDefinition>> onLoadedCallback)
         {
             var gameO = new GameObject();
 
@@ -53,12 +53,12 @@ namespace Assets.Scripts.Core.Definitions.Loaders
             GameObject.Destroy(gameO);
         }
 
-        private static IEnumerator LoadAssetInumerator(string filePath, Func<List<TDefinition>, List<TDefinition>> onLoadedCallback)
+        private static IEnumerator LoadAssetInumerator(string filePath, Action<List<TDefinition>> onLoadedCallback)
         {
             return GameFrame.Core.Json.Handler.DeserializeObjectFromStreamingAssets(filePath, onLoadedCallback);
         }
 
-        protected virtual List<TDefinition> HandleDefinitions(List<TDefinition> sourceList)
+        protected virtual void HandleDefinitions(List<TDefinition> sourceList)
         {
             if (sourceList == default)
             {
@@ -81,7 +81,6 @@ namespace Assets.Scripts.Core.Definitions.Loaders
             }
 
             this.onCompleteAction?.Invoke(sourceList);
-            return sourceList;
         }
     }
 }
