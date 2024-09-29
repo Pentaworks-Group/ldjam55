@@ -1,7 +1,9 @@
-using Assets.Scripts.Base;
-using Assets.Scripts.Core.Model;
 using System;
 using System.Collections.Generic;
+
+using Assets.Scripts.Base;
+using Assets.Scripts.Core.Model;
+
 using UnityEngine;
 
 public class TerrainPaintBehaviour : MonoBehaviour
@@ -41,8 +43,7 @@ public class TerrainPaintBehaviour : MonoBehaviour
         creepBehaviour.OnCreeperChanged.Add((field, oldCreeper) => PaintCreep(field, true));
         creepBehaviour.OnFieldCreatedEvent.Add((field) => UpdateTerrain());
     }
-
-
+    
     public void UpdateTerrain()
     {
         if (Core.Game.State.CurrentLevel.GameField.Fields.Count == 0)

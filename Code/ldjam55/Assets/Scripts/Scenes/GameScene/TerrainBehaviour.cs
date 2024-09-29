@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class TerrainBehaviour : MonoBehaviour
 {
-
     [SerializeField]
     private CreepBehaviour creepBehaviour;
 
