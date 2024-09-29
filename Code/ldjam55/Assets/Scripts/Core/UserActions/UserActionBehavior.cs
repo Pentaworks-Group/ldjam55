@@ -1,7 +1,9 @@
-using Assets.Scripts.Core.Model;
 using System;
+
+using Assets.Scripts.Core.Model;
+
 using TMPro;
-using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +20,6 @@ public class UserActionBehavior : MonoBehaviour
     [SerializeField]
     private Image actionIcon;
 
-
     private UserAction userAction;
     private Action<UserAction> selectAction;
     private Func<UserAction> getSelectedAction;
@@ -34,7 +35,7 @@ public class UserActionBehavior : MonoBehaviour
         this.userAction = userAction;
         this.selectAction = selectAction;
         this.getSelectedAction = getSelectedAction;
-        
+
     }
 
     public void UpdateUI()
