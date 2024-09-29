@@ -1,10 +1,11 @@
-
+using System;
+using System.Collections.Generic;
 
 using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
+
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class UserActionHandler
@@ -13,12 +14,12 @@ public class UserActionHandler
     private Dictionary<UserAction, Func<UserActionInput, bool>> buildActions = new();
     private CreepBehaviour creepBehaviour;
 
-
     public void Init(CreepBehaviour creepBehaviour)
     {
         this.creepBehaviour = creepBehaviour;
         buildActions.Clear();
     }
+
     public bool UseAction(UserAction action, UserActionInput target)
     {
         if (action != null && action.UsesRemaining > 0)
@@ -38,6 +39,7 @@ public class UserActionHandler
         {
             builtAction = BuildAction(action);
         }
+
         return builtAction.Invoke(target);
     }
 
@@ -80,11 +82,8 @@ public class UserActionHandler
         return null;
     }
 
-
-
     private bool CreateField(UserActionInput target)
     {
-
         if (target.InputType == "Coords")
         {
             Vector2 coords = (Vector2)target.Input;
@@ -176,9 +175,10 @@ public class UserActionHandler
         if (target.InputType == "Coords")
         {
             var border = (Vector2)target.Input;
-            var newSpawner = new FieldObject() {
+            var newSpawner = new FieldObject()
+            {
                 Name = spawner.Name,
-                Description = spawner.Description, 
+                Description = spawner.Description,
                 Material = spawner.Material,
                 Model = spawner.Model,
                 Hidden = spawner.Hidden,
