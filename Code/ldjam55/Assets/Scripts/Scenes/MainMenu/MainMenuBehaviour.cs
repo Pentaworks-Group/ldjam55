@@ -14,9 +14,7 @@ namespace Assets.Scripts.Scenes.MainMenu
         private static extern void Quit();
 
         [SerializeField]
-        private GameObject Tutorial;
-        [SerializeField]
-        private GameObject Menu;
+        private GameObject LoadingScreen;
 
         private void Start()
         {
@@ -30,6 +28,7 @@ namespace Assets.Scripts.Scenes.MainMenu
 
         public void PlayGame()
         {
+            LoadingScreen.SetActive(true);
             Base.Core.Game.PlayButtonSound();
             Base.Core.Game.Start();
 
@@ -66,17 +65,5 @@ namespace Assets.Scripts.Scenes.MainMenu
             Base.Core.Game.ChangeScene(sceneName);
         }
 
-        public void ShowTutorial()
-        {
-            Tutorial.SetActive(true);
-            Menu.SetActive(false);
-        }
-
-        public void HideTutorial()
-        {
-            Base.Core.Game.PlayButtonSound();
-            Tutorial.SetActive(false);
-            Menu.SetActive(true);
-        }
     }
 }

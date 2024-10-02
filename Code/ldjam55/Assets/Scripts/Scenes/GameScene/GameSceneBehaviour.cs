@@ -55,6 +55,10 @@ public class GameSceneBehaviour : MonoBehaviour
     [SerializeField]
     private Image menuButtonImage;
 
+
+    [SerializeField]
+    private GameObject LoadingScreen;
+
     private Dictionary<string, GameObject> Templates;
 
     private Dictionary<string, GameObject> Borders;
@@ -195,6 +199,7 @@ public class GameSceneBehaviour : MonoBehaviour
     {
         Core.Game.PlayButtonSound();
 
+        LoadingScreen.SetActive(true);
         Core.Game.StartNextLevel();
 
         levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);
@@ -204,6 +209,7 @@ public class GameSceneBehaviour : MonoBehaviour
     {
         Core.Game.PlayButtonSound();
 
+        LoadingScreen.SetActive(true);
         Core.Game.RestartLevel();
 
         levelDisplay.SetText(Core.Game.State.CurrentLevel.Name);

@@ -8,11 +8,13 @@ namespace Assets.Scripts.Scenes.MainMenu
         {
             if (Base.Core.Game.IsLoaded)
             {
-                Destroy(gameObject);
+                gameObject.SetActive(false);
+                //Destroy(gameObject);
             }
             else
             {
-                Base.Core.Game.GameLoadedEvent.AddListener(() => Destroy(gameObject));
+                Base.Core.Game.GameLoadedEvent.AddListener(() => gameObject.SetActive(false));
+                //Base.Core.Game.GameLoadedEvent.AddListener(() => Destroy(gameObject));
             }
         }
     }
