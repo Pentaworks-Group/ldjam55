@@ -6,11 +6,10 @@ using Assets.Scripts.Core.Definitions.Loaders;
 using Assets.Scripts.Core.Model;
 
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Assets.Scripts.Core
 {
-    public class Game : GameFrame.Core.Game<GameState, PlayerOptions, SavedGamePreview>
+    public class Game : GameFrame.Core.Game<GameState, PlayerOptions>
     {
         private readonly Dictionary<String, Definitions.GameMode> availableGameModes = new Dictionary<String, Definitions.GameMode>();
         private readonly Dictionary<String, Definitions.GameField> availableGameFields = new Dictionary<String, Definitions.GameField>();
@@ -190,23 +189,6 @@ namespace Assets.Scripts.Core
 
         protected override void OnGameStart()
         {
-            //LoadGameDefinitions();
-            InitializeAudioClips();
-
-            EffectsClipList = new List<AudioClip>()
-            {
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_3"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_4"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_5"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_6"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_7"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_8"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_9"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_10"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_11"),
-                GameFrame.Base.Resources.Manager.Audio.Get("Slime_12"),
-            };
-
         }
 
         protected override void LoadDefintions()
@@ -217,16 +199,6 @@ namespace Assets.Scripts.Core
             new GameFrame.Core.Definitions.Loaders.DefinitionLoader<Definitions.GameField>(this.availableGameFields).LoadAssets(filePath, ValidateGameFields);
 
             new GameModesLoader(this.availableGameModes, availableGameFields).LoadAssets(filePath2);
-        }
-
-        private void LoadGameDefinitions()
-        {
-            //var filePath = $"{Application.streamingAssetsPath}/GameFields.json";
-            //var filePath2 = $"{Application.streamingAssetsPath}/GameModes.json";
-
-            //new GameFrame.Core.Definitions.Loaders.DefinitionLoader<Definitions.GameField>(this.availableGameFields).LoadAssets(filePath, ValidateGameFields);
-
-            //new GameModesLoader(this.availableGameModes, availableGameFields).LoadAssets(filePath2);
         }
 
         private Boolean ValidateGameFields(List<Definitions.GameField> fields)
@@ -247,9 +219,11 @@ namespace Assets.Scripts.Core
             return isSuccessful;
         }
 
-        private void InitializeAudioClips()
+        protected override void InitializeAudioClips()
         {
             InitializeBackgroundAudio();
+
+            InitializeEffectsAudio();
         }
 
         private void InitializeBackgroundAudio()
@@ -272,6 +246,23 @@ namespace Assets.Scripts.Core
             };
 
             GameFrame.Base.Audio.Ambience.Play(ambienceAudioClips);
+        }
+
+        private void InitializeEffectsAudio()
+        {
+            EffectsClipList = new List<AudioClip>()
+            {
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_3"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_4"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_5"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_6"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_7"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_8"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_9"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_10"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_11"),
+                GameFrame.Base.Resources.Manager.Audio.Get("Slime_12"),
+            };
         }
 
         private Model.GameField ConvertGameField(Definitions.GameField gameFieldDefinition)
