@@ -123,7 +123,8 @@ public class GameSceneBehaviour : MonoBehaviour
         //        Core.Game.State.TimeElapsed += Time.deltaTime;
         if (Core.Game.IsRunning)
         {
-            Core.Game.State.TimeElapsed += Core.Game.GameSpeed * Time.deltaTime;
+            //Core.Game.State.TimeElapsed += Core.Game.GameSpeed * Time.deltaTime;
+            Core.Game.State.TimeElapsed += Time.deltaTime;
             if (timeUpdate < 0)
             {
                 timeElapsedDisplay.text = (Core.Game.State.TimeElapsed).ToString("F0");// Core.Game.State.TimeElapsed.ToString("F1");
@@ -327,6 +328,7 @@ public class GameSceneBehaviour : MonoBehaviour
     {
         Core.Game.PlayButtonSound();
         Core.Game.GameSpeed++;
+        Time.timeScale = Core.Game.GameSpeed;
         gameSpeedDisplay.text = Core.Game.GameSpeed.ToString();
     }
     public void DecreaseGameSpeed()
@@ -334,6 +336,7 @@ public class GameSceneBehaviour : MonoBehaviour
         Core.Game.PlayButtonSound();
         Core.Game.GameSpeed--;
         Core.Game.GameSpeed = Mathf.Max(1, Core.Game.GameSpeed);
+        Time.timeScale = Core.Game.GameSpeed;
         gameSpeedDisplay.text = Core.Game.GameSpeed.ToString();
     }
 
@@ -344,7 +347,8 @@ public class GameSceneBehaviour : MonoBehaviour
 
         if (Core.Game.IsRunning)
         {
-            Time.timeScale = 1f;
+
+            Time.timeScale = Core.Game.GameSpeed;
             pauseButtonDisplay.text = "Pause";
             pauseButtonImage.color = menuButtonImage.color;
         }

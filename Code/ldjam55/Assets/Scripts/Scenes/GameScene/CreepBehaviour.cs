@@ -2,11 +2,15 @@ using Assets.Scripts.Base;
 using Assets.Scripts.Core.Model;
 using Assets.Scripts.Scene.GameScene;
 using Assets.Scripts.Scenes.GameScene;
+
 using Newtonsoft.Json.Linq;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -63,11 +67,7 @@ public class CreepBehaviour : MonoBehaviour
         if (Core.Game.IsRunning)
         {
             //distributeCreep();
-
-            for (int i = 0; i < Core.Game.GameSpeed; i++)
-            {
-                UpdateCreep();
-            }
+            UpdateCreep();
         }
     }
 
@@ -722,7 +722,8 @@ public class CreepBehaviour : MonoBehaviour
 
     private void UpdateCreepAtBorders()
     {
-        float tickFlowFactor = Time.deltaTime * Core.Game.State.Mode.FlowSpeed;
+        //float tickFlowFactor = Time.deltaTime * Core.Game.State.Mode.FlowSpeed;
+        float tickFlowFactor = 1;
         List<Creep> creeperChanged = new();
         foreach (var border in borders)
         {
