@@ -5,8 +5,8 @@
         "Description": "Default Default Default",
         "NothingFlowRate": 1,
         "FlowSpeed": 0.7,
-        "MinFlow": 0.005,
-        "MinNewCreep": 0.02,
+        "MinFlow": 0.01,
+        "MinNewCreep": 0.3,
         "StartLevel": "Level 1",
         "Creepers": [
             {

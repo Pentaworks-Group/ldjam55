@@ -35,6 +35,8 @@ public class CreepBehaviour : MonoBehaviour
     private Dictionary<string, Creeper> creepers;
     private Dictionary<Creeper, HashSet<Creep>> creepsByCreeper;
 
+    private float CreepUpdateInterval = 0.25f;
+    private float LastCreepUpdate = 0f;
 
     private TriggerHandler triggerHandler = new();
     private GameEndConditionHandler _gameEndConditionHandler;
@@ -67,7 +69,14 @@ public class CreepBehaviour : MonoBehaviour
         if (Core.Game.IsRunning)
         {
             //distributeCreep();
-            UpdateCreep();
+            if (LastCreepUpdate <= 0f)
+            {
+                UpdateCreep();
+                LastCreepUpdate = CreepUpdateInterval;
+            } else
+            {
+                LastCreepUpdate -= Time.deltaTime;
+            }
         }
     }
 
@@ -79,7 +88,7 @@ public class CreepBehaviour : MonoBehaviour
         {
             if (field.Creep != null)
             {
-                Debug.Log("asdf");
+                Debug.Log("Field with Creep: " + field.ID);
             }
         }
         timeManagerBehaviour.Reset();
@@ -816,11 +825,17 @@ public class CreepBehaviour : MonoBehaviour
     private void CreepingCreeper(Field field, Border border, float tickFlowFactor, Creep creep, float heightDiff, List<Creep> creeperChanged)
     {
         float flow = GetFlowPreassure(creep, border.BorderStatus.FlowValue, tickFlowFactor, heightDiff);
-        if (flow < Core.Game.State.Mode.MinNewCreep)
+        float creepValueAtOrigin = creep.Value - flow;
+        if (flow < Core.Game.State.Mode.MinNewCreep || creepValueAtOrigin < Core.Game.State.Mode.MinNewCreep)
         {
+            Debug.Log("rest Value: " + creep.Value + " flow: " + flow + " minCreep: " + Core.Game.State.Mode.MinNewCreep + "  creepValueAtOrigin: " + creepValueAtOrigin);
             return;
         }
-        creep.Value -= flow;
+        creep.Value = creepValueAtOrigin;
+        if (creep.Value < 1)
+        {
+            Debug.Log("Value: " + creep.Value + " flow: " + flow);
+        }
         var newCreep = new Creep()
         {
             Creeper = creep.Creeper,
@@ -840,7 +855,7 @@ public class CreepBehaviour : MonoBehaviour
         }
         if (heightDiff == 0)
         {
-            return creep.Value * borderFlowFactor * tickFlowFactor;
+            return creep.Value * borderFlowFactor * tickFlowFactor / 2;
         }
         float creeperFactor = creep.Creeper.Parameters.HightTraverseRate;
         float heightFactor = creeperFactor * heightDiff;
@@ -848,7 +863,7 @@ public class CreepBehaviour : MonoBehaviour
         {
             heightFactor = 1 / Mathf.Abs(heightFactor);
         }
-        return creep.Value * borderFlowFactor * tickFlowFactor * heightFactor;
+        return creep.Value * borderFlowFactor * tickFlowFactor * heightFactor / 2;
     }
 
 
