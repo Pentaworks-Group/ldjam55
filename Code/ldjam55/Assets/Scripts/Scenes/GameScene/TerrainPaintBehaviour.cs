@@ -33,8 +33,10 @@ public class TerrainPaintBehaviour : MonoBehaviour
     float _alphamapHeightM1;
     int _alphamapLayers;
 
-    int _pixelPerFieldX;
-    int _pixelPerFieldY;
+    float _pixelPerFieldX;
+    int _pixelPerFieldXCeiled;
+    float _pixelPerFieldY;
+    int _pixelPerFieldYCeiled;
 
     TerrainData _terrainData;
 
@@ -61,8 +63,11 @@ public class TerrainPaintBehaviour : MonoBehaviour
 
         _alphamapLayers = _terrainData.alphamapLayers;
 
-        _pixelPerFieldX = _alphamapWidth / terrainBehaviour.FieldCountX;
-        _pixelPerFieldY = _alphamapHeight / terrainBehaviour.FieldCountY;
+        _pixelPerFieldX = _alphamapWidth / (float)terrainBehaviour.FieldCountX;
+        _pixelPerFieldY = _alphamapHeight / (float)terrainBehaviour.FieldCountY;
+        _pixelPerFieldXCeiled = (int)Math.Ceiling(_pixelPerFieldX);
+        _pixelPerFieldYCeiled = (int)Math.Ceiling(_pixelPerFieldY);
+        //Debug.Log("_alphamapWidth: " + _alphamapWidth + " terrainBehaviour.FieldCountX: " + terrainBehaviour.FieldCountX + " _pixelPerFieldX: " + (_alphamapWidth / (float)terrainBehaviour.FieldCountX));
         //Texture test
         //float[,,] map = new float[_alphamapWidth, _alphamapHeight, _alphamapLayers];
 
@@ -115,10 +120,18 @@ public class TerrainPaintBehaviour : MonoBehaviour
             for (int x = 0; x < terrainBehaviour.FieldCountX; x++)
             {
                 int layerID = GetLayerID(fieldMap, y, x);
-                int xStart = x * _pixelPerFieldX;
-                int xEnd = xStart + _pixelPerFieldX;
-                int yStart = y * _pixelPerFieldY;
-                int yEnd = yStart + _pixelPerFieldY;
+                int xStart = (int)Math.Round(x * _pixelPerFieldX);
+                int xEnd = (int)(xStart + _pixelPerFieldXCeiled);
+                if (xEnd >= _alphamapWidth)
+                {
+                    xEnd = _alphamapWidth ;
+                }
+                int yStart = (int)Math.Round(y * _pixelPerFieldY);
+                int yEnd = (int)(yStart + _pixelPerFieldYCeiled);
+                if (yEnd >= _alphamapHeight)
+                {
+                    yEnd = _alphamapHeight ;
+                }
                 PaintField(map, layerID, xStart, xEnd, yStart, yEnd);
             }
         }
@@ -218,15 +231,18 @@ public class TerrainPaintBehaviour : MonoBehaviour
         //TODO: add Creep def
         int sizeX = (int)(_terrainData.size.x / terrainBehaviour.FieldCountX);
         int radius = (int)Math.Ceiling(Mathf.Min(field.Creep.Value, 1f) * 2f * sizeX);
+        //if (radius < 1)
+        //{
+        //    Debug.Log("Radius:" + radius + "  FieldValue: " + field.Creep.Value);
+        //}
         if (radius != field.Creep.PaintRadiusOld || forceUpdate)
         {
+            int sizeY = (int)(_terrainData.size.z / terrainBehaviour.FieldCountY);
             field.Creep.PaintRadiusOld = radius;
 
             Vector2Int mapPos = new Vector2Int((int)(field.Coords.X - terrainBehaviour.XOffset), (int)(field.Coords.Y - terrainBehaviour.YOffset));
             Vector2Int creepCenter = GetTextureMapCoord(mapPos);
             int layerID = GetSlimeLayerID(field.Creep.Creeper);
-            int sizeY = (int)(_terrainData.size.z / terrainBehaviour.FieldCountY);
-
             PaintSlimeArea(layerID, creepCenter.x - sizeX / 2, creepCenter.y - sizeY / 2, sizeX, sizeY, radius, radius / 2);
         }
     }
