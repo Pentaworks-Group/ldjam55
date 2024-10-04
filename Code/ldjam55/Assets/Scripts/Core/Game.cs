@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -187,18 +188,17 @@ namespace Assets.Scripts.Core
             };
         }
 
-        protected override void OnGameStart()
+        protected override void OnGameStartup()
         {
         }
 
-        protected override void LoadDefintions()
+        protected override IEnumerator LoadDefintions()
         {
             var filePath = $"{Application.streamingAssetsPath}/GameFields.json";
             var filePath2 = $"{Application.streamingAssetsPath}/GameModes.json";
 
-            new GameFrame.Core.Definitions.Loaders.DefinitionLoader<Definitions.GameField>(this.availableGameFields).LoadAssets(filePath, ValidateGameFields);
-
-            new GameModesLoader(this.availableGameModes, availableGameFields).LoadAssets(filePath2);
+            yield return new GameFrame.Core.Definitions.Loaders.DefinitionLoader<Definitions.GameField>(this.availableGameFields).LoadDefinitions(filePath, ValidateGameFields);
+            yield return new GameModesLoader(this.availableGameModes, availableGameFields).LoadDefinitions(filePath2);
         }
 
         private Boolean ValidateGameFields(List<Definitions.GameField> fields)
