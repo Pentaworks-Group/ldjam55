@@ -9,10 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Unity.VisualScripting;
 
 using UnityEngine;
-using UnityEngine.Events;
 
 public class CreepBehaviour : MonoBehaviour
 {
@@ -641,7 +639,7 @@ public class CreepBehaviour : MonoBehaviour
             {
                 field.Creep = new Creep();
             }
-            Debug.Log("NewCreep: " + field.ID);
+            //Debug.Log("NewCreep: " + field.ID);
             field.Creep.Value = amount;
             field.Creep.Creeper = creepers[creeperId];
             CreeperChanged(field, null);
@@ -828,14 +826,14 @@ public class CreepBehaviour : MonoBehaviour
         float creepValueAtOrigin = creep.Value - flow;
         if (flow < Core.Game.State.Mode.MinNewCreep || creepValueAtOrigin < Core.Game.State.Mode.MinNewCreep)
         {
-            Debug.Log("rest Value: " + creep.Value + " flow: " + flow + " minCreep: " + Core.Game.State.Mode.MinNewCreep + "  creepValueAtOrigin: " + creepValueAtOrigin);
+            //Debug.Log("rest Value: " + creep.Value + " flow: " + flow + " minCreep: " + Core.Game.State.Mode.MinNewCreep + "  creepValueAtOrigin: " + creepValueAtOrigin);
             return;
         }
         creep.Value = creepValueAtOrigin;
-        if (creep.Value < 1)
-        {
-            Debug.Log("Value: " + creep.Value + " flow: " + flow);
-        }
+        //if (creep.Value < 1)
+        //{
+        //    Debug.Log("Value: " + creep.Value + " flow: " + flow);
+        //}
         var newCreep = new Creep()
         {
             Creeper = creep.Creeper,
