@@ -34,7 +34,8 @@
                 "UserActions": [
                     {
                         "Name": "DestroyWall",
-                        "IconName": "DestroyWall",
+                        "IconName": "Wall",
+                        "IsIconCrossed": true,
                         "UsesRemaining": 1
                     }
                 ],
@@ -120,7 +121,8 @@
                 "UserActions": [
                     {
                         "Name": "DestroyWall",
-                        "IconName": "DestroyWall",
+                        "IconName": "Wall",
+                        "IsIconCrossed": true,
                         "UsesRemaining": 1
                     }
                 ],
@@ -162,7 +164,7 @@
                 "UserActions": [
                     {
                         "Name": "CreateWall",
-                        "IconName": "CreateWall",
+                        "IconName": "Wall",
                         "UsesRemaining": 1,
                         "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     }
@@ -247,7 +249,8 @@
                 "UserActions": [
                     {
                         "Name": "DestroyWall",
-                        "IconName": "DestroyWall",
+                        "IconName": "Wall",
+                        "IsIconCrossed": true,
                         "UsesRemaining": 1
                     }
                 ],
@@ -289,7 +292,7 @@
                 "UserActions": [
                     {
                         "Name": "CreateWall",
-                        "IconName": "CreateWall",
+                        "IconName": "Wall",
                         "UsesRemaining": 1,
                         "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     }
@@ -320,7 +323,8 @@
                 "UserActions": [
                     {
                         "Name": "DestroyWall",
-                        "IconName": "DestroyWall",
+                        "IconName": "Wall",
+                        "IsIconCrossed": true,
                         "UsesRemaining": 5
                     }
                 ],
@@ -351,13 +355,14 @@
                 "UserActions": [
                     {
                         "Name": "CreateWall",
-                        "IconName": "CreateWall",
+                        "IconName": "Wall",
                         "UsesRemaining": 1000,
                         "ActionParamers": "{\"FlowRate\": 0,\"BorderTypeName\": \"BorderWall\",\"Model\": \"Wall\" }"
                     },
                     {
                         "Name": "DestroyWall",
-                        "IconName": "DestroyWall",
+                        "IconName": "Wall",
+                        "IsIconCrossed": true,
                         "UsesRemaining": 1000
                     },
                     {

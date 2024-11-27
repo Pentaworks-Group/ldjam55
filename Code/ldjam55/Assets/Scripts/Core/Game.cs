@@ -417,6 +417,7 @@ namespace Assets.Scripts.Core
                 {
                     Name = action.Name,
                     IconName = action.IconName,
+                    IsIconCrossed = action.IsIconCrossed,
                     ActionParamers = action.ActionParamers,
                     Cooldown = action.Cooldown,
                     UsesRemaining = action.UsesRemaining

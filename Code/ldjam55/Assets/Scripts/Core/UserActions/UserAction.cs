@@ -4,6 +4,7 @@ namespace Assets.Scripts.Core.Model
     {
         public string Name { get; set; }
         public string IconName { get; set; }
+        public bool IsIconCrossed { get; set; }
         public int UsesRemaining { get; set; }
         public float Cooldown { get; set; } = 0f;
         public string ActionParamers { get; set; }

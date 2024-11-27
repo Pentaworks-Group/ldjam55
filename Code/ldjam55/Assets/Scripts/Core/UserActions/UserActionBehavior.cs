@@ -19,6 +19,8 @@ public class UserActionBehavior : MonoBehaviour
     private Image overlayImage;
     [SerializeField]
     private Image actionIcon;
+    [SerializeField]
+    private Image crossImage;
 
     private UserAction userAction;
     private Action<UserAction> selectAction;
@@ -52,6 +54,12 @@ public class UserActionBehavior : MonoBehaviour
             actionIcon.gameObject.SetActive(true);
             Name.gameObject.SetActive(false);
         }
+
+        if (userAction.IsIconCrossed)
+        {
+            crossImage.gameObject.SetActive(true);
+        }
+
 
         if (getSelectedAction.Invoke() == userAction)
         {
